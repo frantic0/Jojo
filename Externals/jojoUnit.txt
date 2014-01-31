@@ -1,0 +1,17 @@
+
+**********************************************************
+Hello!
+Log started: 30 Jan 2014 7:48:55am
+
+Random seed: 0x15ee046
+-----------------------------------------------------------------
+Starting test: Testing Jojo! / Math...
+All tests completed successfully
+
+
+Random seed: 0x7f30a21
+-----------------------------------------------------------------
+Starting test: Testing Jojo! / Math...
+All tests completed successfully
+
+
