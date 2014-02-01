@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* "Is a" DynamicObject? */
+/* Oizo "is-a" DynamicObject? */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -61,23 +61,8 @@ namespace JojoIdentifier
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
-#pragma mark -
 
-class Oizo : public DynamicObject {
-
-public:
-    Oizo( )     { post("Oizo ctor"); }
-    ~Oizo( )    { post("Oizo dtor"); }
-
-private:
-    void doSomething( ) { post("Hello!"); }
-
-public:
-    static var hello(const var::NativeFunctionArgs& args) {
-        if (Oizo* o = dynamic_cast<Oizo*>(args.thisObject.getObject( ))) { o->doSomething( ); } 
-        return var::null;
-    }
-};
+class Oizo;
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -88,15 +73,50 @@ typedef ReferenceCountedObjectPtr<Oizo> OizoPtr;
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
+class Oizo : public DynamicObject {
+
+public:
+    Oizo( ) : eggs( )   { post("Oizo ctor"); }
+    ~Oizo( )            { post("Oizo dtor"); }
+
+public:
+    static var spawn(const var::NativeFunctionArgs& args) {
+        if (Oizo* o = dynamic_cast<Oizo*>(args.thisObject.getObject( ))) { o->doSpawn( ); } 
+        return var::null;
+    }
+    
+public:
+    virtual Ptr clone( ) {
+        Ptr base = DynamicObject::clone( );
+        OizoPtr newCopy = new Oizo( );
+        newCopy->getProperties( ) = base->getProperties( );
+        newCopy->eggs = 100;
+        return newCopy;
+    }
+    
+private:
+    void doSpawn( ) { ++eggs; post("Great! %ld eggs!", eggs.get( )); }
+
+    Atomic<int> eggs;
+    
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
+};
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mOizo(new Oizo( )) { }
+    _jojo( ) : mOizo(new Oizo( )), mLock( ) { }
 
 public:
-    t_object    ob;
-    ulong       mError;
-    OizoPtr     mOizo;
+    t_object        ob;
+    ulong           mError;
+    OizoPtr         mOizo;
+    CriticalSection mLock;      /* DynamicObject is not thread-safe. */
     
     } t_jojo;
     
@@ -129,6 +149,8 @@ public:
 void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
 void jojo_free  (t_jojo *x);
 void jojo_bang  (t_jojo *x);
+void jojo_spawn (t_jojo *x);
+void jojo_clone (t_jojo *x);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -141,7 +163,9 @@ JOJO_EXPORT int main(void)
     t_class *c = NULL;
     
     c = class_new("jojoObject", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
+    class_addmethod(c, (method)jojo_bang,   "bang", 0);
+    class_addmethod(c, (method)jojo_spawn,  "spawn", 0);
+    class_addmethod(c, (method)jojo_clone,  "clone", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
@@ -189,13 +213,32 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    var v("Carotte");
-    x->mOizo->setProperty(JojoIdentifier::One, v);
+    const ScopedLock myLock(x->mLock);
+
+    if (!x->mOizo->hasProperty(JojoIdentifier::One)) {
+        x->mOizo->setProperty(JojoIdentifier::One, "Carotte");
+    }
     
-    var r = x->mOizo->getProperty(JojoIdentifier::One);
-    post("Var / %s", r.toString( ).toRawUTF8( ));
+    post("Var / %s", x->mOizo->getProperty(JojoIdentifier::One).toString( ).toRawUTF8( ));
+}
+
+void jojo_spawn(t_jojo *x)
+{
+    const ScopedLock myLock(x->mLock);
     
-    x->mOizo->setMethod(JojoIdentifier::Two, Oizo::hello);
+    if (!x->mOizo->hasProperty(JojoIdentifier::Two)) {
+        x->mOizo->setMethod(JojoIdentifier::Two, Oizo::spawn);
+    }
+    
+    x->mOizo->invokeMethod(JojoIdentifier::Two, var::NativeFunctionArgs(x->mOizo.getObject( ), nullptr, 0));
+}
+
+void jojo_clone(t_jojo *x)
+{
+    const ScopedLock myLock(x->mLock); 
+    
+    OizoPtr o = x->mOizo->clone( );
+    o->invokeMethod(JojoIdentifier::Two, var::NativeFunctionArgs(o.getObject( ), nullptr, 0));
 }
 
 // ------------------------------------------------------------------------------------------------------------

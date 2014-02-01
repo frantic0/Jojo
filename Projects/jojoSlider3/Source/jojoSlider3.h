@@ -91,7 +91,7 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mValue(0.0), mWindow(new MainWindow(this)) { }
+    _jojo( ) : mValue( ), mWindow(new MainWindow(this)) { }
 
 public:
     t_object                    ob;
