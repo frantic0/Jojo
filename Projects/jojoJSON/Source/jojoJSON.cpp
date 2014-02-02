@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Oizo "is-a" DynamicObject? */
+/* */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -61,42 +61,25 @@ namespace JojoIdentifier
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
-
-class Oizo;
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-typedef ReferenceCountedObjectPtr<Oizo> OizoPtr;
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 class Oizo : public DynamicObject {
 
 public:
-    Oizo( ) : eggs( )   { post("Oizo ctor default"); }
+    Oizo( ) : eggs( )   { post("Oizo ctor"); }
     ~Oizo( )            { post("Oizo dtor"); }
-    
-public:
-    DynamicObject::Ptr clone( ) { return new Oizo(*(DynamicObject::clone( ))); }
-
-public:
-    static var spawn(const var::NativeFunctionArgs& args) {
-        if (Oizo* o = dynamic_cast<Oizo*>(args.thisObject.getObject( ))) { o->doSpawn( ); } 
-        return var::null;
-    }
 
 private:
-    void doSpawn( ) { ++eggs; post("Great! %ld eggs!", eggs.get( )); }
-    Oizo(const DynamicObject& o) : DynamicObject(o), eggs(100) { post("Oizo ctor"); }
-
     Atomic<int> eggs;
     
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
 };
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+typedef ReferenceCountedObjectPtr<Oizo> OizoPtr;
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -144,8 +127,6 @@ public:
 void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
 void jojo_free  (t_jojo *x);
 void jojo_bang  (t_jojo *x);
-void jojo_spawn (t_jojo *x);
-void jojo_clone (t_jojo *x);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -157,12 +138,8 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoObject", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    
-    class_addmethod(c, (method)jojo_bang,   "bang",     0);
-    class_addmethod(c, (method)jojo_spawn,  "spawn",    0);
-    class_addmethod(c, (method)jojo_clone,  "clone",    0);
-    
+    c = class_new("jojoJSON", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    class_addmethod(c, (method)jojo_bang, "bang", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
@@ -210,32 +187,7 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    const ScopedLock myLock(x->mLock);
-
-    if (!x->mOizo->hasProperty(JojoIdentifier::One)) {
-        x->mOizo->setProperty(JojoIdentifier::One, "Carotte");
-    }
-    
-    post("Var / %s", x->mOizo->getProperty(JojoIdentifier::One).toString( ).toRawUTF8( ));
-}
-
-void jojo_spawn(t_jojo *x)
-{
-    const ScopedLock myLock(x->mLock);
-    
-    if (!x->mOizo->hasProperty(JojoIdentifier::Two)) {
-        x->mOizo->setMethod(JojoIdentifier::Two, Oizo::spawn);
-    }
-    
-    x->mOizo->invokeMethod(JojoIdentifier::Two, var::NativeFunctionArgs(x->mOizo.getObject( ), nullptr, 0));
-}
-
-void jojo_clone(t_jojo *x)
-{
-    const ScopedLock myLock(x->mLock); 
-    
-    OizoPtr o = x->mOizo->clone( );
-    o->invokeMethod(JojoIdentifier::Two, var::NativeFunctionArgs(o.getObject( ), nullptr, 0));
+    ;
 }
 
 // ------------------------------------------------------------------------------------------------------------
