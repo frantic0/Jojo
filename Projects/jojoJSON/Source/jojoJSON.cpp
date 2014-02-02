@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* */
+/* JSON (and DynamicObject). */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -66,11 +66,11 @@ namespace JojoIdentifier
 class Oizo : public DynamicObject {
 
 public:
-    Oizo( ) : eggs( )   { post("Oizo ctor"); }
+    Oizo( ) : legs(2)   { post("Oizo ctor"); }
     ~Oizo( )            { post("Oizo dtor"); }
 
 private:
-    Atomic<int> eggs;
+    Atomic<int> legs;
     
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
@@ -94,7 +94,7 @@ public:
     t_object        ob;
     ulong           mError;
     OizoPtr         mOizo;
-    CriticalSection mLock;      /* DynamicObject is not thread-safe. */
+    CriticalSection mLock;
     
     } t_jojo;
     
@@ -127,6 +127,12 @@ public:
 void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
 void jojo_free  (t_jojo *x);
 void jojo_bang  (t_jojo *x);
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+void jojo_write (t_jojo *x, const File& aFile);
+void jojo_read  (t_jojo *x, const File& aFile);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -166,6 +172,11 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
         err = (x->mError = JOJO_ERROR);
     }
 
+    if (!err) {
+        x->mOizo->setProperty(JojoIdentifier::One, "Carotte");
+        x->mOizo->setProperty(JojoIdentifier::Two, "Olive");
+    }
+    
     if (err) {
         object_free(x);
         x = NULL;
@@ -187,7 +198,59 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    ;
+    const ScopedLock myLock(x->mLock); 
+    
+    File jsonFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoJSON.txt"));
+    
+    jojo_write(x, jsonFile);
+    jojo_read(x, jsonFile); 
+}
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+void jojo_write(t_jojo *x, const File& aFile)
+{
+    FileOutputStream outputStream(aFile);
+    
+    if (outputStream.openedOk( )) { 
+    //
+    var test("Le sentier longeait la falaise");
+    test.append("Lapin");
+    test.append("Fusil");
+    test.append(3.14);
+    test.append(x->mOizo.getObject( ));
+    
+    outputStream.setPosition(0); 
+    outputStream.truncate( );
+    JSON::writeToStream(outputStream, test);
+    //
+    }
+}
+
+void jojo_read(t_jojo *x, const File& aFile)
+{
+    FileInputStream inputStream(aFile);
+        
+    if (inputStream.openedOk( )) {
+    // 
+    var test(JSON::parse(inputStream));
+    
+    if (test.isArray( )) {      /* Should be in that stupid example! */
+    //
+    for (int i = 0; i < test.size( ); ++i) {
+        post("? / %s", test[i].toString( ).toRawUTF8( ));
+        if (DynamicObject::Ptr o = test[i].getDynamicObject( )) {
+            for (int j = 0; j < o->getProperties( ).size( ); ++j) {
+                post("? / --- %s", o->getProperties( ).getName(j).toString( ).toRawUTF8( ));
+            }
+        }
+    }
+    //
+    }
+    //
+    }
 }
 
 // ------------------------------------------------------------------------------------------------------------

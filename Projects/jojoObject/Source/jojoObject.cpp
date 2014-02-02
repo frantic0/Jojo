@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Oizo "is-a" DynamicObject? */
+/* "Is-a" DynamicObject? */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -61,11 +61,9 @@ namespace JojoIdentifier
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
+#pragma mark -
 
 class Oizo;
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
 
 typedef ReferenceCountedObjectPtr<Oizo> OizoPtr;
 
@@ -80,9 +78,10 @@ public:
     ~Oizo( )            { post("Oizo dtor"); }
     
 public:
+    /* Workaround for a deep clone of DynamicObject properties. */
+    
     DynamicObject::Ptr clone( ) { return new Oizo(*(DynamicObject::clone( ))); }
 
-public:
     static var spawn(const var::NativeFunctionArgs& args) {
         if (Oizo* o = dynamic_cast<Oizo*>(args.thisObject.getObject( ))) { o->doSpawn( ); } 
         return var::null;
@@ -90,7 +89,7 @@ public:
 
 private:
     void doSpawn( ) { ++eggs; post("Great! %ld eggs!", eggs.get( )); }
-    Oizo(const DynamicObject& o) : DynamicObject(o), eggs(100) { post("Oizo ctor"); }
+    Oizo(const DynamicObject& o) : DynamicObject(o), eggs(12) { post("Oizo ctor"); }
 
     Atomic<int> eggs;
     
@@ -114,7 +113,7 @@ public:
     CriticalSection mLock;      /* DynamicObject is not thread-safe. */
     
     } t_jojo;
-    
+
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
@@ -189,6 +188,11 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
         err = (x->mError = JOJO_ERROR);
     }
 
+    if (!err) {
+        x->mOizo->setProperty(JojoIdentifier::One, "Carotte");
+        x->mOizo->setMethod(JojoIdentifier::Two, Oizo::spawn);
+    }
+    
     if (err) {
         object_free(x);
         x = NULL;
@@ -211,10 +215,6 @@ void jojo_free(t_jojo *x)
 void jojo_bang(t_jojo *x)
 {
     const ScopedLock myLock(x->mLock);
-
-    if (!x->mOizo->hasProperty(JojoIdentifier::One)) {
-        x->mOizo->setProperty(JojoIdentifier::One, "Carotte");
-    }
     
     post("Var / %s", x->mOizo->getProperty(JojoIdentifier::One).toString( ).toRawUTF8( ));
 }
@@ -222,17 +222,15 @@ void jojo_bang(t_jojo *x)
 void jojo_spawn(t_jojo *x)
 {
     const ScopedLock myLock(x->mLock);
-    
-    if (!x->mOizo->hasProperty(JojoIdentifier::Two)) {
-        x->mOizo->setMethod(JojoIdentifier::Two, Oizo::spawn);
-    }
-    
+
+    /* I don't care about others NativeFunctionArgs arguments for convenience. */
+        
     x->mOizo->invokeMethod(JojoIdentifier::Two, var::NativeFunctionArgs(x->mOizo.getObject( ), nullptr, 0));
 }
 
 void jojo_clone(t_jojo *x)
 {
-    const ScopedLock myLock(x->mLock); 
+    const ScopedLock myLock(x->mLock);
     
     OizoPtr o = x->mOizo->clone( );
     o->invokeMethod(JojoIdentifier::Two, var::NativeFunctionArgs(o.getObject( ), nullptr, 0));
