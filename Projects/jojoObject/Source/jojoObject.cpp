@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* "Is-a" DynamicObject? */
+/* "Is-a" DynamicObject / Clone. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -74,13 +74,11 @@ typedef ReferenceCountedObjectPtr<Oizo> OizoPtr;
 class Oizo : public DynamicObject {
 
 public:
-    Oizo( ) : eggs( )   { post("Oizo ctor default"); }
+    Oizo( ) : eggs( )   { post("Oizo ctor"); }
     ~Oizo( )            { post("Oizo dtor"); }
     
 public:
-    /* Workaround for a deep clone of DynamicObject properties. */
-    
-    DynamicObject::Ptr clone( ) { return new Oizo(*(DynamicObject::clone( ))); }
+    DynamicObject::Ptr clone( ) { return new Oizo(*this); }
 
     static var spawn(const var::NativeFunctionArgs& args) {
         if (Oizo* o = dynamic_cast<Oizo*>(args.thisObject.getObject( ))) { o->doSpawn( ); } 
@@ -89,12 +87,14 @@ public:
 
 private:
     void doSpawn( ) { ++eggs; post("Great! %ld eggs!", eggs.get( )); }
-    Oizo(const DynamicObject& o) : DynamicObject(o), eggs(12) { post("Oizo ctor"); }
+    
+    Oizo(const Oizo& o) : DynamicObject(o), eggs(12) { cloneAllProperties( ); post("Oizo copy"); } 
+    Oizo& operator=(const Oizo&);
 
     Atomic<int> eggs;
     
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
+    JUCE_LEAK_DETECTOR(Oizo)
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -223,8 +223,8 @@ void jojo_spawn(t_jojo *x)
 {
     const ScopedLock myLock(x->mLock);
 
-    /* I don't care about others NativeFunctionArgs arguments for convenience. */
-        
+    /* Arguments set to zero for convenience. */
+    
     x->mOizo->invokeMethod(JojoIdentifier::Two, var::NativeFunctionArgs(x->mOizo.getObject( ), nullptr, 0));
 }
 

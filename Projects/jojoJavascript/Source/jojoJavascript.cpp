@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* "Is-a" DynamicObject / JSON. */
+/* Javascript's "Hello World!". */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -49,32 +49,21 @@
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-namespace JojoIdentifier
-{
-    #define JOJO_ID(name)   const Identifier name(#name)
-    
-    JOJO_ID(One);
-    JOJO_ID(Two);
-    
-    #undef JOJO_ID
-}
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-#pragma mark -
-
 class Oizo : public DynamicObject {
 
 public:
-    Oizo( )     { post("Oizo ctor"); }
+    Oizo( )     { setMethod("hello", Oizo::hello); post("Oizo ctor"); }
     ~Oizo( )    { post("Oizo dtor"); }
-
-public:
-    void writeAsJSON(OutputStream& stream, int indentLevel, bool allOnOneLine) {
+    
+    static Identifier getClassName( ) { static const Identifier i("Oizo"); return i; }
+    
+    static var hello(const var::NativeFunctionArgs& args) {
+        if (dynamic_cast<Oizo*>(args.thisObject.getObject( ))) { post("Goodbye World!"); }  /* Oizo. */
+        else {
+            post("Hello World!");   /* ObjectClass? */
+        }
         
-        /* Placeholder for future fun! */
-        
-        DynamicObject::writeAsJSON(stream, indentLevel, allOnOneLine);
+        return var::null;
     }
 
 private:
@@ -84,22 +73,18 @@ private:
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-typedef ReferenceCountedObjectPtr<Oizo> OizoPtr;
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mOizo(new Oizo( )), mLock( ) { }
+    _jojo( ) : mJS(new JavascriptEngine( )), mLock( ) { }
 
 public:
-    t_object        ob;
-    ulong           mError;
-    OizoPtr         mOizo;
-    CriticalSection mLock;
+    t_object                        ob;
+    ulong                           mError;
+    ScopedPointer<JavascriptEngine> mJS;
+    CriticalSection                 mLock;
     
     } t_jojo;
     
@@ -135,12 +120,6 @@ void jojo_bang  (t_jojo *x);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
-
-void jojo_write (t_jojo *x, const File& aFile);
-void jojo_read  (t_jojo *x, const File& aFile);
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 static t_class *jojo_class;
@@ -149,7 +128,7 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoJSON", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new("jojoJavascript", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
     class_addmethod(c, (method)jojo_bang, "bang", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
@@ -176,10 +155,9 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-
+    
     if (!err) {
-        x->mOizo->setProperty(JojoIdentifier::One, "Carotte");
-        x->mOizo->setProperty(JojoIdentifier::Two, "Olive");
+        x->mJS->registerNativeObject(Oizo::getClassName( ), new Oizo( ));
     }
     
     if (err) {
@@ -204,57 +182,12 @@ void jojo_free(t_jojo *x)
 void jojo_bang(t_jojo *x)
 {
     const ScopedLock myLock(x->mLock); 
-    
-    File jsonFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoJSON.txt"));
-    
-    jojo_write(x, jsonFile);
-    jojo_read(x, jsonFile); 
-}
 
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-#pragma mark -
-
-void jojo_write(t_jojo *x, const File& aFile)
-{
-    FileOutputStream outputStream(aFile);
-    
-    if (outputStream.openedOk( )) { 
-    //
-    var test("Le sentier longeait la falaise");
-    test.append("Lapin");
-    test.append("Fusil");
-    test.append(3.14);
-    test.append(x->mOizo.getObject( ));
-    
-    outputStream.setPosition(0); 
-    outputStream.truncate( );
-    JSON::writeToStream(outputStream, test);
-    //
-    }
-}
-
-void jojo_read(t_jojo *x, const File& aFile)
-{
-    FileInputStream inputStream(aFile);
+    const Result result(x->mJS->execute("var o = new Oizo( ); o.hello( ); Oizo.hello( );"));
         
-    if (inputStream.openedOk( )) {
-    // 
-    var test(JSON::parse(inputStream));
-    
-    if (test.isArray( )) {      /* Should be true in that stupid example! */
-    //
-    for (int i = 0; i < test.size( ); ++i) {
-        post("? / %s", test[i].toString( ).toRawUTF8( ));
-        if (DynamicObject::Ptr o = test[i].getDynamicObject( )) {
-            for (int j = 0; j < o->getProperties( ).size( ); ++j) {
-                post("? / --- %s", o->getProperties( ).getName(j).toString( ).toRawUTF8( ));
-            }
-        }
-    }
-    //
-    }
-    //
+    if (result.wasOk( )) { }
+    else {
+        post("%s", result.getErrorMessage( ).toRawUTF8( ));
     }
 }
 
