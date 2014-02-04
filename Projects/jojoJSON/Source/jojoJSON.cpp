@@ -70,7 +70,7 @@ public:
     ~Oizo( )    { post("Oizo dtor"); }
 
 public:
-    void writeAsJSON(OutputStream& stream, int indentLevel, bool allOnOneLine) {
+    void writeAsJSON(OutputStream& stream, int indentLevel, bool allOnOneLine) const {
         
         /* Placeholder for future JSON fun! */
         

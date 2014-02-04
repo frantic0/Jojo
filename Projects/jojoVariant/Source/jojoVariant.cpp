@@ -58,7 +58,7 @@ public:
     Oizo(const Oizo& o)             { post("Oizo copy"); }
     Oizo& operator=(const Oizo& o)  { post("Oizo ="); return *this; }
     
-    void doSomething( )             { post("Cui-cui"); }
+    void doSomething( ) const       { post("Cui-cui"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------

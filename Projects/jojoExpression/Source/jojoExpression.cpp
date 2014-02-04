@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Through the hash fog. */
+/* Un-scientific calculator. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -49,37 +49,39 @@
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-class Kitty : public ReferenceCountedObject {
-
-public:
-    Kitty( )  { post("Kitty ctor"); }
-    ~Kitty( ) { post("Kitty dtor / %x", this); }
+class Oizo : public Expression::Scope
+{
+    String getScopeUID( ) const { return String("Toto"); }
     
-    void doSomething( ) const { post("Kitty %x do something very fun!", this); }
-
-private:
-    JUCE_LEAK_DETECTOR(Kitty)
+    Expression getSymbolValue(const String& symbol) const {
+        if (symbol == "two")        { return Expression(2); }
+        else if (symbol == "five")  { return Expression(5); }
+        else if (symbol == "x")     { return Expression("two + five"); }
+        
+        return Expression::Scope::getSymbolValue(symbol);
+    }
+    
+    double evaluateFunction(const String& functionName, const double* parameters, int numParams) const {
+        if ((numParams > 0) && (functionName == "half")) { return (parameters[0] / 2.); }
+        return Expression::Scope::evaluateFunction(functionName, parameters, numParams);
+    }
 };
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
-#pragma mark -
 
-typedef ReferenceCountedObjectPtr<Kitty> KittyPtr;
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mHash( ) { }
+    _jojo( ) : mScope( ), mLock( ) { }
 
 public:
-    t_object                ob;
-    ulong                   mError;
-    HashMap<int, KittyPtr>  mHash;      /* Juce's HashMap uses slots with chained entries for collisions. */
+    t_object        ob;
+    ulong           mError;
+    Oizo            mScope;
+    CriticalSection mLock;                  /* I guess that is not thread-safe, isn't it? */
     
     } t_jojo;
     
@@ -123,7 +125,7 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoHash", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new("jojoExpression", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
     class_addmethod(c, (method)jojo_bang, "bang", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
@@ -150,7 +152,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-
+    
     if (err) {
         object_free(x);
         x = NULL;
@@ -170,18 +172,23 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang(t_jojo *x)                       
 {
-    KittyPtr ptrKitty(new Kitty( ));
+    const ScopedLock myLock(x->mLock);
     
-    x->mHash.set(1, ptrKitty);
-    x->mHash.set(2, ptrKitty);
+    Expression a("(two + 2) * five");
+    Expression b("x * 2");
     
-    KittyPtr temp(x->mHash[1]);
+    post("%s = %f", a.toString( ).toRawUTF8( ), a.evaluate(x->mScope));  
+    post("%s = %f", b.toString( ).toRawUTF8( ), b.evaluate(x->mScope));   
     
-    post("%ld", temp->getReferenceCount( ));        /* Should be always 4!*/
+    Expression c = a - b;
     
-    temp->doSomething( );
+    post("%s = %f", c.toString( ).toRawUTF8( ), c.evaluate(x->mScope));
+    
+    Expression d("half(five)");
+    
+    post("%s = %f", d.toString( ).toRawUTF8( ), d.evaluate(x->mScope));
 }
 
 // ------------------------------------------------------------------------------------------------------------

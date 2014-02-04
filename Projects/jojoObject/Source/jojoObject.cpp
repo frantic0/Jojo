@@ -78,7 +78,7 @@ public:
     ~Oizo( )            { post("Oizo dtor"); }
     
 public:
-    DynamicObject::Ptr clone( ) { return new Oizo(*this); }
+    DynamicObject::Ptr clone( ) const { return new Oizo(*this); }
 
     static var spawn(const var::NativeFunctionArgs& args) {
         if (Oizo* o = dynamic_cast<Oizo*>(args.thisObject.getObject( ))) { o->doSpawn( ); } 

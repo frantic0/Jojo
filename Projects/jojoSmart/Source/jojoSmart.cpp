@@ -94,7 +94,7 @@ public:
     Kitty( )  { post("Kitty ctor"); }
     ~Kitty( ) { post("Kitty dtor"); }
     
-    void doSomething( ) { post("Kitty do something very fun!"); }
+    void doSomething( ) const { post("Kitty do something very fun!"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------

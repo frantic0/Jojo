@@ -63,7 +63,7 @@ public:
     Oizo( )     { post("Oizo ctor"); }
     ~Oizo( )    { post("Oizo dtor"); cpost("Oizo dtor"); clearSingletonInstance( ); }
     
-    void doSomething( ) { post("Cuicui"); }
+    void doSomething( ) const { post("Cuicui"); }
     
     juce_DeclareSingleton(Oizo, false)
 

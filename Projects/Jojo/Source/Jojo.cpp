@@ -119,7 +119,7 @@ public:
         setUsingNativeTitleBar(true);
     }
     
-    void closeButtonPressed() { setVisible(false); }
+    void closeButtonPressed( ) { setVisible(false); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)

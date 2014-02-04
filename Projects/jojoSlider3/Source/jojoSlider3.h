@@ -75,7 +75,7 @@ public:
         setUsingNativeTitleBar(true);
     }
     
-    void closeButtonPressed() { setVisible(false); }
+    void closeButtonPressed( ) { setVisible(false); }
 
 public:
     ScopedPointer<MainComponent> mainComponent;     /* Private (or delete policy) should be better! */
