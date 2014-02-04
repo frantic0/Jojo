@@ -54,16 +54,28 @@ class Oizo : public DynamicObject {
 public:
     Oizo( )     { setMethod("hello", Oizo::hello); post("Oizo ctor"); }
     ~Oizo( )    { post("Oizo dtor"); }
-    
+
     static Identifier getClassName( ) { static const Identifier i("Oizo"); return i; }
     
+public:
+
     static var hello(const var::NativeFunctionArgs& args) {
-        if (dynamic_cast<Oizo*>(args.thisObject.getObject( ))) { post("Goodbye World!"); }  /* Oizo. */
-        else {
-            post("Hello World!");   /* ObjectClass? */
-        }
+    //
+    post("Hello World!");
+    
+    if (dynamic_cast<Oizo*>(args.thisObject.getObject( ))) {            /* Class. */
+    //
+    post("Class / %s", args.thisObject.toString( ).toRawUTF8( ));
+    //
+    } else {                                                            /* Prototype. */
+    //
+    post("Prototype / %s", args.thisObject.toString( ).toRawUTF8( ));
+    post("From / %s", args.thisObject.getDynamicObject( )->getProperty("prototype").toString( ).toRawUTF8( ));
+    //
+    }
         
-        return var::null;
+    return var::undefined();
+    //
     }
 
 private:
@@ -183,7 +195,7 @@ void jojo_bang(t_jojo *x)
 {
     const ScopedLock myLock(x->mLock); 
 
-    const Result result(x->mJS->execute("var o = new Oizo( ); o.hello( ); Oizo.hello( );"));
+    const Result result(x->mJS->execute("var o = new Oizo( ); Oizo.hello( ); o.hello( );"));
         
     if (result.wasOk( )) { }
     else {

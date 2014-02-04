@@ -72,7 +72,7 @@ public:
 public:
     void writeAsJSON(OutputStream& stream, int indentLevel, bool allOnOneLine) {
         
-        /* Placeholder for future fun! */
+        /* Placeholder for future JSON fun! */
         
         DynamicObject::writeAsJSON(stream, indentLevel, allOnOneLine);
     }
