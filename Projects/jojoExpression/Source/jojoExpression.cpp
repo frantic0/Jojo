@@ -49,10 +49,31 @@
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
+/* ( http://sourcemaking.com/design_patterns/visitor/cpp/2 ). */
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+class aScope : public Expression::Scope {
+
+public:
+    String getScopeUID( ) const { return String("A scope!"); }
+};
+
+class aVisitor : public Expression::Scope::Visitor {
+    
+public:
+    void visit(const Expression::Scope& scope) { post("%s", scope.getScopeUID( ).toRawUTF8( )); }
+};
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 class Oizo : public Expression::Scope
 {
-    String getScopeUID( ) const { return String("Toto"); }
-    
+
+public:    
     Expression getSymbolValue(const String& symbol) const {
         if (symbol == "two")        { return Expression(2); }
         else if (symbol == "five")  { return Expression(5); }
@@ -65,11 +86,15 @@ class Oizo : public Expression::Scope
         if ((numParams > 0) && (functionName == "half")) { return (parameters[0] / 2.); }
         return Expression::Scope::evaluateFunction(functionName, parameters, numParams);
     }
+    
+    void visitRelativeScope(const String& scopeName, Visitor& visitor) const {
+        if (scopeName == "Foo") { visitor.visit(aScope( )); return; }
+        Expression::Scope::visitRelativeScope(scopeName, visitor);
+    }
 };
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
-
 #pragma mark -
 
 typedef struct _jojo {
@@ -111,9 +136,10 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
-void jojo_free  (t_jojo *x);
-void jojo_bang  (t_jojo *x);
+void *jojo_new      (t_symbol *s, long argc, t_atom *argv);
+void jojo_free      (t_jojo *x);
+void jojo_bang      (t_jojo *x);
+void jojo_visitor   (t_jojo *x);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -126,7 +152,8 @@ JOJO_EXPORT int main(void)
     t_class *c = NULL;
     
     c = class_new("jojoExpression", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
+    class_addmethod(c, (method)jojo_bang,       "bang",     0);
+    class_addmethod(c, (method)jojo_visitor,    "visitor",  0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
@@ -189,6 +216,21 @@ void jojo_bang(t_jojo *x)
     Expression d("half(five)");
     
     post("%s = %f", d.toString( ).toRawUTF8( ), d.evaluate(x->mScope));
+}
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+/* Actually don't know what's the point of visitRelativeScope method! */
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+void jojo_visitor(t_jojo *x)
+{
+    aVisitor visitor;
+    x->mScope.visitRelativeScope("Foo", visitor);
 }
 
 // ------------------------------------------------------------------------------------------------------------
