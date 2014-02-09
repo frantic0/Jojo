@@ -1,0 +1,4 @@
+language: French
+countries: fr be mc ch lu
+
+"The trail skirted the cliff." = "Le sentier longeait la falaise."

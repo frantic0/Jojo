@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Note that identifiers must be cached for efficiency! */
+/* Placeholder. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -47,34 +47,18 @@
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
-
-/* Identifiers are cached in a pool (an Array<String>) with insertion potentially inefficient. */
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-namespace JojoIdentifier
-{
-    #define JOJO_ID(name)   const Identifier name(#name)
-    
-    JOJO_ID(One);
-    JOJO_ID(Two);
-    
-    #undef JOJO_ID
-}
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo( ) : mIP( ), mMAC( ) { }
 
 public:
-    t_object    ob;
-    ulong       mError;
+    t_object            ob;
+    ulong               mError;
+    Array<IPAddress>    mIP;
+    Array<MACAddress>   mMAC;
     
     } t_jojo;
     
@@ -104,9 +88,10 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
-void jojo_free  (t_jojo *x);
-void jojo_bang  (t_jojo *x);
+void *jojo_new      (t_symbol *s, long argc, t_atom *argv);
+void jojo_free      (t_jojo *x);
+void jojo_bang      (t_jojo *x);
+void jojo_doBang    (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -118,7 +103,7 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoIdentifier", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new("jojoNetwork", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
     class_addmethod(c, (method)jojo_bang, "bang", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
@@ -145,7 +130,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-
+    
     if (err) {
         object_free(x);
         x = NULL;
@@ -165,11 +150,47 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang(t_jojo *x)                       
 {
-    post("%s", JojoIdentifier::One.toString( ).toRawUTF8( ));
-    post("%s", JojoIdentifier::Two.toString( ).toRawUTF8( ));
+    defer_low(x, (method)jojo_doBang, NULL, 0, NULL);
 }
+
+void jojo_doBang(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
+{
+    IPAddress::findAllAddresses(x->mIP);
+    
+    for (int i = 0; i < x->mIP.size( ); ++i) {
+        post("IP / %s", x->mIP.getReference(i).toString( ).toRawUTF8( ));
+    }
+    
+    MACAddress::findAllAddresses(x->mMAC);
+        
+    for (int i = 0; i < x->mMAC.size( ); ++i) {
+        post("MAC / %s", x->mMAC.getReference(i).toString( ).toRawUTF8( ));
+    }
+    
+    URL("http://www.juce.com").launchInDefaultBrowser( );
+}
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+/* LSOpenFromURLSpec() returned -43 for application (null) path http://www.juce.com. */
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+/* juce_mac_Files.mm / Process::openDocument */
+
+/*
+if (parameters.isEmpty()) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath: juceStringToNS (fileName)]) {
+        if ([workspace openFile: juceStringToNS (fileName)]) { return YES; }
+    } 
+            
+    return [workspace openURL: filenameAsURL];
+}
+*/
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------

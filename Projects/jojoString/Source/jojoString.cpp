@@ -26,7 +26,9 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Note that identifiers must be cached for efficiency! */
+/* JUCE::String miscellaneous. */
+
+/* ( https://github.com/julianstorer/JUCE/blob/master/modules/juce_core/text/juce_String.cpp#L2134 ). */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -47,34 +49,18 @@
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
-
-/* Identifiers are cached in a pool (an Array<String>) with insertion potentially inefficient. */
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-namespace JojoIdentifier
-{
-    #define JOJO_ID(name)   const Identifier name(#name)
-    
-    JOJO_ID(One);
-    JOJO_ID(Two);
-    
-    #undef JOJO_ID
-}
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo( ) : mPair( ), mLock( ) { }
 
 public:
-    t_object    ob;
-    ulong       mError;
+    t_object        ob;
+    ulong           mError;
+    StringPairArray mPair;          /* Not thread-safe. */
+    CriticalSection mLock;
     
     } t_jojo;
     
@@ -104,9 +90,11 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
-void jojo_free  (t_jojo *x);
-void jojo_bang  (t_jojo *x);
+void *jojo_new      (t_symbol *s, long argc, t_atom *argv);
+void jojo_free      (t_jojo *x);
+void jojo_bang      (t_jojo *x);
+void jojo_anything  (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
+
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -118,8 +106,9 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoIdentifier", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
+    c = class_new("jojoString", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    class_addmethod(c, (method)jojo_bang,       "bang", 0);
+    class_addmethod(c, (method)jojo_anything,   "anything", A_GIMME, 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
@@ -140,12 +129,17 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     try {
         new(x)t_jojo;
+        
+        File tr(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoString.txt"));
+        if (tr.existsAsFile( )) {
+            LocalisedStrings::setCurrentMappings(new LocalisedStrings(tr, false));
+        }
     }
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-
+    
     if (err) {
         object_free(x);
         x = NULL;
@@ -165,10 +159,23 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang(t_jojo *x)                       
 {
-    post("%s", JojoIdentifier::One.toString( ).toRawUTF8( ));
-    post("%s", JojoIdentifier::Two.toString( ).toRawUTF8( ));
+    post("%s", TRANS("The trail skirted the cliff.").toRawUTF8( ));
+    
+    const ScopedLock myLock(x->mLock); 
+    
+    post("Keys: %s", x->mPair.getAllKeys( ).joinIntoString(" / ").toRawUTF8( ));
+    post("Values: %s", x->mPair.getAllValues( ).joinIntoString(" / ").toRawUTF8( ));
+}
+
+void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
+{
+    const ScopedLock myLock(x->mLock); 
+    
+    if (argc && (atom_gettype(argv) == A_SYM)) {
+        x->mPair.set(s->s_name, atom_getsym(argv)->s_name);
+    }
 }
 
 // ------------------------------------------------------------------------------------------------------------

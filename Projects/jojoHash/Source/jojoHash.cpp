@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Through the hash fog. */
+/* Through the hash fog / UUID. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -71,15 +71,30 @@ typedef ReferenceCountedObjectPtr<Kitty> KittyPtr;
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
+struct MyHashGenerator {
+    int generateHash(Uuid key, int upperLimit) const {
+        return (int)(((uint32)key.toString( ).hashCode( )) % (uint32)upperLimit);
+    }
+};
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+typedef HashMap<Uuid, KittyPtr, MyHashGenerator> MyHash; 
+     
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 typedef struct _jojo {
 
 public :
     _jojo( ) : mHash( ) { }
 
 public:
-    t_object                ob;
-    ulong                   mError;
-    HashMap<int, KittyPtr>  mHash;      /* Juce's HashMap uses slots with chained entries for collisions. */
+    t_object    ob;
+    ulong       mError;
+    MyHash      mHash;          /* HashMap uses slots and linked-list for collisions. */
     
     } t_jojo;
     
@@ -174,13 +189,14 @@ void jojo_bang(t_jojo *x)
 {
     KittyPtr ptrKitty(new Kitty( ));
     
-    x->mHash.set(1, ptrKitty);
-    x->mHash.set(2, ptrKitty);
+    Uuid a;
+    Uuid b;
     
-    KittyPtr temp(x->mHash[1]);
+    x->mHash.set(a, ptrKitty);
+    x->mHash.set(b, ptrKitty);
     
+    KittyPtr temp(x->mHash[a]);
     post("%ld", temp->getReferenceCount( ));        /* Should be always 4!*/
-    
     temp->doSomething( );
 }
 

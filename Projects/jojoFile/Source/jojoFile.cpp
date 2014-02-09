@@ -194,7 +194,7 @@ void jojo_read(const File& aFile)
         return;
     }
         
-    post("%s", inputStream.readEntireStreamAsString( ).toRawUTF8( ));
+    post("%s", inputStream.readEntireStreamAsString( ).toRawUTF8( ));       /* File::loadFileAsString( ) */
 }
 
 // ------------------------------------------------------------------------------------------------------------
