@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="sBVAFV" name="jojoDLL" projectType="dll" version="1.0.0"
+              bundleIdentifier="com.yourcompany.jojoDLL" includeBinaryInAppConfig="1"
+              jucerVersion="3.1.0">
+  <MAINGROUP id="krwvLX" name="jojoDLL">
+    <GROUP id="{38CC8704-E0B6-6F50-A88D-455FD98D68A9}" name="Source">
+      <FILE id="KdThpP" name="jojoDLL.cpp" compile="1" resource="0" file="Source/jojoDLL.cpp"/>
+      <FILE id="zLflwD" name="jojoDLL.h" compile="0" resource="0" file="Source/jojoDLL.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX" extraLinkerFlags="" extraCompilerFlags="">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="1" optimisation="1" targetName="libjojo" customXcodeFlags="LD_DYLIB_INSTALL_NAME = &quot;@loader_path/../Resources/libjojo.dylib&quot;"/>
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="0" optimisation="2" targetName="libjojo" customXcodeFlags="LD_DYLIB_INSTALL_NAME = &quot;@loader_path/../Resources/libjojo.dylib&quot;"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../../JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULES id="juce_core" showAllCode="1" useLocalCopy="0"/>
+  </MODULES>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>
