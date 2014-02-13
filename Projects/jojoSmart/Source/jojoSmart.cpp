@@ -59,10 +59,10 @@ class Oizo {
 friend class ContainerDeletePolicy<Oizo>;
 
 public:
-    Oizo( )     { post("Oizo ctor"); }
+    explicit Oizo( )    { post("Oizo ctor"); }
 
 private:
-    ~Oizo( )    { post("Oizo dtor"); }
+    ~Oizo( )            { post("Oizo dtor"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -91,8 +91,8 @@ static void destroy (Oizo* o) { post("Oizo policy"); delete o; }
 class Kitty : public ReferenceCountedObject {
 
 public:
-    Kitty( )  { post("Kitty ctor"); }
-    ~Kitty( ) { post("Kitty dtor"); }
+    explicit Kitty( )   { post("Kitty ctor"); }
+    ~Kitty( )           { post("Kitty dtor"); }
     
     void doSomething( ) const { post("Kitty do something very fun!"); }
 };
@@ -117,8 +117,8 @@ class Felix {
 friend class WeakReference<Felix>;
 
 public:
-    Felix( )     { post("Felix ctor"); }
-    ~Felix( )    { post("Felix dtor"); masterReference.clear(); }
+    explicit Felix( )   { post("Felix ctor"); }
+    ~Felix( )           { post("Felix dtor"); masterReference.clear(); }
 
 private:
     WeakReference<Felix>::Master masterReference;

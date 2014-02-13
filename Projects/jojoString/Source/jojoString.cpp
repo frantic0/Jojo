@@ -95,7 +95,6 @@ void jojo_free      (t_jojo *x);
 void jojo_bang      (t_jojo *x);
 void jojo_anything  (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
 
-
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
@@ -130,6 +129,8 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     try {
         new(x)t_jojo;
         
+        /* Use a text file to translate strings in the bundle. */
+        
         File tr(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoString.txt"));
         if (tr.existsAsFile( )) {
             LocalisedStrings::setCurrentMappings(new LocalisedStrings(tr, false));
@@ -161,7 +162,7 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)                       
 {
-    post("%s", TRANS("The trail skirted the cliff.").toRawUTF8( ));
+    post("%s", TRANS("The trail skirted the cliff.").toRawUTF8( ));     /* Should be translated to french! */
     
     const ScopedLock myLock(x->mLock); 
     
@@ -169,12 +170,15 @@ void jojo_bang(t_jojo *x)
     post("Values: %s", x->mPair.getAllValues( ).joinIntoString(" / ").toRawUTF8( ));
 }
 
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
 void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
     const ScopedLock myLock(x->mLock); 
     
     if (argc && (atom_gettype(argv) == A_SYM)) {
-        x->mPair.set(s->s_name, atom_getsym(argv)->s_name);
+        x->mPair.set(s->s_name, atom_getsym(argv)->s_name);             /* A StringPairArray exemple. */
     }
 }
 

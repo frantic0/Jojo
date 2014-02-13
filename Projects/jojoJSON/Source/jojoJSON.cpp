@@ -66,15 +66,15 @@ namespace JojoIdentifier
 class Oizo : public DynamicObject {
 
 public:
-    Oizo( )     { post("Oizo ctor"); }
-    ~Oizo( )    { post("Oizo dtor"); }
+    explicit Oizo( )    { post("Oizo ctor"); }
+    ~Oizo( )            { post("Oizo dtor"); }
 
 public:
-    void writeAsJSON(OutputStream& stream, int indentLevel, bool allOnOneLine) const {
+    void writeAsJSON(OutputStream& stream, int indentLevel, bool allOnOneLine) {
         
         /* Placeholder for future JSON fun! */
         
-        DynamicObject::writeAsJSON(stream, indentLevel, allOnOneLine);
+        DynamicObject::writeAsJSON(stream, indentLevel, allOnOneLine);  /* Call base class function. */
     }
 
 private:
@@ -207,7 +207,7 @@ void jojo_bang(t_jojo *x)
     
     File jsonFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoJSON.txt"));
     
-    jojo_write(x, jsonFile);
+    jojo_write(x, jsonFile);    /* Write and read a Variant with a DynanmicObject. */
     jojo_read(x, jsonFile); 
 }
 

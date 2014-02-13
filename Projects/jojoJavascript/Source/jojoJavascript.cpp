@@ -52,22 +52,24 @@
 class Oizo : public DynamicObject {
 
 public:
-    Oizo( )     { setMethod("hello", Oizo::hello); post("Oizo ctor"); }
-    ~Oizo( )    { post("Oizo dtor"); }
+    explicit Oizo( )    { setMethod("hello", Oizo::hello); post("Oizo ctor"); }
+    ~Oizo( )            { post("Oizo dtor"); }
 
     static Identifier getClassName( ) { static const Identifier i("Oizo"); return i; }
     
 public:
 
+    /* Custom method to be added to the DynamicObject. */
+    
     static var hello(const var::NativeFunctionArgs& args) {
     //
     post("Hello World!");
     
-    if (dynamic_cast<Oizo*>(args.thisObject.getObject( ))) {            /* Class. */
+    if (dynamic_cast<Oizo*>(args.thisObject.getObject( ))) {            /* Class call. */
     //
     post("Class / %s", args.thisObject.toString( ).toRawUTF8( ));
     //
-    } else {                                                            /* Prototype. */
+    } else {                                                            /* Prototype call. */
     //
     post("Prototype / %s", args.thisObject.toString( ).toRawUTF8( ));
     post("From / %s", args.thisObject.getDynamicObject( )->getProperty("prototype").toString( ).toRawUTF8( ));
@@ -169,7 +171,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
     
     if (!err) {
-        x->mJS->registerNativeObject(Oizo::getClassName( ), new Oizo( ));
+        x->mJS->registerNativeObject(Oizo::getClassName( ), new Oizo( ));   /* Takes Oizo's ownership. */
     }
     
     if (err) {
@@ -193,7 +195,7 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    const ScopedLock myLock(x->mLock); 
+    const ScopedLock myLock(x->mLock);      /* Javacript engine is not thread-safe. */
 
     const Result result(x->mJS->execute("var o = new Oizo( ); Oizo.hello( ); o.hello( );"));
         

@@ -161,6 +161,8 @@ void jojo_bang(t_jojo *x)
     Array<File> files;
     File folder(x->mLogger->getLogFile( ).getParentDirectory( ));
     
+    /* Find all the bundles in the directory. */
+    
     folder.findChildFiles(files, File::findFilesAndDirectories, false, "*.mxo");
 
     for (int i = 0; i < files.size( ); ++i) {

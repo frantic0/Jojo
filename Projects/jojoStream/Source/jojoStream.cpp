@@ -149,10 +149,12 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    MemoryOutputStream tempStream;
+    MemoryOutputStream tempStream;  /* A convenient temporary stream. */
     
     tempStream << "Le sentier longeait la falaise." << newLine;
 
+    /* Write to the file one shot. */
+    
     File folder(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory( ));
     FileOutputStream outputStream(folder.getNonexistentChildFile("jojoStream", ".txt", false));
     

@@ -153,6 +153,8 @@ void jojo_bang(t_jojo *x)
     post("%s", SystemStats::getOperatingSystemName( ).toRawUTF8( ));
     post("64-bit / %ld", SystemStats::isOperatingSystem64Bit( ));
     
+    /* More getters in the JUCE library. */
+    
     post("###");
     
     StringArray backtrace(StringArray::fromLines(SystemStats::getStackBacktrace( )));

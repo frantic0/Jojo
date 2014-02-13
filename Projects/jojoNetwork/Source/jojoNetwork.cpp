@@ -157,6 +157,8 @@ void jojo_bang(t_jojo *x)
 
 void jojo_doBang(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
+    /* Basic getters. */
+    
     IPAddress::findAllAddresses(x->mIP);
     
     for (int i = 0; i < x->mIP.size( ); ++i) {
@@ -168,6 +170,8 @@ void jojo_doBang(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     for (int i = 0; i < x->mMAC.size( ); ++i) {
         post("MAC / %s", x->mMAC.getReference(i).toString( ).toRawUTF8( ));
     }
+    
+    /* Launch an URL in your favorite browser. */
     
     URL("http://www.juce.com").launchInDefaultBrowser( );
 }

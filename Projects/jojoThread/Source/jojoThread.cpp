@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Thread / Time. */
+/* Custom thread with Max/MSP. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -62,13 +62,13 @@ struct _jojo;
 class JojoThread : public Thread {
 
 public:
-    JojoThread(_jojo *x) : Thread("Jojo"), owner(x) { }
+    explicit JojoThread(_jojo *x) : Thread("Jojo"), owner(x) { }
     
 public:
     void run( );  
 
 private:
-    _jojo *owner;
+    _jojo *owner;       /* Needed to call t_jojo's functions. */
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ typedef struct _jojo {
 
 public :
     _jojo( ) : mThread(new JojoThread(this)), mLock( ) { }
-    ~_jojo( ) { mThread->stopThread(-1); }
+    ~_jojo( ) { mThread->stopThread(-1); }                          /* Must be stopped before deletion. */
 
 public:
     t_object                    ob;
@@ -102,7 +102,7 @@ void JojoThread::run( )
     //
     if (++counter % 100) { Thread::sleep(10); }
     else {
-        clock_fdelay(owner->mClock, 0.);
+        clock_fdelay(owner->mClock, 0.);            /* Always use a clock from custom thread! */
     }
     //
     } 
@@ -180,7 +180,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
     
     if (!err) {
-        x->mThread->startThread( );
+        x->mThread->startThread( );     /* All the thread machinery is done there. */
     }
     
     if (err) {

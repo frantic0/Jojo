@@ -53,13 +53,12 @@ typedef struct _jojo {
 
 public :
     _jojo( ) : mArray( ) { }
-    
 
 public:
     t_object                        ob;
     ulong                           mError;
     Array<long, CriticalSection>    mArray;
-    //Array<long, SpinLock>         mArray;     /* Not reentrant. Don't use it (without a serious reason)! */
+    //Array<long, SpinLock>         mArray;     /* Not reentrant. Use it with care! */
     
     } t_jojo;
     

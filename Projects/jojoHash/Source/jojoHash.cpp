@@ -52,8 +52,8 @@
 class Kitty : public ReferenceCountedObject {
 
 public:
-    Kitty( )  { post("Kitty ctor"); }
-    ~Kitty( ) { post("Kitty dtor / %x", this); }
+    explicit Kitty( )   { post("Kitty ctor"); }
+    ~Kitty( )           { post("Kitty dtor / %x", this); }
     
     void doSomething( ) const { post("Kitty %x do something very fun!", this); }
 

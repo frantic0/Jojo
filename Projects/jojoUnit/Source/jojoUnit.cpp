@@ -55,7 +55,7 @@
 
 #ifdef JUCE_DEBUG
 
-/* ... */
+/* Something. */
 
 #endif
 
@@ -70,7 +70,7 @@ static FileLogger *logger;      /* Same logger for all the instances. */
 class JojoTest : public UnitTest {
 
 public:
-    JojoTest( ) : UnitTest ("Testing Jojo!") { }
+    explicit JojoTest( ) : UnitTest ("Testing Jojo!") { }
     
     void runTest( ) { beginTest("Math"); expect(0 + 0 == 0); }
 };
@@ -127,7 +127,7 @@ void jojo_test  (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
 
 void jojo_init(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
-    static JojoTest test;   /* It could be allocated with new also. */
+    static JojoTest test;   /* It could be allocated in the heap also. */
     
     if (logger == nullptr) {
         File folder(File::getSpecialLocation(File::currentApplicationFile));

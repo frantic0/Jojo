@@ -79,7 +79,7 @@ public:
         else if (symbol == "five")  { return Expression(5); }
         else if (symbol == "x")     { return Expression("two + five"); }
         
-        return Expression::Scope::getSymbolValue(symbol);
+        return Expression::Scope::getSymbolValue(symbol);   /* Call base class function. */
     }
     
     double evaluateFunction(const String& functionName, const double* parameters, int numParams) const {

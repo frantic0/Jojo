@@ -145,6 +145,11 @@ void jojo_free(t_jojo *x)
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
+
+/* Best to open and close the library at object's lifetime. */
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 typedef void (*jojoFunction)(void);
@@ -152,6 +157,8 @@ typedef void (*jojoFunction)(void);
 void jojo_bang(t_jojo *x)
 {
     File folder(File::getSpecialLocation(File::currentApplicationFile));
+    
+    /* The libjojo.dylib must be placed inside the bundle. */
     
     DynamicLibrary myDLL(folder.getChildFile("Contents/Resources/libjojo.dylib").getFullPathName( ));
     

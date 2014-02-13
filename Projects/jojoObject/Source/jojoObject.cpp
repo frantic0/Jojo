@@ -65,6 +65,9 @@ namespace JojoIdentifier
 
 class Oizo;
 
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
 typedef ReferenceCountedObjectPtr<Oizo> OizoPtr;
 
 // ------------------------------------------------------------------------------------------------------------
@@ -74,12 +77,14 @@ typedef ReferenceCountedObjectPtr<Oizo> OizoPtr;
 class Oizo : public DynamicObject {
 
 public:
-    Oizo( ) : eggs( )   { post("Oizo ctor"); }
-    ~Oizo( )            { post("Oizo dtor"); }
+    explicit Oizo( ) : eggs( )  { post("Oizo ctor"); }
+    ~Oizo( )                    { post("Oizo dtor"); }
     
 public:
     DynamicObject::Ptr clone( ) const { return new Oizo(*this); }
 
+    /* Spawn method to be set dynamically. */
+    
     static var spawn(const var::NativeFunctionArgs& args) {
         if (Oizo* o = dynamic_cast<Oizo*>(args.thisObject.getObject( ))) { o->doSpawn( ); } 
         return var::undefined();
@@ -87,6 +92,8 @@ public:
 
 private:
     void doSpawn( ) { ++eggs; post("Great! %ld eggs!", eggs.get( )); }
+    
+    /* Copy constructor is used in the clone method. */
     
     Oizo(const Oizo& o) : DynamicObject(o), eggs(12) { cloneAllProperties( ); post("Oizo copy"); } 
     Oizo& operator=(const Oizo&);
@@ -189,7 +196,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (!err) {
-        x->mOizo->setProperty(JojoIdentifier::One, "Carotte");
+        x->mOizo->setProperty(JojoIdentifier::One, "Carotte");      /* The DynamicObject stuff. */
         x->mOizo->setMethod(JojoIdentifier::Two, Oizo::spawn);
     }
     
