@@ -26,12 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Custom thread with Max/MSP. */
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-/* FYI : Threads are created suspended, and signaled right after. */
+/* The job in the pool. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -59,16 +54,16 @@ struct _jojo;
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-class JojoThread : public Thread {
+class JojoJob : public ThreadPoolJob {
+
+public: 
+    explicit JojoJob(_jojo *x, const String& name = "Jojo") : ThreadPoolJob(name), owner(x) { }
 
 public:
-    explicit JojoThread(_jojo *x) : Thread("Jojo"), owner(x) { }
-    
-public:
-    void run( );  
+    JobStatus runJob( );
 
 private:
-    _jojo *owner;   /* Needed to call t_jojo's functions. */
+    _jojo *owner;
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -78,14 +73,14 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mThread(new JojoThread(this)) { }
-    ~_jojo( ) { mThread->stopThread(-1); }                          /* Must be stopped before deletion. */
+    _jojo( ) : mPool( ), mLock( ) { }
 
 public:
-    t_object                    ob;
-    ulong                       mError;
-    ScopedPointer<JojoThread>   mThread;
-    void                        *mClock; 
+    t_object        ob;
+    ulong           mError;
+    ThreadPool      mPool;
+    CriticalSection mLock;
+    void            *mClock; 
     
     } t_jojo;
 
@@ -93,18 +88,27 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void JojoThread::run( )
+ThreadPoolJob::JobStatus JojoJob::runJob( ) 
 { 
-    static long counter = 0;
+    long counter = 0;
     
-    while (!threadShouldExit( )) { 
+    juce::Random rand; 
+    int k = rand.nextInt(100);
+        
+    while (!shouldExit( )) {
     //
-    if (++counter % 100) { Thread::sleep(10); }
+    if (++counter < k) { Thread::sleep(10); }
     else {
-        clock_fdelay(owner->mClock, 0.);            /* Always use a clock from custom thread! */
+    //
+    const ScopedLock myLock(owner->mLock);
+    clock_fdelay(owner->mClock, 0.);                /* Always use a clock from custom thread! */
+    break;
+    //
     }
     //
-    } 
+    }
+    
+    return ThreadPoolJob::jobHasFinished; 
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -148,7 +152,7 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoThread", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new("jojoPool", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
     class_addmethod(c, (method)jojo_bang, "bang", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
@@ -172,8 +176,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     try {
         new(x)t_jojo;
-        
-        x->mThread->startThread( );     /* All the thread creation machinery is done there. */
     }
     
     catch (...) {
@@ -205,7 +207,7 @@ void jojo_free(t_jojo *x)
 
 void jojo_task(t_jojo *x)
 {
-    post("Le sentier longeait la falaise.");
+    post("%ld", x->mPool.getNumJobs( ));
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -214,7 +216,8 @@ void jojo_task(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    post("I am the %s thread!", x->mThread->getThreadName( ).toRawUTF8( ));
+    x->mPool.addJob(new JojoJob(x), true);
+    post("New job!");
 }
 
 // ------------------------------------------------------------------------------------------------------------
