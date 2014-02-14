@@ -26,9 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* JUCE::String miscellaneous. */
-
-/* ( https://github.com/julianstorer/JUCE/blob/master/modules/juce_core/text/juce_String.cpp#L2134 ). */
+/* What time is it? */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -54,13 +52,12 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mPair( ), mLock( ) { }
+    _jojo( ) : mTime(Time::getCurrentTime( )) { }
 
 public:
-    t_object        ob;
-    ulong           mError;
-    StringPairArray mPair;          /* Not thread-safe. */
-    CriticalSection mLock;
+    t_object    ob;
+    ulong       mError;
+    Time        mTime;
     
     } t_jojo;
     
@@ -90,10 +87,9 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new      (t_symbol *s, long argc, t_atom *argv);
-void jojo_free      (t_jojo *x);
-void jojo_bang      (t_jojo *x);
-void jojo_anything  (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
+void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
+void jojo_free  (t_jojo *x);
+void jojo_bang  (t_jojo *x);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -105,9 +101,8 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoString", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang,       "bang", 0);
-    class_addmethod(c, (method)jojo_anything,   "anything", A_GIMME, 0);
+    c = class_new("jojoTime", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    class_addmethod(c, (method)jojo_bang, "bang", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
@@ -128,19 +123,12 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     try {
         new(x)t_jojo;
-        
-        /* Use a text file to translate strings in the bundle. */
-        
-        File tr(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoString.txt"));
-        if (tr.existsAsFile( )) {
-            LocalisedStrings::setCurrentMappings(new LocalisedStrings(tr, false));
-        }
     }
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-    
+
     if (err) {
         object_free(x);
         x = NULL;
@@ -160,28 +148,12 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)                       
+void jojo_bang(t_jojo *x)
 {
-    /* Caution : translation is a linear lookup with a pair of StringArray. */
+    RelativeTime elapsedTime(Time::getCurrentTime( ) - x->mTime);
     
-    post("%s", TRANS("The trail skirted the cliff.").toRawUTF8( ));             /* Should be in french! */
-    
-    const ScopedLock myLock(x->mLock); 
-    
-    post("Keys: %s", x->mPair.getAllKeys( ).joinIntoString(" / ").toRawUTF8( ));
-    post("Values: %s", x->mPair.getAllValues( ).joinIntoString(" / ").toRawUTF8( ));
-}
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
-{
-    const ScopedLock myLock(x->mLock); 
-    
-    if (argc && (atom_gettype(argv) == A_SYM)) {
-        x->mPair.set(s->s_name, atom_getsym(argv)->s_name);             /* A StringPairArray exemple. */
-    }
+    post("Origin / %s", x->mTime.toString(true, true, true, true).toRawUTF8( ));
+    post("Elapsed / %s", elapsedTime.getDescription( ).toRawUTF8( ));
 }
 
 // ------------------------------------------------------------------------------------------------------------
