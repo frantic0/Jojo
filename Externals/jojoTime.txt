@@ -1,0 +1,23 @@
+**** Counter for "Jojo" started at: 14 Feb 2014 5:36:53pm
+Performance count for "Jojo" over 100 run(s)
+Average = 11 microsecs, minimum = 8 microsecs, maximum = 29 microsecs, total = 1078 microsecs
+Performance count for "Jojo" over 100 run(s)
+Average = 9 microsecs, minimum = 7 microsecs, maximum = 13 microsecs, total = 912 microsecs
+Performance count for "Jojo" over 100 run(s)
+Average = 9 microsecs, minimum = 8 microsecs, maximum = 37 microsecs, total = 934 microsecs
+Performance count for "Jojo" over 100 run(s)
+Average = 9 microsecs, minimum = 7 microsecs, maximum = 14 microsecs, total = 909 microsecs
+Performance count for "Jojo" over 100 run(s)
+Average = 9 microsecs, minimum = 7 microsecs, maximum = 12 microsecs, total = 896 microsecs
+Performance count for "Jojo" over 100 run(s)
+Average = 10 microsecs, minimum = 7 microsecs, maximum = 34 microsecs, total = 955 microsecs
+Performance count for "Jojo" over 100 run(s)
+Average = 9 microsecs, minimum = 7 microsecs, maximum = 12 microsecs, total = 902 microsecs
+Performance count for "Jojo" over 100 run(s)
+Average = 10 microsecs, minimum = 7 microsecs, maximum = 106 microsecs, total = 1044 microsecs
+Performance count for "Jojo" over 100 run(s)
+Average = 10 microsecs, minimum = 7 microsecs, maximum = 36 microsecs, total = 954 microsecs
+Performance count for "Jojo" over 100 run(s)
+Average = 9 microsecs, minimum = 7 microsecs, maximum = 16 microsecs, total = 931 microsecs
+Performance count for "Jojo" over 0 run(s)
+Average = 0 microsecs, minimum = 0 microsecs, maximum = 0 microsecs, total = 0 microsecs
