@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Jojo>
+  <Lapin Carottes="4" Oreilles="Deux" Rapide="1"/>
+</Jojo>
