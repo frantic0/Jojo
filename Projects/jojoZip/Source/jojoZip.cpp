@@ -158,7 +158,7 @@ void jojo_bang(t_jojo *x)
 {
     const ScopedLock myLock(x->mLock); 
     
-    File zipFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoZip.gz"));
+    File zipFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoZip.txt"));
     
     /* https://fr.wikipedia.org/wiki/Gzip */
     
@@ -173,25 +173,23 @@ void jojo_bang(t_jojo *x)
 void jojo_write(t_jojo *x, const File& aFile)
 {
     MemoryOutputStream myText;
-	GZIPCompressorOutputStream zipper(&myText);
+    GZIPCompressorOutputStream zipper(&myText);
     
-    zipper << "Le sentier longeait la falaise. Il était bordé de calamines en fleur" << newLine
-           << "et de brouillouses un peu passées dont les pétales noircis jonchaient le sol." << newLine
-           << "Des insectes pointus avaient creusé le sol de mille petits trous ; sous les pieds," << newLine
-           << "c’était comme de l’éponge morte de froid." << newLine;
-    
+    zipper << "Stately, plump Buck Mulligan came from the stairhead," << newLine
+           << "bearing a bowl of lather on which a mirror and a razor lay crossed." << newLine;
+
     zipper.flush();
     
-	aFile.replaceWithData(myText.getData( ), myText.getDataSize( ));
+    aFile.replaceWithData(myText.getData( ), myText.getDataSize( ));
 }
     
 void jojo_read(t_jojo *x, const File& aFile)
 {
-    ScopedPointer<FileInputStream> zipped(aFile.createInputStream( ));
-  
-    if (zipped) {
+    FileInputStream zipped(aFile);
+    
+    if (zipped.openedOk( )) {
     //
-    GZIPDecompressorInputStream unzipper(zipped, false);
+    GZIPDecompressorInputStream unzipper(&zipped, false);
     StringArray myText(StringArray::fromLines(unzipper.readEntireStreamAsString( )));
     
     for (int i = 0; i < myText.size( ); ++i) {
@@ -200,6 +198,6 @@ void jojo_read(t_jojo *x, const File& aFile)
     //
     }
 }
-
+    
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------

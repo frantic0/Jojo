@@ -26,9 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* JUCE::String miscellaneous. */
-
-/* ( https://github.com/julianstorer/JUCE/blob/master/modules/juce_core/text/juce_String.cpp#L2134 ). */
+/* Encrypt with BlowFish. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -49,17 +47,22 @@
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
+
+static uint8 myKey[ ] = { 0xFA, 0xDA, 0xFA, 0xDA };         /* Silly (for demonstration only). */
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mPair( ), mLock( ) { }
+    _jojo( ) : mFish(myKey, numElementsInArray(myKey)), mLock( ) { }
 
 public:
     t_object        ob;
     ulong           mError;
-    StringPairArray mPair;          /* Not thread-safe. */
+    BlowFish        mFish;
     CriticalSection mLock;
     
     } t_jojo;
@@ -90,10 +93,15 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new      (t_symbol *s, long argc, t_atom *argv);
-void jojo_free      (t_jojo *x);
-void jojo_bang      (t_jojo *x);
-void jojo_anything  (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
+void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
+void jojo_free  (t_jojo *x);
+void jojo_bang  (t_jojo *x);
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+void jojo_write (t_jojo *x, const File& aFile);
+void jojo_read  (t_jojo *x, const File& aFile);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -105,9 +113,8 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoString", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang,       "bang", 0);
-    class_addmethod(c, (method)jojo_anything,   "anything", A_GIMME, 0);
+    c = class_new("jojoFish", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    class_addmethod(c, (method)jojo_bang, "bang", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
@@ -128,19 +135,12 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     try {
         new(x)t_jojo;
-        
-        /* Use a text file to translate strings in the bundle. */
-        
-        File tr(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoString.txt"));
-        if (tr.existsAsFile( )) {
-            LocalisedStrings::setCurrentMappings(new LocalisedStrings(tr, false));
-        }
     }
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-    
+
     if (err) {
         object_free(x);
         x = NULL;
@@ -160,39 +160,66 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)                       
+void jojo_bang(t_jojo *x)
 {
-    /* Caution : translation is a linear lookup with a pair of StringArray. */
-    
-    post("%s", TRANS("The trail skirted the cliff.").toRawUTF8( ));             /* Should be in french! */
-    
-    /* */
-    
-    String toto(CharPointer_UTF8("P\xc3\xa9p\xc3\xa9 p\xc3\xa8te en ao\xc3\xbbt!"));
-    
-    post("%s", toto.toRawUTF8( ));
-    post("    Length: %ld", toto.length( ));
-    post("    Bytes: %ld", CharPointer_UTF8::getBytesRequiredFor(toto.getCharPointer( )));
-    
-    /* */
-    
     const ScopedLock myLock(x->mLock); 
     
-    post("Keys: %s", x->mPair.getAllKeys( ).joinIntoString(" / ").toRawUTF8( ));
-    post("Values: %s", x->mPair.getAllValues( ).joinIntoString(" / ").toRawUTF8( ));
+    File myFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoFish.txt"));
+    
+    jojo_write(x, myFile);
+    jojo_read(x, myFile);
 }
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
+#pragma mark -
 
-void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
+void jojo_write(t_jojo *x, const File& aFile)
 {
-    const ScopedLock myLock(x->mLock); 
+    String myText(CharPointer_UTF8("P\xc3\xa9p\xc3\xa9 p\xc3\xa8te en ao\xc3\xbbt!"));
+
+    myText  << newLine << "###" << newLine
+            << "Stately, plump Buck Mulligan came from the stairhead," << newLine
+            << "bearing a bowl of lather on which a mirror and a razor lay crossed." << newLine;
     
-    if (argc && (atom_gettype(argv) == A_SYM)) {
-        x->mPair.set(s->s_name, atom_getsym(argv)->s_name);             /* A StringPairArray exemple. */
+    const size_t textSize = myText.getNumBytesAsUTF8( ) + 1;    /* Caution: UTF_8 size != string length. */
+    const size_t blockSize = (textSize + 7) & ~7;               /* Round up to the next multiple of 8. */
+
+    /* Just need to pad with zeros (for a null terminated string). */
+    /* Consider to prepend the size of the useful data in all other cases. */
+    
+    juce::MemoryBlock myBlock(blockSize, true);
+    myBlock.copyFrom(myText.toRawUTF8( ), 0, textSize);         
+    
+    /* Avoid those awful reinterpret_cast? */
+    
+    for (size_t i = 0; i < blockSize; i += 8) {
+        x->mFish.encrypt(reinterpret_cast<uint32&>(myBlock[i]), reinterpret_cast<uint32&>(myBlock[i + 4]));
+    }
+    
+    aFile.replaceWithData(myBlock.getData( ), blockSize);
+}
+    
+void jojo_read(t_jojo *x, const File& aFile)
+{
+    juce::MemoryBlock myBlock;
+    
+    if (aFile.loadFileAsData(myBlock)) {
+    //
+    const size_t blockSize = myBlock.getSize( );
+    
+    for (size_t i = 0; i < blockSize; i += 8) {
+        x->mFish.decrypt(reinterpret_cast<uint32&>(myBlock[i]), reinterpret_cast<uint32&>(myBlock[i + 4]));
+    }
+    
+    StringArray myText(StringArray::fromLines(myBlock.toString( ).toRawUTF8( )));
+    
+    for (int i = 0; i < myText.size( ); ++i) {
+        post("%s", myText.getReference(i).toRawUTF8( ));
+    }
+    //
     }
 }
-
+    
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
