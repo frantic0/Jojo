@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* XML experiments. */
+/* GZIP. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoXML", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new("jojoZip", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
     class_addmethod(c, (method)jojo_bang, "bang", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
@@ -158,10 +158,12 @@ void jojo_bang(t_jojo *x)
 {
     const ScopedLock myLock(x->mLock); 
     
-    File xmlFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoXML.txt"));
+    File zipFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoZip.gz"));
     
-    jojo_write(x, xmlFile);
-    jojo_read(x, xmlFile);          /* Caution : fetch the attributes is rather inefficient. */
+    /* https://fr.wikipedia.org/wiki/Gzip */
+    
+    jojo_write(x, zipFile);     /* Caution: it doesn't produce a compliant gzip file! */
+    jojo_read(x, zipFile);
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -170,38 +172,30 @@ void jojo_bang(t_jojo *x)
 
 void jojo_write(t_jojo *x, const File& aFile)
 {
-    XmlElement myDocument("Jojo");
-    XmlElement* myElement = myDocument.createNewChildElement("Lapin");
-
-    myElement->setAttribute("Carottes", 4);
-    myElement->setAttribute("Oreilles", "Deux");
-    myElement->setAttribute("Rapide", true);
-
-    post("%s", myDocument.createDocument(String::empty, true).toRawUTF8( ));
-    myDocument.writeToFile(aFile, String::empty);
+    MemoryOutputStream myText;
+	GZIPCompressorOutputStream zipper(&myText);
+    
+    zipper << "Le sentier longeait la falaise. Il était bordé de calamines en fleur" << newLine
+           << "et de brouillouses un peu passées dont les pétales noircis jonchaient le sol." << newLine
+           << "Des insectes pointus avaient creusé le sol de mille petits trous ; sous les pieds," << newLine
+           << "c’était comme de l’éponge morte de froid." << newLine;
+    
+    zipper.flush();
+    
+	aFile.replaceWithData(myText.getData( ), myText.getDataSize( ));
 }
     
 void jojo_read(t_jojo *x, const File& aFile)
 {
-    XmlDocument myDocument(aFile);
-    XmlElement* myElement = myDocument.getDocumentElement( );
-    
-    if (myElement == nullptr) { post("%s", myDocument.getLastParseError( ).toRawUTF8( )); }
-    else if (myElement->hasTagName("Jojo")) {
+    ScopedPointer<FileInputStream> zipped(aFile.createInputStream( ));
+  
+    if (zipped) {
     //
-    forEachXmlChildElement(*myElement, child)
-    {
-    //
-    /* Iterate through the linked list once. */
+    GZIPDecompressorInputStream unzipper(zipped, false);
+    StringArray myText(StringArray::fromLines(unzipper.readEntireStreamAsString( )));
     
-    const int count = child->getNumAttributes( );   
-    
-    /* Iterate through the linked list twice at each iteration! */
-    
-    for (int i = 0; i < count; ++i) {
-        post("%s %s", child->getAttributeName(i).toRawUTF8( ), child->getAttributeValue(i).toRawUTF8( ));
-    }
-    //
+    for (int i = 0; i < myText.size( ); ++i) {
+        post("%s", myText.getReference(i).toRawUTF8( ));
     }
     //
     }
