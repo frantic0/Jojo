@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Encrypt with BlowFish. */
+/* BlowFish and MemoryBlock. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-static uint8 myKey[ ] = { 0xFA, 0xDA, 0xFA, 0xDA };         /* Silly (for demonstration only). */
+static uint8 myKey[ ] = { 0xFA, 0xDA, 0xFA, 0xDA };     /* Never hard code password (don't do that)! */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -174,6 +174,13 @@ void jojo_bang(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
+/* Example padded with zeros with ECB to chain the blocks. */
+
+/* https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation */
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
 void jojo_write(t_jojo *x, const File& aFile)
 {
     String myText(CharPointer_UTF8("P\xc3\xa9p\xc3\xa9 p\xc3\xa8te en ao\xc3\xbbt!"));
@@ -185,13 +192,10 @@ void jojo_write(t_jojo *x, const File& aFile)
     const size_t textSize = myText.getNumBytesAsUTF8( ) + 1;    /* Caution: UTF_8 size != string length. */
     const size_t blockSize = (textSize + 7) & ~7;               /* Round up to the next multiple of 8. */
 
-    /* Just need to pad with zeros (for a null terminated string). */
-    /* Consider to prepend the size of the useful data in all other cases. */
+    /* Pad with zeros (handy for a null terminated string). */
     
     juce::MemoryBlock myBlock(blockSize, true);
     myBlock.copyFrom(myText.toRawUTF8( ), 0, textSize);         
-    
-    /* Avoid those awful reinterpret_cast? */
     
     for (size_t i = 0; i < blockSize; i += 8) {
         x->mFish.encrypt(reinterpret_cast<uint32&>(myBlock[i]), reinterpret_cast<uint32&>(myBlock[i + 4]));
