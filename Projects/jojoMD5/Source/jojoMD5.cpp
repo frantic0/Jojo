@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Public-key encryption ( https://en.wikipedia.org/wiki/Public-key_cryptography ). */
+/* MD5 and SHA-256. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -52,13 +52,11 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mPublic( ), mPrivate( ), mLock( ) { }
+    _jojo( ) : mLock( ) { }
 
 public:
     t_object        ob;
     ulong           mError;
-    RSAKey          mPublic;
-    RSAKey          mPrivate;
     CriticalSection mLock;
     
     } t_jojo;
@@ -89,9 +87,9 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
-void jojo_free  (t_jojo *x);
-void jojo_bang  (t_jojo *x);
+void *jojo_new      (t_symbol *s, long argc, t_atom *argv);
+void jojo_free      (t_jojo *x);
+void jojo_anything  (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -103,8 +101,8 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoRSA", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
+    c = class_new("jojoMD5", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    class_addmethod(c, (method)jojo_anything, "anything", A_GIMME, 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
@@ -125,8 +123,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     try {
         new(x)t_jojo;
-        
-        RSAKey::createKeyPair(x->mPublic, x->mPrivate, 128);        /* Should be deferred? */
     }
     
     catch (...) {
@@ -152,29 +148,14 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
-    const ScopedLock myLock(x->mLock); 
+    File toHash(s->s_name);
     
-    post("Public / %s", x->mPublic.toString( ).toRawUTF8( ));
-    post("Private / %s", x->mPrivate.toString( ).toRawUTF8( ));
-    
-    String myText(CharPointer_UTF8("P\xc3\xa9p\xc3\xa9 p\xc3\xa8te en ao\xc3\xbbt!"));
-    
-    post("%s", myText.toRawUTF8( ));
-    
-    const juce::MemoryBlock blockBegin(myText.toRawUTF8( ), myText.getNumBytesAsUTF8( ) + 1);
-
-    BigInteger bitArray;
-    bitArray.loadFromMemoryBlock(blockBegin);
-    x->mPublic.applyToValue(bitArray);             /* Encrypt with the public key. */
-
-    post("%s", bitArray.toString(16).toRawUTF8( ));
-    
-    x->mPrivate.applyToValue(bitArray);            /* Then decrypt with the private key. */
-    
-    const juce::MemoryBlock blockEnd(bitArray.toMemoryBlock( ));
-    post("%s", blockEnd.toString( ).toRawUTF8( ));
+    if (toHash.existsAsFile( )) {
+        post("%s", MD5(toHash).toHexString( ).toRawUTF8( ));
+        post("%s", SHA256(toHash).toHexString( ).toRawUTF8( ));
+    }
 }
 
 // ------------------------------------------------------------------------------------------------------------
