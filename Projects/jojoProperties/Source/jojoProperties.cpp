@@ -43,6 +43,11 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
+#include "ext_systhread.h"
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
 #include "JuceHeader.h"
 
 // ------------------------------------------------------------------------------------------------------------
@@ -52,13 +57,12 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mProperties(nullptr), mLock( ) { }
+    _jojo( ) : mProperties(nullptr) { }
 
 public:
     t_object                        ob;
     ulong                           mError;
-    ScopedPointer<PropertiesFile>   mProperties;
-    CriticalSection                 mLock;
+    ScopedPointer<PropertiesFile>   mProperties;    /* Consider to use ApplicationProperties in your code. */
     
     } t_jojo;
     
@@ -132,7 +136,7 @@ JOJO_EXPORT int main(void)
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
-    JOJO_INITIALIZE         /* Need to initialize the message queue. */
+    JOJO_INITIALIZE         /* Needed to initialize the message queue. */
     
     return 0;
 }
@@ -187,16 +191,24 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x) 
 {
-    const ScopedLock myLock(x->mLock);
+    /* The message queue implies a thread-safety extra care. */
+    
+    if (!systhread_ismainthread( )) { error("Always in the main thread!"); } 
+    else {
+    //
+    const ScopedLock lock(x->mProperties->getLock( ));  /* Is this necessary? */
     
     post("Keys: %s", x->mProperties->getAllProperties( ).getAllKeys( ).joinIntoString(" / ").toRawUTF8( ));
     post("Values: %s", x->mProperties->getAllProperties( ).getAllValues( ).joinIntoString(" / ").toRawUTF8( ));
+    //
+    }
 }
 
 void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
-    const ScopedLock myLock(x->mLock); 
-
+    if (!systhread_ismainthread( )) { error("Always in the main thread!"); } 
+    else {
+    //
     if (argc) {
         if (atom_gettype(argv) == A_SYM) { 
             x->mProperties->setValue(s->s_name, atom_getsym(argv)->s_name); 
@@ -204,6 +216,8 @@ void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
             x->mProperties->setValue(s->s_name, atom_getfloat(argv)); 
         }
     } 
+    //
+    }
 }
 
 // ------------------------------------------------------------------------------------------------------------

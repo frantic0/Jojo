@@ -3,5 +3,5 @@
 <PROPERTIES>
   <VALUE name="caca" val="boudin"/>
   <VALUE name="jojo" val="lapin"/>
-  <VALUE name="price" val="7"/>
+  <VALUE name="price" val="9"/>
 </PROPERTIES>

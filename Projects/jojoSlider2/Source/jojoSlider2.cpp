@@ -179,7 +179,7 @@ void jojo_doBang(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     x->mWindow->setVisible(true);
 }
 
-/* Catch the slider in the component tree. */
+/* Fetch the slider in the component tree. */
 
 void jojo_doFloat(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {

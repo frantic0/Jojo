@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Is that shutdownJuce_GUI is called before the static destructors? */
+/* */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -49,55 +49,15 @@
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-class Oizo {
-
-public:
-    explicit Oizo( )    { cpost("Oizo ctor\n"); }
-    ~Oizo( )            { cpost("Oizo dtor\n"); }
-
-private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
-};
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-#pragma mark -
-
-class Momo {
-
-public:
-    explicit Momo( )    { cpost("Momo ctor\n"); }
-    ~Momo( )            { cpost("Momo dtor\n"); }
-    
-    void doSomething( ) { cpost("I am momo!\n"); }
-
-private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Momo)
-};
-
-Momo& getMomo( ) 
-{
-    static Momo momo;
-    return momo;
-}
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-static Oizo oizo;
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-#pragma mark -
-
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo( ) : mLock( ) { }
 
 public:
-    t_object    ob;
-    ulong       mError;
+    t_object        ob;
+    ulong           mError;
+    CriticalSection mLock;
     
     } t_jojo;
     
@@ -130,7 +90,7 @@ public:
 void jojo_quit(void);
 void jojo_quit(void)
 {
-    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");   /* Seems to be called first but is that foolproof? */
+    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -148,8 +108,10 @@ void jojo_quit(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
-void jojo_free  (t_jojo *x);
+void *jojo_new      (t_symbol *s, long argc, t_atom *argv);
+void jojo_free      (t_jojo *x);
+void jojo_bang      (t_jojo *x);
+void jojo_anything  (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -161,13 +123,15 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoJUCE", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new("jojoValue", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    
+    class_addmethod(c, (method)jojo_bang,       "bang", 0);
+    class_addmethod(c, (method)jojo_anything,   "anything", A_GIMME, 0);
+    
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
-    JOJO_INITIALIZE
-    
-    getMomo( ).doSomething( );
+    JOJO_INITIALIZE     /* Needed to initialize the message queue. */
     
     return 0;
 }
@@ -191,7 +155,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-
+    
     if (err) {
         object_free(x);
         x = NULL;
@@ -205,6 +169,20 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 void jojo_free(t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo( ); }
+}
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+void jojo_bang(t_jojo *x) 
+{
+    const ScopedLock myLock(x->mLock);
+}
+
+void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
+{
+    const ScopedLock myLock(x->mLock);  
 }
 
 // ------------------------------------------------------------------------------------------------------------
