@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PROPERTIES>
+  <VALUE name="caca" val="boudin"/>
+  <VALUE name="jojo" val="lapin"/>
+  <VALUE name="price" val="7"/>
+</PROPERTIES>

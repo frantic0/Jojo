@@ -52,12 +52,11 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mLock( ) { }
+    _jojo( ) { }
 
 public:
-    t_object        ob;
-    ulong           mError;
-    CriticalSection mLock;
+    t_object    ob;
+    ulong       mError;
     
     } t_jojo;
     

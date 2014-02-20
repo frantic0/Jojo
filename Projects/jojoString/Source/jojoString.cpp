@@ -128,17 +128,19 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     try {
         new(x)t_jojo;
-        
+    }
+    
+    catch (...) {
+        err = (x->mError = JOJO_ERROR);
+    }
+    
+    if (!err) {
         /* Use a text file to translate strings in the bundle. */
         
         File tr(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoString.txt"));
         if (tr.existsAsFile( )) {
             LocalisedStrings::setCurrentMappings(new LocalisedStrings(tr, false));
         }
-    }
-    
-    catch (...) {
-        err = (x->mError = JOJO_ERROR);
     }
     
     if (err) {

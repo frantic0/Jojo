@@ -125,14 +125,16 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     try {
         new(x)t_jojo;
-        
-        RSAKey::createKeyPair(x->mPublic, x->mPrivate, 128);        /* Should be deferred? */
     }
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
 
+    if (!err) {
+        RSAKey::createKeyPair(x->mPublic, x->mPrivate, 128);        /* Should be deferred? */
+    }
+    
     if (err) {
         object_free(x);
         x = NULL;

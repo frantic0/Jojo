@@ -162,14 +162,16 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     try {
         new(x)t_jojo;
-        
-        Oizo *o = Oizo::getInstance( );         /* Initialize before for foolproof multithreading. */
-        (void)o;
     }
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
+    
+    if (!err) {
+        Oizo *o = Oizo::getInstance( );         /* Initialize before for foolproof multithreading. */
+        (void)o;
+    } 
     
     if (err) {
         object_free(x);

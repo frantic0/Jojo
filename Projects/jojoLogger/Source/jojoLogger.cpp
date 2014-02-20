@@ -123,7 +123,13 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     try {
         new(x)t_jojo;
+    }
     
+    catch (...) {
+        err = (x->mError = JOJO_ERROR);
+    }
+
+    if (!err) {
         /* File::currentApplicationFile returns the ".mxo" package path. */
         
         File folder(File::getSpecialLocation(File::currentApplicationFile));
@@ -133,10 +139,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
         x->mLogger = new FileLogger(folder.getSiblingFile("jojoLogger.txt"), "Hello!");
     }
     
-    catch (...) {
-        err = (x->mError = JOJO_ERROR);
-    }
-
     if (err) {
         object_free(x);
         x = NULL;

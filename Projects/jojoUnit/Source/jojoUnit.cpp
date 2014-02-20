@@ -181,11 +181,14 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     try {
         new(x)t_jojo;
-        defer(x, (method)jojo_init, NULL, 0, NULL);     /* Just to be sure it occurs in the mainthread. */
     }
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
+    }
+    
+    if (!err) {
+        defer(x, (method)jojo_init, NULL, 0, NULL);     /* Just to be sure it occurs in the mainthread. */
     }
 
     if (err) {

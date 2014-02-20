@@ -171,12 +171,14 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     try {
         new(x)t_jojo;
-        
-        x->mThread.startThread( );     /* All the thread creation machinery is done there. */
     }
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
+    }
+    
+    if (!err) {
+        x->mThread.startThread( );     /* All the thread creation machinery is done there. */
     }
     
     if (err) {
