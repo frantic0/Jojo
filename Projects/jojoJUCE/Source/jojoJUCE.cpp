@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Is that shutdownJuce_GUI is called before the static destructors? */
+/* Is that shutdownJuce_GUI is always called before the static destructors? */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -130,7 +130,13 @@ public:
 void jojo_quit(void);
 void jojo_quit(void)
 {
-    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");   /* Seems to be called first but is that foolproof? */
+    StringArray backtrace(StringArray::fromLines(SystemStats::getStackBacktrace( )));
+    
+    for (int i = 0; i < backtrace.size( ); ++i) {
+        cpost("%s\n", backtrace.getReference(i).toRawUTF8( ));
+    }
+    
+    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");   /* AFAIK: Yes! */
 }
 
 // ------------------------------------------------------------------------------------------------------------

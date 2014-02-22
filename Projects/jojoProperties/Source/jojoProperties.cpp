@@ -136,7 +136,7 @@ JOJO_EXPORT int main(void)
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
-    JOJO_INITIALIZE         /* Needed to initialize the message queue. */
+    JOJO_INITIALIZE         /* Needed to initialize the message manager. */
     
     return 0;
 }
@@ -191,12 +191,12 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x) 
 {
-    /* The message queue implies a thread-safety extra care. */
+    /* The message manager implies a thread-safety extra care. */
     
     if (!systhread_ismainthread( )) { error("Always in the main thread!"); } 
     else {
     //
-    const ScopedLock lock(x->mProperties->getLock( ));  /* Is this necessary? */
+    const ScopedLock lock(x->mProperties->getLock( ));  /* Is that really necessary? */
     
     post("Keys: %s", x->mProperties->getAllProperties( ).getAllKeys( ).joinIntoString(" / ").toRawUTF8( ));
     post("Values: %s", x->mProperties->getAllProperties( ).getAllValues( ).joinIntoString(" / ").toRawUTF8( ));

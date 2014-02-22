@@ -131,7 +131,7 @@ JOJO_EXPORT int main(void)
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
-    JOJO_INITIALIZE     /* Needed to initialize the message queue. */
+    JOJO_INITIALIZE     /* Needed to initialize the message manager. */
     
     return 0;
 }
