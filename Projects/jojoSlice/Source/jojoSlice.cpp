@@ -76,7 +76,7 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mClient(new JojoClient(this)), mThread("Jojo"), mLock( ) { }
+    _jojo( ) : mClient(new JojoClient(this)), mThread("Jojo"), mLock( ) { mThread.startThread( ); }
     ~_jojo( ) { mThread.stopThread(-1); } 
 
 public:
@@ -175,10 +175,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
-    }
-    
-    if (!err) {
-        x->mThread.startThread( );     /* All the thread creation machinery is done there. */
     }
     
     if (err) {

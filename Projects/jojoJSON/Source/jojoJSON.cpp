@@ -93,7 +93,10 @@ typedef ReferenceCountedObjectPtr<Oizo> OizoPtr;
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mOizo(new Oizo( )), mLock( ) { }
+    _jojo( ) : mOizo(new Oizo( )), mLock( ) { 
+        mOizo->setProperty(JojoIdentifier::One, "Carotte");
+        mOizo->setProperty(JojoIdentifier::Two, "Olive");
+    }
 
 public:
     t_object        ob;
@@ -177,11 +180,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
         err = (x->mError = JOJO_ERROR);
     }
 
-    if (!err) {
-        x->mOizo->setProperty(JojoIdentifier::One, "Carotte");
-        x->mOizo->setProperty(JojoIdentifier::Two, "Olive");
-    }
-    
     if (err) {
         object_free(x);
         x = NULL;

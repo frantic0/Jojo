@@ -52,7 +52,16 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mLogger(nullptr) { }
+    _jojo( ) : mLogger(nullptr) { 
+    
+        /* File::currentApplicationFile returns the ".mxo" package path. */
+        
+        File folder(File::getSpecialLocation(File::currentApplicationFile));
+        
+        /* The log file is at the same level. */
+        
+        mLogger = new FileLogger(folder.getSiblingFile("jojoLogger.txt"), "Hello!");
+    }
 
 public:
     t_object                    ob;
@@ -127,16 +136,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
-    }
-
-    if (!err) {
-        /* File::currentApplicationFile returns the ".mxo" package path. */
-        
-        File folder(File::getSpecialLocation(File::currentApplicationFile));
-        
-        /* The log file is at the same level. */
-        
-        x->mLogger = new FileLogger(folder.getSiblingFile("jojoLogger.txt"), "Hello!");
     }
     
     if (err) {

@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Unit testing / Alternate FileLogger. */
+/* Broadcasters / Listeners. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -43,31 +43,22 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-#include "ext_systhread.h"
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
 #include "JuceHeader.h"
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-#ifdef JUCE_DEBUG
-
-/* Something. */
-
-#endif
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-class JojoTest : public UnitTest {
+class Oizo : public ActionListener {
 
 public:
-    explicit JojoTest( ) : UnitTest("Testing Jojo!") { }
+    explicit Oizo( )    { cpost("Oizo ctor\n"); }
+    ~Oizo( )            { cpost("Oizo dtor\n"); }
+
+public:
+    void actionListenerCallback(const String& message)  { post("%s", message.toRawUTF8( )); } 
     
-    void runTest( ) { beginTest("Math"); expect(0 + 0 == 0); }
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -77,24 +68,19 @@ public:
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
-
-public:
-    t_object    ob;
-    ulong       mError;
+    _jojo( ) : mActionBroadcaster( ), mOizo(new Oizo) { mActionBroadcaster.addActionListener(mOizo); }
+    ~_jojo( ) { mActionBroadcaster.removeActionListener(mOizo); }
     
+    /* Listener must be deregister from the broadcaster before to be freed. */
+    /* The broadcaster can be freed with messages still pending in the queue. */
+    
+public:
+    t_object            ob;
+    ulong               mError;
+    ActionBroadcaster   mActionBroadcaster;
+    ScopedPointer<Oizo> mOizo;
     } t_jojo;
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-static JojoTest test;           /* It could be allocated in the heap also. */
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-static FileLogger *logger;      /* Same logger for all the jojoUnit instances. */
-
+    
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
@@ -121,31 +107,30 @@ static FileLogger *logger;      /* Same logger for all the jojoUnit instances. *
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
-void jojo_free  (t_jojo *x);
-void jojo_bang  (t_jojo *x);
-void jojo_test  (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
+void jojo_quit(void);
+void jojo_quit(void)
+{
+    shutdownJuce_GUI( ); cpost("Shutdown JUCE\n");
+}
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_initLogger(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
-{
-    if (logger == nullptr) {
-        File folder(File::getSpecialLocation(File::currentApplicationFile));
-        logger = new FileLogger(folder.getSiblingFile("jojoUnit.txt"), "Hello!");
-        Logger::setCurrentLogger(logger);
-    } 
-}
-
-void jojo_releaseLogger(void)
-{
-    if (logger != nullptr) {
-        Logger::setCurrentLogger(nullptr);
-        delete logger;
+#define JOJO_INITIALIZE \
+    {   \
+    initialiseJuce_GUI( );   \
+    cpost("Initialize JUCE\n"); \
+    quittask_install((method)jojo_quit, NULL);  \
     }
-}
+    
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
+void jojo_free  (t_jojo *x);
+void jojo_bang  (t_jojo *x);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -157,13 +142,13 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoUnit", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new("jojoBroadcast", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
     class_addmethod(c, (method)jojo_bang, "bang", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
-    quittask_install((method)jojo_releaseLogger, NULL);
-    
+    JOJO_INITIALIZE
+
     return 0;
 }
 
@@ -186,10 +171,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-    
-    if (!err) {
-        defer(x, (method)jojo_initLogger, NULL, 0, NULL);   /* Just to be sure it occurs in the mainthread. */
-    }
 
     if (err) {
         object_free(x);
@@ -208,23 +189,10 @@ void jojo_free(t_jojo *x)
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
-#pragma mark -
 
 void jojo_bang(t_jojo *x)
 {
-    defer(x, (method)jojo_test, NULL, 0, NULL);         /* UnitTest is not threadsafe. */
-}
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-#pragma mark -
-
-void jojo_test(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
-{
-    UnitTestRunner testRunner;
-    testRunner.runAllTests( );
-    
-    Logger::getCurrentLogger( )->writeToLog(newLine);   /* Cosmetic. */
+    x->mActionBroadcaster.sendActionMessage("Hello World!");    /* Thread-safe (mutex). */
 }
 
 // ------------------------------------------------------------------------------------------------------------

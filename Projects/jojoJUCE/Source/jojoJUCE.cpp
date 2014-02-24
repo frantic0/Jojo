@@ -136,7 +136,7 @@ void jojo_quit(void)
         cpost("%s\n", backtrace.getReference(i).toRawUTF8( ));
     }
     
-    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");   /* AFAIK: Yes! */
+    shutdownJuce_GUI( ); cpost("Shutdown JUCE\n");   /* AFAIK: Yes! */
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ void jojo_quit(void)
 
 #define JOJO_INITIALIZE \
     {   \
-    initialiseJuce_GUI();   \
+    initialiseJuce_GUI( );   \
     cpost("Initialize JUCE\n"); \
     quittask_install((method)jojo_quit, NULL);  \
     }

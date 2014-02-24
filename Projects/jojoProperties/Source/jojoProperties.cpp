@@ -52,16 +52,40 @@
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
+
+class Oizo : public ChangeListener {
+
+public:
+    explicit Oizo( )    { cpost("Oizo ctor\n"); }
+    ~Oizo( )            { cpost("Oizo dtor\n"); }
+    
+public:
+    void changeListenerCallback(ChangeBroadcaster*) { post("Something have changed."); }
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
+};
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mProperties(nullptr) { }
+    _jojo( ) : mOizo(new Oizo), mProperties(nullptr) { 
+
+    /* Properties file next to the bundle for demonstration only. */
+    
+    File settings(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoProperties.txt"));
+    mProperties = new PropertiesFile(settings, PropertiesFile::Options( ));
+    //x->mProperties->addChangeListener(x->mOizo);
+    }
 
 public:
     t_object                        ob;
     ulong                           mError;
+    ScopedPointer<Oizo>             mOizo;
     ScopedPointer<PropertiesFile>   mProperties;    /* Consider to use ApplicationProperties in your code. */
     
     } t_jojo;
@@ -95,7 +119,7 @@ public:
 void jojo_quit(void);
 void jojo_quit(void)
 {
-    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");
+    shutdownJuce_GUI( ); cpost("Shutdown JUCE\n");
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -104,7 +128,7 @@ void jojo_quit(void)
 
 #define JOJO_INITIALIZE \
     {   \
-    initialiseJuce_GUI();   \
+    initialiseJuce_GUI( );   \
     cpost("Initialize JUCE\n"); \
     quittask_install((method)jojo_quit, NULL);  \
     }
@@ -161,15 +185,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
         err = (x->mError = JOJO_ERROR);
     }
 
-    if (!err) {
-    //
-    /* Properties file next to the bundle for demonstration only. */
-    
-    File settings(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoProperties.txt"));
-    x->mProperties = new PropertiesFile(settings, PropertiesFile::Options( ));
-    //
-    }
-    
     if (err) {
         object_free(x);
         x = NULL;

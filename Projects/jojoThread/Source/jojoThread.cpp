@@ -26,12 +26,13 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Custom thread with Max/MSP. */
+/* Custom thread. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* FYI : Threads are created suspended, and signaled right after. */
+/* Note: Threads are created suspended, and signaled right after. */
+/* Note: All the thread creation machinery is done in the startThread( ) method. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -78,8 +79,8 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mThread(new JojoThread(this)) { }
-    ~_jojo( ) { mThread->stopThread(-1); }                          /* Must be stopped before deletion. */
+    _jojo( ) : mThread(new JojoThread(this)) { mThread->startThread( ); }  
+    ~_jojo( ) { mThread->stopThread(-1); }  /* Must be stopped before deletion. */
 
 public:
     t_object                    ob;
@@ -101,7 +102,7 @@ void JojoThread::run( )
     //
     if (++counter % 100) { Thread::sleep(10); }
     else {
-        clock_fdelay(owner->mClock, 0.);            /* Always use a clock from custom thread! */
+        clock_fdelay(owner->mClock, 0.);            /* Always use a clock from a custom thread! */
     }
     //
     } 
@@ -176,10 +177,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
-    }
-    
-    if (!err) {
-        x->mThread->startThread( );     /* All the thread creation machinery is done there. */
     }
     
     if (err) {

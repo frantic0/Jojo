@@ -52,8 +52,8 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mPublic( ), mPrivate( ), mLock( ) { }
-
+    _jojo( ) : mPublic( ), mPrivate( ), mLock( ) { RSAKey::createKeyPair(mPublic, mPrivate, 128); }
+ 
 public:
     t_object        ob;
     ulong           mError;
@@ -131,10 +131,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
         err = (x->mError = JOJO_ERROR);
     }
 
-    if (!err) {
-        RSAKey::createKeyPair(x->mPublic, x->mPrivate, 128);        /* Should be deferred? */
-    }
-    
     if (err) {
         object_free(x);
         x = NULL;

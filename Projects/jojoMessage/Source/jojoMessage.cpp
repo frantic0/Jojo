@@ -43,11 +43,6 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-#include "ext_systhread.h"
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
 #include "JuceHeader.h"
 
 // ------------------------------------------------------------------------------------------------------------
@@ -123,7 +118,7 @@ public:
 void jojo_quit(void);
 void jojo_quit(void)
 {
-    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");       /* DeletedAtShutdown::deleteAll is called there. */
+    shutdownJuce_GUI( ); cpost("Shutdown JUCE\n");       /* DeletedAtShutdown::deleteAll is called there. */
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -132,7 +127,7 @@ void jojo_quit(void)
 
 #define JOJO_INITIALIZE \
     {   \
-    initialiseJuce_GUI();   \
+    initialiseJuce_GUI( );   \
     cpost("Initialize JUCE\n"); \
     quittask_install((method)jojo_quit, NULL);  \
     }
@@ -216,10 +211,7 @@ class Toto : public CallbackMessage {
 
 void jojo_bang(t_jojo *x)
 {
-    if (!systhread_ismainthread( )) { error("Always in the main thread!"); }    
-    else {
-        (new Toto( ))->post( );     /* Avoid MessageManagerLock. */
-    }
+    (new Toto( ))->post( );         /* AFAIK it is thread-safe. */
 }
 
 // ------------------------------------------------------------------------------------------------------------

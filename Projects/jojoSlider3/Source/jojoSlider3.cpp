@@ -62,7 +62,7 @@
 void jojo_quit(void);
 void jojo_quit(void)
 {
-    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");
+    shutdownJuce_GUI( ); cpost("Shutdown JUCE\n");
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ void jojo_quit(void)
 
 #define JOJO_INITIALIZE \
     {   \
-    initialiseJuce_GUI();   \
+    initialiseJuce_GUI( );   \
     cpost("Initialize JUCE\n"); \
     quittask_install((method)jojo_quit, NULL);  \
     }

@@ -92,7 +92,9 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mJS(new JavascriptEngine( )), mLock( ) { }
+    _jojo( ) : mJS(new JavascriptEngine( )), mLock( ) { 
+        mJS->registerNativeObject(Oizo::getClassName( ), new Oizo( ));      /* Takes Oizo's ownership. */
+    }
 
 public:
     t_object                        ob;
@@ -168,10 +170,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
-    }
-    
-    if (!err) {
-        x->mJS->registerNativeObject(Oizo::getClassName( ), new Oizo( ));   /* Takes Oizo's ownership. */
     }
     
     if (err) {

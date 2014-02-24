@@ -111,7 +111,10 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mOizo(new Oizo( )), mLock( ) { }
+    _jojo( ) : mOizo(new Oizo( )), mLock( ) { 
+        mOizo->setProperty(JojoIdentifier::One, "Carotte");         /* The DynamicObject stuff. */
+        mOizo->setMethod(JojoIdentifier::Two, Oizo::spawn);
+    }
 
 public:
     t_object        ob;
@@ -193,11 +196,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     
     catch (...) {
         err = (x->mError = JOJO_ERROR);
-    }
-
-    if (!err) {
-        x->mOizo->setProperty(JojoIdentifier::One, "Carotte");      /* The DynamicObject stuff. */
-        x->mOizo->setMethod(JojoIdentifier::Two, Oizo::spawn);
     }
     
     if (err) {

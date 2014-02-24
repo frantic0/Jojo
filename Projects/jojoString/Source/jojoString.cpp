@@ -54,7 +54,14 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mPair( ), mLock( ) { }
+    _jojo( ) : mPair( ), mLock( ) { 
+        /* Use a text file to translate strings in the bundle. */
+        
+        File tr(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoString.txt"));
+        if (tr.existsAsFile( )) {
+            LocalisedStrings::setCurrentMappings(new LocalisedStrings(tr, false));
+        }
+    }
 
 public:
     t_object        ob;
@@ -134,15 +141,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
         err = (x->mError = JOJO_ERROR);
     }
     
-    if (!err) {
-        /* Use a text file to translate strings in the bundle. */
-        
-        File tr(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoString.txt"));
-        if (tr.existsAsFile( )) {
-            LocalisedStrings::setCurrentMappings(new LocalisedStrings(tr, false));
-        }
-    }
-    
     if (err) {
         object_free(x);
         x = NULL;
@@ -166,7 +164,7 @@ void jojo_bang(t_jojo *x)
 {
     /* Caution : translation is a linear lookup with a pair of StringArray. */
     
-    post("%s", TRANS("The trail skirted the cliff.").toRawUTF8( ));             /* Should be in french! */
+    post("%s", TRANS("The trail skirted the cliff.").toRawUTF8( ));     /* Should be in french! */
     
     /* */
     

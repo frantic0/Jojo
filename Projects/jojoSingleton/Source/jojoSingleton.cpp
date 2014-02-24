@@ -90,7 +90,9 @@ void jojo_quit(void)
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    /* Initialize it first for foolproof multithreading. */
+    
+    _jojo( ) { Oizo *o = Oizo::getInstance( ); (void)o; }   
 
 public:
     t_object    ob;
@@ -143,7 +145,7 @@ JOJO_EXPORT int main(void)
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
-    quittask_install((method)jojo_quit, NULL);      /* Avoid leak warnings with debug build. */
+    quittask_install((method)jojo_quit, NULL);      /* Avoid leak reports. */
     
     return 0;
 }
@@ -167,11 +169,6 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-    
-    if (!err) {
-        Oizo *o = Oizo::getInstance( );         /* Initialize before for foolproof multithreading. */
-        (void)o;
-    } 
     
     if (err) {
         object_free(x);
