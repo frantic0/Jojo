@@ -26,7 +26,12 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Placeholder. */
+/* PropertiesFile experiments. */
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+/* Note: due to the message manager loop, thread-safety needs extra care. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -60,7 +65,7 @@ public:
     ~Oizo( )            { cpost("Oizo dtor\n"); }
     
 public:
-    void changeListenerCallback(ChangeBroadcaster*) { post("Something have changed."); }
+    void changeListenerCallback(ChangeBroadcaster*) { post("Something have changed!"); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
@@ -74,14 +79,17 @@ typedef struct _jojo {
 
 public :
     _jojo( ) : mOizo(new Oizo), mProperties(nullptr) { 
-
-    /* Properties file next to the bundle for demonstration only. */
+    //
+    /* File is next to the bundle for convenience only. */
     
     File settings(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoProperties.txt"));
     mProperties = new PropertiesFile(settings, PropertiesFile::Options( ));
-    //x->mProperties->addChangeListener(x->mOizo);
+    mProperties->addChangeListener(mOizo);
+    //
     }
-
+    
+    ~_jojo( ) { mProperties->removeChangeListener(mOizo); }
+    
 public:
     t_object                        ob;
     ulong                           mError;
@@ -206,13 +214,12 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x) 
 {
-    /* The message manager implies a thread-safety extra care. */
+    /* To avoid locking mess manage everything in the main thread. */
     
     if (!systhread_ismainthread( )) { error("Always in the main thread!"); } 
     else {
     //
-    const ScopedLock lock(x->mProperties->getLock( ));  /* Is that really necessary? */
-    
+    //const ScopedLock lock(x->mProperties->getLock( ));
     post("Keys: %s", x->mProperties->getAllProperties( ).getAllKeys( ).joinIntoString(" / ").toRawUTF8( ));
     post("Values: %s", x->mProperties->getAllProperties( ).getAllValues( ).joinIntoString(" / ").toRawUTF8( ));
     //
