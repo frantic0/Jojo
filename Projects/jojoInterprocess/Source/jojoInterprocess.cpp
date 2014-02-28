@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Broadcasters / Listeners. */
+/* IPC machinery. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -48,17 +48,15 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-class Oizo : public ActionListener {
+class Master : public ChildProcessMaster {
 
 public:
-    explicit Oizo( )    { cpost("Oizo ctor\n"); }
-    ~Oizo( )            { cpost("Oizo dtor\n"); }
+    explicit Master( )  { DBG("Master ctor"); }
+    ~Master( )          { DBG("Master dtor"); }
 
 public:
-    void actionListenerCallback(const String& message)  { post("%s", message.toRawUTF8( )); } 
-    
-private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
+    void handleMessageFromSlave(const juce::MemoryBlock&)   { DBG("Master MessageFromSlave"); }
+    void handleConnectionLost( )                            { DBG("Master ConnectionLost"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -68,17 +66,13 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mActionBroadcaster( ), mOizo(new Oizo( )) { mActionBroadcaster.addActionListener(mOizo); }
-    ~_jojo( ) { mActionBroadcaster.removeActionListener(mOizo); }
-    
-    /* Listener must be deregister from the broadcaster before to be freed. */
-    /* The broadcaster can be freed with messages still pending in the queue. */
+    _jojo( ) : mMaster(new Master( )) { }
     
 public:
-    t_object            ob;
-    ulong               mError;
-    ActionBroadcaster   mActionBroadcaster;
-    ScopedPointer<Oizo> mOizo;
+    t_object                ob;
+    ulong                   mError;
+    ScopedPointer<Master>   mMaster;
+
     } t_jojo;
     
 // ------------------------------------------------------------------------------------------------------------
@@ -142,13 +136,13 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoBroadcast", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new("jojoInterprocess", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
     class_addmethod(c, (method)jojo_bang, "bang", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
     JOJO_INITIALIZE
-
+    
     return 0;
 }
 
@@ -189,10 +183,12 @@ void jojo_free(t_jojo *x)
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
+#pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang(t_jojo *x) 
 {
-    x->mActionBroadcaster.sendActionMessage("Hello World!");    /* Thread-safe (mutex). */
+    File appPath(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoSlave.app"));
+    x->mMaster->launchSlaveProcess(appPath, "jojoUID");
 }
 
 // ------------------------------------------------------------------------------------------------------------

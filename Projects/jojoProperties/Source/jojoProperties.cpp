@@ -78,7 +78,7 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mOizo(new Oizo), mProperties(nullptr) { 
+    _jojo( ) : mOizo(new Oizo( )), mProperties(nullptr) { 
     //
     /* File is next to the bundle for convenience only. */
     
