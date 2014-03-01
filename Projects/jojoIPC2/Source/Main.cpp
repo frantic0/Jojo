@@ -64,7 +64,7 @@ public:
     void messageReceived(const MemoryBlock& mb) { 
     //
     DBG(mb.toString( )); 
-    String myText("-I am fine, thank you. And you?");
+    String myText("- I am fine, thank you. And you?");
     const MemoryBlock msg(myText.toRawUTF8( ), myText.getNumBytesAsUTF8( ) + 1);
     sendMessage(msg);
     }

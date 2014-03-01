@@ -55,8 +55,8 @@ public:
     ~Master( )          { DBG("Master dtor"); }
 
 public:
-    void handleMessageFromSlave(const juce::MemoryBlock&)   { DBG("Master MessageFromSlave"); }
-    void handleConnectionLost( )                            { DBG("Master ConnectionLost"); }
+    void handleMessageFromSlave(const juce::MemoryBlock& mb)    { post("%s", mb.toString( ).toRawUTF8( )); }
+    void handleConnectionLost( )                                { DBG("Master ConnectionLost"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -66,7 +66,12 @@ public:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mMaster(new Master( )) { }
+    _jojo( ) : mMaster(new Master( )) { 
+    //
+    File appPath(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoSlave.app"));
+    mMaster->launchSlaveProcess(appPath.getChildFile("Contents/MacOS/jojoSlave"), "jojoUID");
+    //
+    }
     
 public:
     t_object                ob;
@@ -187,8 +192,10 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x) 
 {
-    File appPath(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoSlave.app"));
-    x->mMaster->launchSlaveProcess(appPath, "jojoUID");
+    String myText("- How are you?");
+    const juce::MemoryBlock mb(myText.toRawUTF8( ), myText.getNumBytesAsUTF8( ) + 1);
+    x->mMaster->sendMessageToSlave(mb);
+    post("%s", myText.toRawUTF8( ));
 }
 
 // ------------------------------------------------------------------------------------------------------------

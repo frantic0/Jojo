@@ -39,13 +39,21 @@
 class Slave : public ChildProcessSlave, private DeletedAtShutdown {
 
 public:
-    explicit Slave( )    { DBG("Slave ctor"); }
-    ~Slave( )            { DBG("Slave dtor"); }
+    explicit Slave( )    { }
+    ~Slave( )            { }
 
 public:
-    void handleMessageFromMaster(const MemoryBlock&)    { DBG("Slave MessageFromMaster"); }
-    void handleConnectionMade( )                        { DBG("Slave ConnectionMade"); }
-    void handleConnectionLost( )                        { JUCEApplication::quit( ); }
+    void handleMessageFromMaster(const MemoryBlock& mb) {
+    //
+    (void)mb;
+    String myText("- I am fine, thank you. And you?");
+    const MemoryBlock msg(myText.toRawUTF8( ), myText.getNumBytesAsUTF8( ) + 1);
+    sendMessageToMaster(msg);
+    //
+    }
+    
+    void handleConnectionMade( )    { }
+    void handleConnectionLost( )    { JUCEApplication::quit( ); }
 };
     
 // ------------------------------------------------------------------------------------------------------------
@@ -62,8 +70,6 @@ public:
 
     void initialise (const String& commandLine) {
     //
-    DBG(commandLine);
-    
     ScopedPointer<Slave> slave(new Slave( ));
 
     if (slave->initialiseFromCommandLine(commandLine, "jojoUID")) { slave.release( ); }
