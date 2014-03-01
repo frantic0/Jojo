@@ -43,6 +43,11 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
+#include "ext_systhread.h"
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
 #include "JuceHeader.h"
 
 // ------------------------------------------------------------------------------------------------------------
@@ -53,8 +58,10 @@ class Master : public ChildProcessMaster {
 public:
     explicit Master( )  { DBG("Master ctor"); }
     ~Master( )          { DBG("Master dtor"); }
-
+    
 public:
+    /* Caution: those methods are called by custom threads (consider to use a t_clock). */
+    
     void handleMessageFromSlave(const juce::MemoryBlock& mb)    { post("%s", mb.toString( ).toRawUTF8( )); }
     void handleConnectionLost( )                                { DBG("Master ConnectionLost"); }
 };
@@ -190,12 +197,21 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x) 
+void jojo_bang(t_jojo *x)   /* Kept it in the main thread in order to preserve timer accuracy. */
 {
+    if (!systhread_ismainthread( )) { error("Always in the main thread!"); }        
+    else {
+    //
     String myText("- How are you?");
-    const juce::MemoryBlock mb(myText.toRawUTF8( ), myText.getNumBytesAsUTF8( ) + 1);
-    x->mMaster->sendMessageToSlave(mb);
     post("%s", myText.toRawUTF8( ));
+    
+    const juce::MemoryBlock mb(myText.toRawUTF8( ), myText.getNumBytesAsUTF8( ) + 1);
+    
+    if (!(x->mMaster->sendMessageToSlave(mb))) {     /* Thread-safe. */
+        post("- Are you dead?");
+    }
+    //
+    }
 }
 
 // ------------------------------------------------------------------------------------------------------------
