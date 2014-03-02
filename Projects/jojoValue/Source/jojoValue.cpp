@@ -26,7 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* */
+/* Bound to Value / Value is NOT thread-safe (kept in the main thread). */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -43,7 +43,24 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
+#include "ext_systhread.h"
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
 #include "JuceHeader.h"
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+class Oizo : public Value::Listener {
+
+public:
+    explicit Oizo( )    { cpost("Oizo ctor\n"); }
+    ~Oizo( )            { cpost("Oizo dtor\n"); }
+
+    void valueChanged(Value &value) { post("Changed / %s", value.toString( ).toRawUTF8( )); }
+};
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -52,12 +69,13 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mLock( ) { }
+    _jojo( ) : mOizo(new Oizo( )), mValue(var::undefined( )) { mValue.addListener(mOizo); }
 
 public:
-    t_object        ob;
-    ulong           mError;
-    CriticalSection mLock;
+    t_object            ob;
+    ulong               mError;
+    ScopedPointer<Oizo> mOizo;
+    Value               mValue;     /* Destructor of Value call removeListener( ). */
     
     } t_jojo;
     
@@ -131,7 +149,7 @@ JOJO_EXPORT int main(void)
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
-    JOJO_INITIALIZE     /* Needed to initialize the message manager. */
+    JOJO_INITIALIZE
     
     return 0;
 }
@@ -177,12 +195,24 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x) 
 {
-    const ScopedLock myLock(x->mLock);
+    if (!systhread_ismainthread( )) { error("Always in the main thread!"); }        
+    else {
+        post("%s", x->mValue.toString( ).toRawUTF8( ));
+    }
 }
 
 void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
-    const ScopedLock myLock(x->mLock);  
+    if (!systhread_ismainthread( )) { error("Always in the main thread!"); }        
+    else {
+    //
+    if (atom_gettype(argv) == A_SYM) { 
+        x->mValue.setValue(atom_getsym(argv)->s_name); 
+    } else {
+        x->mValue.setValue(atom_getfloat(argv)); 
+    }
+    //
+    }
 }
 
 // ------------------------------------------------------------------------------------------------------------

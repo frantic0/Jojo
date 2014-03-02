@@ -209,7 +209,7 @@ void jojo_bang(t_jojo *x)
     var w = v;
     post("RefCount / %ld", v.getObject( )->getReferenceCount( ));
     
-    Oizo * const q = dynamic_cast<Oizo *>(v.getObject( ));
+    Oizo* const q = dynamic_cast<Oizo*>(v.getObject( ));
     if (q != nullptr) { q->doSomething( ); }
 }
 
