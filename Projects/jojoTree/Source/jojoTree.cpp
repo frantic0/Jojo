@@ -26,12 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* PropertiesFile experiments. */
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-/* Note: due to the message manager loop, thread-safety needs extra care. */
+/* ValueTree and UndoManager basics. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -58,15 +53,49 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-class Oizo : public ChangeListener {
-
-public:
-    explicit Oizo( )    { cpost("Oizo ctor\n"); }
-    ~Oizo( )            { cpost("Oizo dtor\n"); }
+namespace JojoId
+{
+    #define JOJO_ID(name)   const Identifier name(#name)
     
-public:
-    void changeListenerCallback(ChangeBroadcaster*) { post("Something have changed!"); }
+    JOJO_ID(JojoTree);
+    
+    #undef JOJO_ID
+}
 
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+struct _jojo;
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+/* ValueTree callbacks are synchronous. */
+
+class Oizo : public ValueTree::Listener, private Timer {                /* Timer for convenience only. */
+
+public:
+    explicit Oizo(_jojo* o) : owner(o) { startTimer(500); }
+
+public:
+    void valueTreePropertyChanged(ValueTree& tree, const Identifier& property) { 
+    //
+    post("Changed / %s", property.toString( ).toRawUTF8( ));
+    //
+    }
+    
+    void valueTreeChildAdded(ValueTree&, ValueTree&)    { }
+    void valueTreeChildRemoved(ValueTree&, ValueTree&)  { }
+	void valueTreeChildOrderChanged(ValueTree&)         { }
+    void valueTreeParentChanged (ValueTree&)            { }
+    void valueTreeRedirected(ValueTree&)                { }
+
+private: 
+    struct _jojo* owner; 
+    
+    void timerCallback( );
+    
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
 };
@@ -78,26 +107,32 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mOizo(new Oizo( )), mProperties(nullptr) { 
+    _jojo( ) : mUndo(new UndoManager( )), mOizo(new Oizo(this)), mTree(new ValueTree(JojoId::JojoTree)) { 
     //
-    /* File is next to the bundle for convenience only. */
-    
-    File settings(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoProperties.txt"));
-    mProperties = new PropertiesFile(settings, PropertiesFile::Options( ));
-    mProperties->addChangeListener(mOizo);
+    mTree->addListener(mOizo);
     //
     }
     
-    ~_jojo( ) { mProperties->removeChangeListener(mOizo); mProperties->saveIfNeeded( ); }
-    
+    ~_jojo( ) { mTree->removeListener(mOizo); }     /* Currently not necessary, but for future! */
+
 public:
-    t_object                        ob;
-    ulong                           mError;
-    ScopedPointer<Oizo>             mOizo;
-    ScopedPointer<PropertiesFile>   mProperties;    /* Consider to use ApplicationProperties in your code. */
-    
+    t_object                    ob;
+    ulong                       mError;
+    ScopedPointer<UndoManager>  mUndo;
+    ScopedPointer<Oizo>         mOizo;
+    ScopedPointer<ValueTree>    mTree;
+                     
     } t_jojo;
-    
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+void Oizo::timerCallback( ) 
+{ 
+    owner->mUndo->beginNewTransaction( ); 
+}
+
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
@@ -148,6 +183,8 @@ void jojo_quit(void)
 void *jojo_new      (t_symbol *s, long argc, t_atom *argv);
 void jojo_free      (t_jojo *x);
 void jojo_bang      (t_jojo *x);
+void jojo_undo      (t_jojo *x);
+void jojo_redo      (t_jojo *x);
 void jojo_anything  (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
 
 // ------------------------------------------------------------------------------------------------------------
@@ -160,15 +197,17 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoProperties", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new("jojoTree", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
     
     class_addmethod(c, (method)jojo_bang,       "bang", 0);
+    class_addmethod(c, (method)jojo_undo,       "undo", 0);
+    class_addmethod(c, (method)jojo_redo,       "redo", 0);
     class_addmethod(c, (method)jojo_anything,   "anything", A_GIMME, 0);
     
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
-    JOJO_INITIALIZE         /* Needed to initialize the message manager. */
+    JOJO_INITIALIZE
     
     return 0;
 }
@@ -192,7 +231,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-
+    
     if (err) {
         object_free(x);
         x = NULL;
@@ -212,32 +251,51 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
+/* Best to keep everything in the main thread. */
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
 void jojo_bang(t_jojo *x) 
 {
-    /* To avoid locking mess manage everything in the main thread. */
-    
-    if (!systhread_ismainthread( )) { error("Always in the main thread!"); } 
-    else {
-    //
-    //const ScopedLock lock(x->mProperties->getLock( ));
-    post("Keys: %s", x->mProperties->getAllProperties( ).getAllKeys( ).joinIntoString(" / ").toRawUTF8( ));
-    post("Values: %s", x->mProperties->getAllProperties( ).getAllValues( ).joinIntoString(" / ").toRawUTF8( ));
-    //
+    if (systhread_ismainthread( )) {        
+        post("%s", x->mTree->toXmlString( ).toRawUTF8( ));
     }
 }
 
+void jojo_undo(t_jojo *x) 
+{
+    if (systhread_ismainthread( )) {        
+        post("Undo / %ld", x->mUndo->undo( ));
+    }
+}
+
+void jojo_redo(t_jojo *x) 
+{
+    if (systhread_ismainthread( )) {
+        post("Redo / %ld", x->mUndo->redo( ));
+    }
+}
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
 void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
-    if (!systhread_ismainthread( )) { error("Always in the main thread!"); } 
-    else {
+    if (!systhread_ismainthread( )) { error("Always in the main thread!"); }        
+    else if (argc) {
     //
-    if (argc) {
-        if (atom_gettype(argv) == A_SYM) { 
-            x->mProperties->setValue(s->s_name, atom_getsym(argv)->s_name); 
-        } else {
-            x->mProperties->setValue(s->s_name, atom_getfloat(argv)); 
-        }
-    } 
+    const String property(s->s_name);
+    
+    if (Identifier::isValidIdentifier(property)) {
+    //
+    if (atom_gettype(argv) == A_SYM) { 
+        x->mTree->setProperty(property, atom_getsym(argv)->s_name, x->mUndo);
+    } else {
+        x->mTree->setProperty(property, atom_getfloat(argv), x->mUndo);
+    }
+    //
+    }
     //
     }
 }

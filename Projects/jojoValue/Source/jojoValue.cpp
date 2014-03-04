@@ -70,12 +70,14 @@ typedef struct _jojo {
 
 public :
     _jojo( ) : mOizo(new Oizo( )), mValue(var::undefined( )) { mValue.addListener(mOizo); }
+    
+    ~_jojo( ) { mValue.removeListener(mOizo); }     /* Currently not necessary, but for future! */
 
 public:
     t_object            ob;
     ulong               mError;
     ScopedPointer<Oizo> mOizo;
-    Value               mValue;     /* Destructor of Value call removeListener( ). */
+    Value               mValue;     
     
     } t_jojo;
     
@@ -204,7 +206,7 @@ void jojo_bang(t_jojo *x)
 void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
     if (!systhread_ismainthread( )) { error("Always in the main thread!"); }        
-    else {
+    else if (argc) {
     //
     if (atom_gettype(argv) == A_SYM) { 
         x->mValue.setValue(atom_getsym(argv)->s_name); 
