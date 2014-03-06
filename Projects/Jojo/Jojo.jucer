@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="KKonng" name="jojo" projectType="audioplug" version="1.0.0"
+<JUCERPROJECT id="KKonng" name="Jojo" projectType="audioplug" version="1.0.0"
               bundleIdentifier="com.yourcompany.Jojo" jucerVersion="3.1.0"
               buildVST="0" buildAU="0" pluginName="jojo" pluginDesc="jojo"
               pluginManufacturer="yourcompany" pluginManufacturerCode="jojo"
@@ -8,8 +8,9 @@
               pluginWantsMidiIn="0" pluginProducesMidiOut="0" pluginSilenceInIsSilenceOut="0"
               pluginEditorRequiresKeys="0" pluginAUExportPrefix="jojoAU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.jojo" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              defines="&#10;" includeBinaryInAppConfig="1">
-  <MAINGROUP id="L4LrHQ" name="jojo">
+              defines="&#10;" includeBinaryInAppConfig="1" buildVST3="0" buildRTAS="0"
+              buildAAX="0" pluginManufacturerEmail="support@yourcompany.com">
+  <MAINGROUP id="L4LrHQ" name="Jojo">
     <GROUP id="{6BDC06BC-FC6F-6BF4-8340-84A978E4D26E}" name="Source">
       <FILE id="eapNwQ" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
