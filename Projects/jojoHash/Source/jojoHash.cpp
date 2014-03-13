@@ -196,8 +196,11 @@ void jojo_bang(t_jojo *x)
     x->mHash.set(b, ptrKitty);
     
     KittyPtr temp(x->mHash[a]);
-    post("%ld", temp->getReferenceCount( ));        /* Should be always 4!*/
+    post("%ld", temp->getReferenceCount( ));        /* Should be 4!*/
     temp->doSomething( );
+    
+    x->mHash.set(a, temp);                          /* Overwrite an existing key. */
+    post("%ld", temp->getReferenceCount( ));        /* Should be 4! */
 }
 
 // ------------------------------------------------------------------------------------------------------------
