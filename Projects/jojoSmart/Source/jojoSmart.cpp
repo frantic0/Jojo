@@ -227,6 +227,11 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
+void jojo_test(const KittyPtr& temporary)
+{
+    (void)temporary;
+}
+
 void jojo_bang(t_jojo *x)
 {
     /* Avoid to accidentally delete a raw pointer owned by a ScopedPointer. */
@@ -261,6 +266,9 @@ void jojo_bang(t_jojo *x)
     post("%ld", p == nullptr);  /* Caution: pointer is no more valid! */
     
     Felix* q = myObjectRef; post("%ld", q == nullptr);
+    
+    post("Temporary");
+    jojo_test(new Kitty( ));    /* Properly freed? */
 }
 
 // ------------------------------------------------------------------------------------------------------------
