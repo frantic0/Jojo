@@ -7,9 +7,9 @@
 			"revision" : 9
 		}
 ,
-		"rect" : [ 25.0, 69.0, 311.0, 270.0 ],
+		"rect" : [ 27.0, 69.0, 311.0, 270.0 ],
 		"bglocked" : 0,
-		"defrect" : [ 25.0, 69.0, 311.0, 270.0 ],
+		"defrect" : [ 27.0, 69.0, 311.0, 270.0 ],
 		"openrect" : [ 0.0, 0.0, 0.0, 0.0 ],
 		"openinpresentation" : 0,
 		"default_fontsize" : 14.0,
@@ -26,12 +26,26 @@
 		"devicewidth" : 0.0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"maxclass" : "message",
+					"text" : "toto",
+					"fontsize" : 14.0,
+					"numinlets" : 2,
+					"patching_rect" : [ 140.0, 80.0, 34.0, 21.0 ],
+					"id" : "obj-4",
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"fontname" : "Arial"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"maxclass" : "button",
-					"outlettype" : [ "bang" ],
 					"numinlets" : 1,
 					"patching_rect" : [ 100.0, 80.0, 20.0, 20.0 ],
 					"id" : "obj-3",
-					"numoutlets" : 1
+					"numoutlets" : 1,
+					"outlettype" : [ "bang" ]
 				}
 
 			}
@@ -43,13 +57,22 @@
 					"numinlets" : 1,
 					"patching_rect" : [ 100.0, 140.0, 70.0, 23.0 ],
 					"id" : "obj-1",
-					"fontname" : "Arial",
-					"numoutlets" : 0
+					"numoutlets" : 0,
+					"fontname" : "Arial"
 				}
 
 			}
  ],
 		"lines" : [ 			{
+				"patchline" : 				{
+					"source" : [ "obj-4", 0 ],
+					"destination" : [ "obj-1", 0 ],
+					"hidden" : 0,
+					"midpoints" : [  ]
+				}
+
+			}
+, 			{
 				"patchline" : 				{
 					"source" : [ "obj-3", 0 ],
 					"destination" : [ "obj-1", 0 ],

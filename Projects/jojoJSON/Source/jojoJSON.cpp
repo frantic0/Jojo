@@ -135,6 +135,7 @@ public:
 void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
 void jojo_free  (t_jojo *x);
 void jojo_bang  (t_jojo *x);
+void jojo_toto  (t_jojo *x);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -153,7 +154,10 @@ JOJO_EXPORT int main(void)
     t_class *c = NULL;
     
     c = class_new("jojoJSON", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    
     class_addmethod(c, (method)jojo_bang, "bang", 0);
+    class_addmethod(c, (method)jojo_toto, "toto", 0);
+    
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
@@ -254,6 +258,19 @@ void jojo_read(t_jojo *x, const File& aFile)
     }
     //
     }
+}
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+void jojo_toto(t_jojo *x)
+{
+    var test(new Oizo( ));
+    test.getDynamicObject( )->setProperty(JojoIdentifier::One, new Oizo( ));
+    test.getDynamicObject( )->setProperty(JojoIdentifier::Two, new Oizo( ));
+    
+    post("%s", JSON::toString(test).toRawUTF8( ));
 }
 
 // ------------------------------------------------------------------------------------------------------------
