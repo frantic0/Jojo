@@ -105,9 +105,11 @@ JOJO_EXPORT int main(void)
     t_class *c = NULL;
     
     c = class_new("jojoCritical", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    
     class_addmethod(c, (method)jojo_bang,   "bang", 0);
     class_addmethod(c, (method)jojo_foo,    "foo", 0);
     class_addmethod(c, (method)jojo_int,    "int",  A_LONG, 0);
+    
     class_register(CLASS_BOX, c);
     jojo_class = c;
     
@@ -161,9 +163,7 @@ void jojo_bang(t_jojo *x)
     const int argc = x->mArray.size( );
     long * const argv = x->mArray.getRawDataPointer( );
     
-    for (int i = 0; i < argc; ++i) {
-        post("%ld / %ld", i, *(argv + i));
-    }
+    for (int i = 0; i < argc; ++i) { post("%ld / %ld", i, *(argv + i)); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -185,9 +185,7 @@ void jojo_foo(t_jojo *x)
     DefaultElementComparator<long> sorter;
     foo.sort(sorter);
     
-    for (int i = 0; i < foo.size( ); ++i) {
-        post("%ld", foo[i]);
-    }
+    for (int i = 0; i < foo.size( ); ++i) { post("%ld", foo[i]); }
 }
 
 // ------------------------------------------------------------------------------------------------------------

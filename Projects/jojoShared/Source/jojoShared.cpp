@@ -26,15 +26,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Just a singleton test. */
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-/* Caution: JUCE's singleton uses "unreliable" DCLP. */
-
-/* ( http://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf ). */
-/* ( http://preshing.com/20130930/double-checked-locking-is-fixed-in-cpp11/ ). */
+/* Shared resources. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -55,33 +47,41 @@
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
-#pragma mark -
+
+/* Short version. */
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+struct Oizo {
+    Array<long, CriticalSection> mValues;
+};
+
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+/* Long version. */
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+/*
 
 class Oizo {
 
 public:
-    explicit Oizo( )    { post("Oizo ctor"); }
-    ~Oizo( )            { post("Oizo dtor"); cpost("Oizo dtor"); clearSingletonInstance( ); }
+    Oizo( ) { }
+    ~Oizo( ) { }
     
-    void doSomething( ) const { post("Cuicui"); }
+public:
+    Array<long, CriticalSection> mValues;
     
-    juce_DeclareSingleton(Oizo, false)
-
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo);
 };
 
-juce_ImplementSingleton(Oizo)
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-#pragma mark -
-
-void jojo_quit(void);
-void jojo_quit(void)
-{
-    Oizo::deleteInstance();     /* Could use DeletedAtShutdown inheritance instead. */
-}
+*/
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -90,13 +90,12 @@ void jojo_quit(void)
 typedef struct _jojo {
 
 public :
-    /* Initialize it first for foolproof multithreading. */
-    
-    _jojo( ) { Oizo *o = Oizo::getInstance( ); (void)o; }   
+    _jojo( ) : mShared( ) { }
 
 public:
-    t_object    ob;
-    ulong       mError;
+    t_object                    ob;
+    ulong                       mError;
+    SharedResourcePointer<Oizo> mShared;
     
     } t_jojo;
     
@@ -129,6 +128,7 @@ public:
 void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
 void jojo_free  (t_jojo *x);
 void jojo_bang  (t_jojo *x);
+void jojo_int   (t_jojo *x, long n);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -140,12 +140,13 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoSingleton", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
+    c = class_new("jojoShared", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    
+    class_addmethod(c, (method)jojo_bang,   "bang", 0);
+    class_addmethod(c, (method)jojo_int,    "int",  A_LONG, 0);
+    
     class_register(CLASS_BOX, c);
     jojo_class = c;
-    
-    quittask_install((method)jojo_quit, NULL);      /* Avoid leak reports. */
     
     return 0;
 }
@@ -169,7 +170,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-    
+
     if (err) {
         object_free(x);
         x = NULL;
@@ -191,7 +192,18 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    Oizo::getInstance( )->doSomething( );
+    const ScopedLock lock(x->mShared->mValues.getLock( ));
+    const int argc = x->mShared->mValues.size( );
+    long * const argv = x->mShared->mValues.getRawDataPointer( );
+    for (int i = 0; i < argc; ++i) { post("%ld / %ld", i, *(argv + i)); }
+}
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+void jojo_int(t_jojo *x, long n)
+{
+    x->mShared->mValues.add(n);
 }
 
 // ------------------------------------------------------------------------------------------------------------
