@@ -203,6 +203,10 @@ void jojo_bang(t_jojo *x)
 void jojo_int(t_jojo *x, long n)
 {
     x->mShared->mValues.add(n);
+    
+    /* On the stack also. */
+    
+    // SharedResourcePointer<Oizo> mShared; mShared->mValues.add(n);
 }
 
 // ------------------------------------------------------------------------------------------------------------
