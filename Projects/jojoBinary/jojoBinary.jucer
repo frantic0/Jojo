@@ -8,7 +8,8 @@
               pluginWantsMidiIn="0" pluginProducesMidiOut="0" pluginSilenceInIsSilenceOut="0"
               pluginEditorRequiresKeys="0" pluginAUExportPrefix="jojoBinaryAU"
               pluginRTASCategory="" aaxIdentifier="com.yourcompany.jojoBinary"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0">
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0"
+              buildVST3="0" buildRTAS="0" buildAAX="0">
   <MAINGROUP id="lPvWws" name="jojoBinary">
     <GROUP id="{097DC852-6C4D-EDCB-1992-533DA23D35F1}" name="Source">
       <FILE id="IPlPxj" name="jojoBinary.h" compile="0" resource="0" file="Source/jojoBinary.h"/>
