@@ -8,7 +8,8 @@
               pluginWantsMidiIn="0" pluginProducesMidiOut="0" pluginSilenceInIsSilenceOut="0"
               pluginEditorRequiresKeys="0" pluginAUExportPrefix="jojoHashAU"
               pluginRTASCategory="" aaxIdentifier="com.yourcompany.jojoHash"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0">
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0"
+              buildVST3="0" buildRTAS="0" buildAAX="0">
   <MAINGROUP id="SdCEoW" name="jojoHash">
     <GROUP id="{191F61FC-9834-D843-6729-2F7E13EA8400}" name="Source">
       <FILE id="ZqpuMM" name="jojoHash.cpp" compile="1" resource="0" file="Source/jojoHash.cpp"/>

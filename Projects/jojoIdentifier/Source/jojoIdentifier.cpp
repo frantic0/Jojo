@@ -70,7 +70,7 @@ namespace JojoIdentifier
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo() { }
 
 public:
     t_object    ob;
@@ -158,7 +158,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -167,8 +167,8 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    post("%s", JojoIdentifier::One.toString( ).toRawUTF8( ));
-    post("%s", JojoIdentifier::Two.toString( ).toRawUTF8( ));
+    post("%s", JojoIdentifier::One.toString().toRawUTF8());
+    post("%s", JojoIdentifier::Two.toString().toRawUTF8());
 }
 
 // ------------------------------------------------------------------------------------------------------------

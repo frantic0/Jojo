@@ -66,8 +66,8 @@ namespace JojoIdentifier
 class Oizo : public DynamicObject {
 
 public:
-    explicit Oizo( )    { post("Oizo ctor"); }
-    ~Oizo( )            { post("Oizo dtor"); }
+    explicit Oizo()    { post("Oizo ctor"); }
+    ~Oizo()            { post("Oizo dtor"); }
 
 public:
     void writeAsJSON(OutputStream& stream, int indentLevel, bool allOnOneLine) {
@@ -93,7 +93,7 @@ typedef ReferenceCountedObjectPtr<Oizo> OizoPtr;
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mOizo(new Oizo( )), mLock( ) { 
+    _jojo() : mOizo(new Oizo()), mLock() { 
         mOizo->setProperty(JojoIdentifier::One, "Carotte");
         mOizo->setProperty(JojoIdentifier::Two, "Olive");
     }
@@ -196,7 +196,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -221,16 +221,16 @@ void jojo_write(t_jojo *x, const File& aFile)
 {
     FileOutputStream outputStream(aFile);
     
-    if (outputStream.openedOk( )) { 
+    if (outputStream.openedOk()) { 
     //
     var test("Le sentier longeait la falaise");
     test.append("Lapin");
     test.append("Fusil");
     test.append(3.14);
-    test.append(x->mOizo.getObject( ));
+    test.append(x->mOizo.getObject());
     
     outputStream.setPosition(0); 
-    outputStream.truncate( );
+    outputStream.truncate();
     JSON::writeToStream(outputStream, test);
     //
     }
@@ -240,17 +240,17 @@ void jojo_read(t_jojo *x, const File& aFile)
 {
     FileInputStream inputStream(aFile);
         
-    if (inputStream.openedOk( )) {
+    if (inputStream.openedOk()) {
     // 
     var test(JSON::parse(inputStream));
     
-    if (test.isArray( )) {      /* Should be true in that stupid example! */
+    if (test.isArray()) {      /* Should be true in that stupid example! */
     //
-    for (int i = 0; i < test.size( ); ++i) {
-        post("? / %s", test[i].toString( ).toRawUTF8( ));
-        if (DynamicObject::Ptr o = test[i].getDynamicObject( )) {
-            for (int j = 0; j < o->getProperties( ).size( ); ++j) {
-                post("? / --- %s", o->getProperties( ).getName(j).toString( ).toRawUTF8( ));
+    for (int i = 0; i < test.size(); ++i) {
+        post("? / %s", test[i].toString().toRawUTF8());
+        if (DynamicObject::Ptr o = test[i].getDynamicObject()) {
+            for (int j = 0; j < o->getProperties().size(); ++j) {
+                post("? / --- %s", o->getProperties().getName(j).toString().toRawUTF8());
             }
         }
     }
@@ -266,11 +266,11 @@ void jojo_read(t_jojo *x, const File& aFile)
 
 void jojo_toto(t_jojo *x)
 {
-    var test(new Oizo( ));
-    test.getDynamicObject( )->setProperty(JojoIdentifier::One, new Oizo( ));
-    test.getDynamicObject( )->setProperty(JojoIdentifier::Two, new Oizo( ));
+    var test(new Oizo());
+    test.getDynamicObject()->setProperty(JojoIdentifier::One, new Oizo());
+    test.getDynamicObject()->setProperty(JojoIdentifier::Two, new Oizo());
     
-    post("%s", JSON::toString(test).toRawUTF8( ));
+    post("%s", JSON::toString(test).toRawUTF8());
 }
 
 // ------------------------------------------------------------------------------------------------------------

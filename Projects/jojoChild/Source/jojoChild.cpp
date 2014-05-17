@@ -52,7 +52,7 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo() { }
 
 public:
     t_object    ob;
@@ -141,7 +141,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -160,10 +160,10 @@ void jojo_doBang(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     
     /* A pipe is used for IPC. */ 
     
-    StringArray processResult(StringArray::fromLines(process.readAllProcessOutput( )));
+    StringArray processResult(StringArray::fromLines(process.readAllProcessOutput()));
     
-    for (int i = 0; i < processResult.size( ); ++i) {
-        post("%s", processResult.getReference(i).toRawUTF8( ));
+    for (int i = 0; i < processResult.size(); ++i) {
+        post("%s", processResult.getReference(i).toRawUTF8());
     }
 }
 

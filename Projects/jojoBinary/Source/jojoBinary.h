@@ -58,15 +58,15 @@
 class MainWindow : public DocumentWindow {
 
 public:
-    MainWindow( ) : DocumentWindow("JUCE", Colours::lightgrey, DocumentWindow::allButtons) {
-        setContentOwned(new MainComponent( ), true);
+    MainWindow() : DocumentWindow("JUCE", Colours::lightgrey, DocumentWindow::allButtons) {
+        setContentOwned(new MainComponent(), true);
         setSize(350, 224);
-        centreWithSize(getWidth( ), getHeight( ));
+        centreWithSize(getWidth(), getHeight());
         setResizable(false, false);
         setUsingNativeTitleBar(true);
     }
     
-    void closeButtonPressed( ) { setVisible(false); }
+    void closeButtonPressed() { setVisible(false); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
@@ -79,7 +79,7 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mWindow(new MainWindow( )) { }
+    _jojo() : mWindow(new MainWindow()) { }
 
 public:
     t_object                    ob;

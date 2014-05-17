@@ -70,12 +70,12 @@ public:
     {
         setContentNonOwned(mainComponent, true);
         setSize(400, 400);
-        centreWithSize(getWidth( ), getHeight( ));
+        centreWithSize(getWidth(), getHeight());
         setResizable(true, true);
         setUsingNativeTitleBar(true);
     }
     
-    void closeButtonPressed( ) { setVisible(false); }
+    void closeButtonPressed() { setVisible(false); }
 
 public:
     ScopedPointer<MainComponent> mainComponent;     /* Private (or delete policy) should be better! */
@@ -91,7 +91,7 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mValue( ), mWindow(new MainWindow(this)) { }
+    _jojo() : mValue(), mWindow(new MainWindow(this)) { }
 
 public:
     t_object                    ob;

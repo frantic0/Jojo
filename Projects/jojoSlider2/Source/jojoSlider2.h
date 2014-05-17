@@ -61,12 +61,12 @@ public:
     MainWindow(void *o) : DocumentWindow("Jojo", Colours::lightgrey, DocumentWindow::allButtons) {
         setContentOwned(new MainComponent(o), true);
         setSize(250, 250);
-        centreWithSize(getWidth( ), getHeight( ));
+        centreWithSize(getWidth(), getHeight());
         setResizable(true, true);
         setUsingNativeTitleBar(true);
     }
     
-    void closeButtonPressed( ) { setVisible(false); }
+    void closeButtonPressed() { setVisible(false); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
@@ -79,7 +79,7 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mWindow(new MainWindow(this)) { }
+    _jojo() : mWindow(new MainWindow(this)) { }
 
 public:
     t_object                    ob;

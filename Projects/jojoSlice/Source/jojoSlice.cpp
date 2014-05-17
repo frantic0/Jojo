@@ -60,7 +60,7 @@ public:
     explicit JojoClient(_jojo *x) : owner(x) { }
 
 public:
-    int useTimeSlice( );
+    int useTimeSlice();
 
 private:
     _jojo *owner;
@@ -76,8 +76,8 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mClient(new JojoClient(this)), mThread("Jojo"), mLock( ) { mThread.startThread( ); }
-    ~_jojo( ) { mThread.stopThread(-1); } 
+    _jojo() : mClient(new JojoClient(this)), mThread("Jojo"), mLock() { mThread.startThread(); }
+    ~_jojo() { mThread.stopThread(-1); } 
 
 public:
     t_object                    ob;
@@ -93,7 +93,7 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-int JojoClient::useTimeSlice( )
+int JojoClient::useTimeSlice()
 { 
     juce::Random rand; 
     int k = rand.nextInt(10);
@@ -189,7 +189,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
     
     if (x->mClock) {
         object_free(x->mClock);
@@ -213,7 +213,7 @@ void jojo_bang(t_jojo *x)
 {
     const ScopedLock myLock(x->mLock);
     
-    if (!x->mThread.getNumClients( )) {
+    if (!x->mThread.getNumClients()) {
         x->mThread.addTimeSliceClient(x->mClient, 0.);
     } else {
         post("I'm already working!");

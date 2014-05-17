@@ -52,13 +52,13 @@
 class Oizo : public ReferenceCountedObject {
 
 public:
-    explicit Oizo( )    { post("Oizo ctor"); }
-    ~Oizo( )            { post("Oizo dtor"); }
+    explicit Oizo()    { post("Oizo ctor"); }
+    ~Oizo()            { post("Oizo dtor"); }
     
     Oizo(const Oizo& o)             { post("Oizo copy"); }
     Oizo& operator=(const Oizo& o)  { post("Oizo ="); return *this; }
     
-    void doSomething( ) const       { post("Cui-cui"); }
+    void doSomething() const       { post("Cui-cui"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ public:
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo() { }
 
 public:
     t_object    ob;
@@ -156,7 +156,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -166,23 +166,23 @@ void jojo_free(t_jojo *x)
 void jojo_bang(t_jojo *x)
 {
     var v(1234);
-    post("Var / %s", v.toString( ).toRawUTF8( ));
+    post("Var / %s", v.toString().toRawUTF8());
     
     v = 3.14;
-    post("Var / %s", v.toString( ).toRawUTF8( ));
+    post("Var / %s", v.toString().toRawUTF8());
     
     /* */
     
     v = "Carotte";
-    post("IsArray / %ld", v.isArray( ));
+    post("IsArray / %ld", v.isArray());
     
     v.append("Lapin");
     v.append("Fusil");
-    post("IsArray / %ld", v.isArray( ));
+    post("IsArray / %ld", v.isArray());
     
-    post("Var / %s", v[0].toString( ).toRawUTF8( ));
-    post("Var / %s", v[1].toString( ).toRawUTF8( ));
-    post("Var / %s", v[2].toString( ).toRawUTF8( ));
+    post("Var / %s", v[0].toString().toRawUTF8());
+    post("Var / %s", v[1].toString().toRawUTF8());
+    post("Var / %s", v[2].toString().toRawUTF8());
     
     /* */
     
@@ -190,27 +190,27 @@ void jojo_bang(t_jojo *x)
     
     /* */
     
-    v = var(Array<var>( ));
-    Array<var> * const temp = v.getArray( );
+    v = var(Array<var>());
+    Array<var> * const temp = v.getArray();
     
     temp->add(var("Toto"));
     temp->add(var("Jojo"));
     temp->add(var("1234"));
-    temp->add(var::undefined( ));
+    temp->add(var::undefined());
     
-    for (int i = 0; i < temp->size( ); ++i) {
-        post("Var / %s", temp->getUnchecked(i).toString( ).toRawUTF8( ));
+    for (int i = 0; i < temp->size(); ++i) {
+        post("Var / %s", temp->getUnchecked(i).toString().toRawUTF8());
     }
     
     /* */
     
-    v = var(new Oizo( ));
+    v = var(new Oizo());
     
     var w = v;
-    post("RefCount / %ld", v.getObject( )->getReferenceCount( ));
+    post("RefCount / %ld", v.getObject()->getReferenceCount());
     
-    Oizo* const q = dynamic_cast<Oizo*>(v.getObject( ));
-    if (q != nullptr) { q->doSomething( ); }
+    Oizo* const q = dynamic_cast<Oizo*>(v.getObject());
+    if (q != nullptr) { q->doSomething(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------

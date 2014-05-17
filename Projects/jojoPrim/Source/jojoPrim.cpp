@@ -26,13 +26,41 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Simple slider / Timerthread issue / AsyncUpdater. */
+/* William Andrew Burnson's prim.cc ( https://github.com/burnson/prim.cc ). */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-#include "JojoSlider3.h"
+#include <Carbon/Carbon.h>
+#include <QuickTime/QuickTime.h>
 
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+#include "ext.h"
+#include "ext_obex.h"
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
+#include "JuceHeader.h"
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+typedef struct _jojo {
+
+public :
+    _jojo() { }
+
+public:
+    t_object        ob;
+    ulong           mError;
+    CriticalSection mLock;
+    
+    } t_jojo;
+    
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
@@ -59,31 +87,9 @@
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_quit(void);
-void jojo_quit(void)
-{
-    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");
-}
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-#pragma mark -
-
-#define JOJO_INITIALIZE \
-    {   \
-    initialiseJuce_GUI();   \
-    cpost("Initialize JUCE\n"); \
-    quittask_install((method)jojo_quit, NULL);  \
-    }
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-#pragma mark -
-
 void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
 void jojo_free  (t_jojo *x);
 void jojo_bang  (t_jojo *x);
-void jojo_float (t_jojo *x, double f);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -95,13 +101,10 @@ JOJO_EXPORT int main(void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoSlider3", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang,   "bang",     0);
-    class_addmethod(c, (method)jojo_float,  "float",    A_FLOAT, 0);
+    c = class_new("jojoPrim", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    class_addmethod(c, (method)jojo_bang, "bang", 0);
     class_register(CLASS_BOX, c);
     jojo_class = c;
-    
-    JOJO_INITIALIZE
     
     return 0;
 }
@@ -125,11 +128,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     catch (...) {
         err = (x->mError = JOJO_ERROR);
     }
-    
-    if (!err) {
-        err |= !(x->mOutlet = floatout((t_object *)x));
-    }
-    
+
     if (err) {
         object_free(x);
         x = NULL;
@@ -151,20 +150,7 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    if (!systhread_ismainthread()) { defer(x, (method)jojo_bang, NULL, 0, NULL); return; } 
-    else {
-        x->mWindow->setVisible(true);
-    }
-}
-
-void jojo_float(t_jojo *x, double f)
-{
-    /* Set the value and trigger the MainComponent's update. */
-    
-    x->mValue.set(f);
-    x->mWindow->mainComponent->triggerAsyncUpdate();
-    
-    outlet_float(x->mOutlet, f);
+    ;
 }
 
 // ------------------------------------------------------------------------------------------------------------

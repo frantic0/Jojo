@@ -1,4 +1,4 @@
-
+()
 /*
  *  Copyright (c) 2014, Nicolas Danet, 
  *  "nicolas.danet@free.fr".
@@ -52,7 +52,7 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mLock( ) { }
+    _jojo() : mLock() { }
 
 public:
     t_object        ob;
@@ -147,7 +147,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -180,20 +180,20 @@ void jojo_write(t_jojo *x, const File& aFile)
 
     zipper.flush();
     
-    aFile.replaceWithData(myText.getData( ), myText.getDataSize( ));
+    aFile.replaceWithData(myText.getData(), myText.getDataSize());
 }
     
 void jojo_read(t_jojo *x, const File& aFile)
 {
     FileInputStream zipped(aFile);
     
-    if (zipped.openedOk( )) {
+    if (zipped.openedOk()) {
     //
     GZIPDecompressorInputStream unzipper(&zipped, false);
-    StringArray myText(StringArray::fromLines(unzipper.readEntireStreamAsString( )));
+    StringArray myText(StringArray::fromLines(unzipper.readEntireStreamAsString()));
     
-    for (int i = 0; i < myText.size( ); ++i) {
-        post("%s", myText.getReference(i).toRawUTF8( ));
+    for (int i = 0; i < myText.size(); ++i) {
+        post("%s", myText.getReference(i).toRawUTF8());
     }
     //
     }

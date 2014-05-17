@@ -70,8 +70,8 @@ struct Oizo {
 class Oizo {
 
 public:
-    Oizo( ) { }
-    ~Oizo( ) { }
+    Oizo() { }
+    ~Oizo() { }
     
 public:
     Array<long, CriticalSection> mValues;
@@ -89,7 +89,7 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mShared( ) { }
+    _jojo() : mShared() { }
 
 public:
     t_object                    ob;
@@ -182,7 +182,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -191,9 +191,9 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    const ScopedLock lock(x->mShared->mValues.getLock( ));
-    const int argc = x->mShared->mValues.size( );
-    long * const argv = x->mShared->mValues.getRawDataPointer( );
+    const ScopedLock lock(x->mShared->mValues.getLock());
+    const int argc = x->mShared->mValues.size();
+    long * const argv = x->mShared->mValues.getRawDataPointer();
     for (int i = 0; i < argc; ++i) { post("%ld / %ld", i, *(argv + i)); }
 }
 

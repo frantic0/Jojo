@@ -32,7 +32,7 @@
 // ------------------------------------------------------------------------------------------------------------
 
 /* Note: Threads are created suspended, and signaled right after. */
-/* Note: All the thread creation machinery is done in the startThread( ) method. */
+/* Note: All the thread creation machinery is done in the startThread() method. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ public:
     explicit JojoThread(_jojo *x) : Thread("Jojo"), owner(x) { }
     
 public:
-    void run( );  
+    void run();  
 
 private:
     _jojo *owner;   /* Needed to call t_jojo's functions. */
@@ -79,8 +79,8 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mThread(new JojoThread(this)) { mThread->startThread( ); }  
-    ~_jojo( ) { mThread->stopThread(-1); }  /* Must be stopped before deletion. */
+    _jojo() : mThread(new JojoThread(this)) { mThread->startThread(); }  
+    ~_jojo() { mThread->stopThread(-1); }  /* Must be stopped before deletion. */
 
 public:
     t_object                    ob;
@@ -94,11 +94,11 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void JojoThread::run( )
+void JojoThread::run()
 { 
     static long counter = 0;
     
-    while (!threadShouldExit( )) { 
+    while (!threadShouldExit()) { 
     //
     if (++counter % 100) { Thread::sleep(10); }
     else {
@@ -191,7 +191,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
     
     if (x->mClock) {
         object_free(x->mClock);
@@ -213,7 +213,7 @@ void jojo_task(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    post("I am the %s thread!", x->mThread->getThreadName( ).toRawUTF8( ));
+    post("I am the %s thread!", x->mThread->getThreadName().toRawUTF8());
 }
 
 // ------------------------------------------------------------------------------------------------------------

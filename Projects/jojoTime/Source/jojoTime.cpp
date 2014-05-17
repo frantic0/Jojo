@@ -93,7 +93,7 @@ void waste_constructor  (void);
 #if defined ( __clang__ ) || defined ( __GNUC__ )
 
 void waste_ctor(void)  __attribute__ ((constructor));
-void waste_ctor(void)  { waste_constructor( ); }
+void waste_ctor(void)  { waste_constructor(); }
 
 #endif
 
@@ -144,7 +144,7 @@ void waste_time(t_waste *x)
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mTime(Time::getCurrentTime( )) { }
+    _jojo() : mTime(Time::getCurrentTime()) { }
 
 public:
     t_object    ob;
@@ -238,7 +238,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -247,10 +247,10 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    RelativeTime elapsedTime(Time::getCurrentTime( ) - x->mTime);
+    RelativeTime elapsedTime(Time::getCurrentTime() - x->mTime);
     
-    post("Origin / %s", x->mTime.toString(true, true, true, true).toRawUTF8( ));
-    post("Elapsed / %s", elapsedTime.getDescription( ).toRawUTF8( ));
+    post("Origin / %s", x->mTime.toString(true, true, true, true).toRawUTF8());
+    post("Elapsed / %s", elapsedTime.getDescription().toRawUTF8());
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -259,7 +259,7 @@ void jojo_bang(t_jojo *x)
 
 void jojo_benchmark(t_jojo *x) 
 {
-    File folder(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory( ));
+    File folder(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory());
     
     /* Return "jojoTime.txt" "jojoTime2.txt" "jojoTime3.txt"... */
     
@@ -267,9 +267,9 @@ void jojo_benchmark(t_jojo *x)
 
     for (int i = 0; i < 1000; ++i) {
     //
-    benchmark.start( );
-    jojo_doSomething( );
-    benchmark.stop( );
+    benchmark.start();
+    jojo_doSomething();
+    benchmark.stop();
     //
     }
 }

@@ -52,7 +52,7 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo() { }
 
 public:
     t_object    ob;
@@ -140,7 +140,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -160,11 +160,11 @@ void jojo_bang(t_jojo *x)
     
     /* The libjojo.dylib must be placed inside the bundle. */
     
-    DynamicLibrary myDLL(folder.getChildFile("Contents/Resources/libjojo.dylib").getFullPathName( ));
+    DynamicLibrary myDLL(folder.getChildFile("Contents/Resources/libjojo.dylib").getFullPathName());
     
     jojoFunction f = reinterpret_cast<jojoFunction>(myDLL.getFunction("jojoHello"));
     
-    if (f) { (*f)( ); }
+    if (f) { (*f)(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------

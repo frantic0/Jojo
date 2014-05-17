@@ -52,7 +52,7 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo() { }
 
 public:
     t_object    ob;
@@ -140,7 +140,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -151,9 +151,9 @@ void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
     File toHash(s->s_name);
     
-    if (toHash.existsAsFile( )) {
-        post("%s", MD5(toHash).toHexString( ).toRawUTF8( ));
-        post("%s", SHA256(toHash).toHexString( ).toRawUTF8( ));
+    if (toHash.existsAsFile()) {
+        post("%s", MD5(toHash).toHexString().toRawUTF8());
+        post("%s", SHA256(toHash).toHexString().toRawUTF8());
     }
 }
 

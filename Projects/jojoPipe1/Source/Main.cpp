@@ -59,12 +59,12 @@ int main(int argc, char* argv[])
     pipe.createNewPipe("jojoLapin1234");
     
     String myText("HelloWorld!");
-    const MemoryBlock msg(myText.toRawUTF8( ), myText.getNumBytesAsUTF8( ) + 1);
+    const MemoryBlock msg(myText.toRawUTF8(), myText.getNumBytesAsUTF8() + 1);
     
     while(running) { 
     //
     DBG("Pipe1"); 
-    int result = pipe.write(msg.getData( ), msg.getSize( ), -1);    /* Caution: block until jojoPipe2. */
+    int result = pipe.write(msg.getData(), msg.getSize(), -1);    /* Caution: block until jojoPipe2. */
     DBG(result);
     Thread::sleep(1000);
     //

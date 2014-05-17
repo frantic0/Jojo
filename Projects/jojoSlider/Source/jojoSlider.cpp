@@ -62,7 +62,7 @@
 void jojo_quit(void);
 void jojo_quit(void)
 {
-    shutdownJuce_GUI( ); cpost("Shutdown JUCE\n");
+    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ void jojo_quit(void)
 
 #define JOJO_INITIALIZE \
     {   \
-    initialiseJuce_GUI( );   \
+    initialiseJuce_GUI();   \
     cpost("Initialize JUCE\n"); \
     quittask_install((method)jojo_quit, NULL);  \
     }
@@ -142,7 +142,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    if (!systhread_ismainthread( )) { error("Always in the main thread!"); } 
+    if (!systhread_ismainthread()) { error("Always in the main thread!"); } 
     else {
         x->mWindow->setVisible(true);
     }
@@ -158,7 +158,7 @@ void jojo_bang(t_jojo *x)
 
 void jojo_int(t_jojo *x, long n)
 {
-    if (!systhread_ismainthread( )) { error("Always in the main thread!"); }
+    if (!systhread_ismainthread()) { error("Always in the main thread!"); }
     else {
         x->mSlider.setValue(static_cast<double>(n));        /* juce::Value machinery. */
         outlet_int(x->mOutlet, n);    

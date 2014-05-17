@@ -52,8 +52,8 @@
 class Oizo {
 
 public:
-    explicit Oizo( )    { cpost("Oizo ctor\n"); }
-    ~Oizo( )            { cpost("Oizo dtor\n"); }
+    explicit Oizo()    { cpost("Oizo ctor\n"); }
+    ~Oizo()            { cpost("Oizo dtor\n"); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
@@ -66,16 +66,16 @@ private:
 class Momo {
 
 public:
-    explicit Momo( )    { cpost("Momo ctor\n"); }
-    ~Momo( )            { cpost("Momo dtor\n"); }
+    explicit Momo()    { cpost("Momo ctor\n"); }
+    ~Momo()            { cpost("Momo dtor\n"); }
     
-    void doSomething( ) { cpost("I am momo!\n"); }
+    void doSomething() { cpost("I am momo!\n"); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Momo)
 };
 
-Momo& getMomo( ) 
+Momo& getMomo() 
 {
     static Momo momo;
     return momo;
@@ -93,7 +93,7 @@ static Oizo oizo;
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo() { }
 
 public:
     t_object    ob;
@@ -130,13 +130,13 @@ public:
 void jojo_quit(void);
 void jojo_quit(void)
 {
-    StringArray backtrace(StringArray::fromLines(SystemStats::getStackBacktrace( )));
+    StringArray backtrace(StringArray::fromLines(SystemStats::getStackBacktrace()));
     
-    for (int i = 0; i < backtrace.size( ); ++i) {
-        cpost("%s\n", backtrace.getReference(i).toRawUTF8( ));
+    for (int i = 0; i < backtrace.size(); ++i) {
+        cpost("%s\n", backtrace.getReference(i).toRawUTF8());
     }
     
-    shutdownJuce_GUI( ); cpost("Shutdown JUCE\n");   /* AFAIK: Yes! */
+    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");   /* AFAIK: Yes! */
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ void jojo_quit(void)
 
 #define JOJO_INITIALIZE \
     {   \
-    initialiseJuce_GUI( );   \
+    initialiseJuce_GUI();   \
     cpost("Initialize JUCE\n"); \
     quittask_install((method)jojo_quit, NULL);  \
     }
@@ -173,7 +173,7 @@ JOJO_EXPORT int main(void)
     
     JOJO_INITIALIZE
     
-    getMomo( ).doSomething( );
+    getMomo().doSomething();
     
     return 0;
 }
@@ -210,7 +210,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------

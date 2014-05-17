@@ -52,7 +52,7 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mIP( ), mMAC( ) { }
+    _jojo() : mIP(), mMAC() { }
 
 public:
     t_object            ob;
@@ -143,7 +143,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -161,19 +161,19 @@ void jojo_doBang(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     
     IPAddress::findAllAddresses(x->mIP);
     
-    for (int i = 0; i < x->mIP.size( ); ++i) {
-        post("IP / %s", x->mIP.getReference(i).toString( ).toRawUTF8( ));
+    for (int i = 0; i < x->mIP.size(); ++i) {
+        post("IP / %s", x->mIP.getReference(i).toString().toRawUTF8());
     }
     
     MACAddress::findAllAddresses(x->mMAC);
         
-    for (int i = 0; i < x->mMAC.size( ); ++i) {
-        post("MAC / %s", x->mMAC.getReference(i).toString( ).toRawUTF8( ));
+    for (int i = 0; i < x->mMAC.size(); ++i) {
+        post("MAC / %s", x->mMAC.getReference(i).toString().toRawUTF8());
     }
     
     /* Launch an URL in your favorite browser. */
     
-    URL("http://www.juce.com").launchInDefaultBrowser( );
+    URL("http://www.juce.com").launchInDefaultBrowser();
 }
 
 // ------------------------------------------------------------------------------------------------------------

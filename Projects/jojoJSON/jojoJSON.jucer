@@ -8,7 +8,8 @@
               pluginWantsMidiIn="0" pluginProducesMidiOut="0" pluginSilenceInIsSilenceOut="0"
               pluginEditorRequiresKeys="0" pluginAUExportPrefix="jojoJSONAU"
               pluginRTASCategory="" aaxIdentifier="com.yourcompany.jojoJSON"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0">
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0"
+              buildVST3="0" buildRTAS="0" buildAAX="0">
   <MAINGROUP id="LZv2aa" name="jojoJSON">
     <GROUP id="{46254A4D-DA6C-2BC2-CA02-2DBFD63F3D57}" name="Source">
       <FILE id="d2u2Bs" name="jojoJSON.cpp" compile="1" resource="0" file="Source/jojoJSON.cpp"/>

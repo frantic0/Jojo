@@ -52,10 +52,10 @@
 class Oizo : public DynamicObject {
 
 public:
-    explicit Oizo( )    { setMethod("hello", Oizo::hello); post("Oizo ctor"); }
-    ~Oizo( )            { post("Oizo dtor"); }
+    explicit Oizo()    { setMethod("hello", Oizo::hello); post("Oizo ctor"); }
+    ~Oizo()            { post("Oizo dtor"); }
 
-    static Identifier getClassName( ) { static const Identifier i("Oizo"); return i; }
+    static Identifier getClassName() { static const Identifier i("Oizo"); return i; }
     
 public:
 
@@ -65,14 +65,14 @@ public:
     //
     post("Hello World!");
     
-    if (dynamic_cast<Oizo*>(args.thisObject.getObject( ))) {            /* Class call. */
+    if (dynamic_cast<Oizo*>(args.thisObject.getObject())) {             /* Class call. */
     //
-    post("Class / %s", args.thisObject.toString( ).toRawUTF8( ));
+    post("Class / %s", args.thisObject.toString().toRawUTF8());
     //
     } else {                                                            /* Prototype call. */
     //
-    post("Prototype / %s", args.thisObject.toString( ).toRawUTF8( ));
-    post("From / %s", args.thisObject.getDynamicObject( )->getProperty("prototype").toString( ).toRawUTF8( ));
+    post("Prototype / %s", args.thisObject.toString().toRawUTF8());
+    post("From / %s", args.thisObject.getDynamicObject()->getProperty("prototype").toString().toRawUTF8());
     //
     }
         
@@ -92,8 +92,8 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mJS(new JavascriptEngine( )), mLock( ) { 
-        mJS->registerNativeObject(Oizo::getClassName( ), new Oizo( ));      /* Takes Oizo's ownership. */
+    _jojo() : mJS(new JavascriptEngine()), mLock() { 
+        mJS->registerNativeObject(Oizo::getClassName(), new Oizo());      /* Takes Oizo's ownership. */
     }
 
 public:
@@ -184,7 +184,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -195,11 +195,11 @@ void jojo_bang(t_jojo *x)
 {
     const ScopedLock myLock(x->mLock);      /* Javacript engine is not thread-safe. */
 
-    const Result result(x->mJS->execute("var o = new Oizo( ); Oizo.hello( ); o.hello( );"));
+    const Result result(x->mJS->execute("var o = new Oizo(); Oizo.hello(); o.hello();"));
         
-    if (result.wasOk( )) { }
+    if (result.wasOk()) { }
     else {
-        post("%s", result.getErrorMessage( ).toRawUTF8( ));
+        post("%s", result.getErrorMessage().toRawUTF8());
     }
 }
 

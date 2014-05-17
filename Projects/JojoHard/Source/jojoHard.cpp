@@ -52,7 +52,7 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo() { }
 
 public:
     t_object    ob;
@@ -140,7 +140,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -149,18 +149,18 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    post("%s", SystemStats::getJUCEVersion( ).toRawUTF8( ));
-    post("%s", SystemStats::getOperatingSystemName( ).toRawUTF8( ));
-    post("64-bit / %ld", SystemStats::isOperatingSystem64Bit( ));
+    post("%s", SystemStats::getJUCEVersion().toRawUTF8());
+    post("%s", SystemStats::getOperatingSystemName().toRawUTF8());
+    post("64-bit / %ld", SystemStats::isOperatingSystem64Bit());
     
     /* More getters in the JUCE library. */
     
     post("###");
     
-    StringArray backtrace(StringArray::fromLines(SystemStats::getStackBacktrace( )));
+    StringArray backtrace(StringArray::fromLines(SystemStats::getStackBacktrace()));
     
-    for (int i = 0; i < backtrace.size( ); ++i) {
-        post("%s", backtrace.getReference(i).toRawUTF8( ));
+    for (int i = 0; i < backtrace.size(); ++i) {
+        post("%s", backtrace.getReference(i).toRawUTF8());
     }
 }
 

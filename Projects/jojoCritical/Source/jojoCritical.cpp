@@ -52,7 +52,7 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mArray( ) { }
+    _jojo() : mArray() { }
 
 public:
     t_object                        ob;
@@ -148,7 +148,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -157,11 +157,11 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    const ScopedLock lock(x->mArray.getLock( ));
-    // const SpinLock::ScopedLockType lock(x->mArray.getLock( ));
+    const ScopedLock lock(x->mArray.getLock());
+    // const SpinLock::ScopedLockType lock(x->mArray.getLock());
     
-    const int argc = x->mArray.size( );
-    long * const argv = x->mArray.getRawDataPointer( );
+    const int argc = x->mArray.size();
+    long * const argv = x->mArray.getRawDataPointer();
     
     for (int i = 0; i < argc; ++i) { post("%ld / %ld", i, *(argv + i)); }
 }
@@ -185,7 +185,7 @@ void jojo_foo(t_jojo *x)
     DefaultElementComparator<long> sorter;
     foo.sort(sorter);
     
-    for (int i = 0; i < foo.size( ); ++i) { post("%ld", foo[i]); }
+    for (int i = 0; i < foo.size(); ++i) { post("%ld", foo[i]); }
 }
 
 // ------------------------------------------------------------------------------------------------------------

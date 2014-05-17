@@ -52,7 +52,7 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo() { }
 
 public:
     t_object    ob;
@@ -146,7 +146,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -155,7 +155,7 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    File folder(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory( ));
+    File folder(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory());
     
     /* Return "jojoFile.txt" "jojoFile2.txt" "jojoFile3.txt"... */
     
@@ -173,8 +173,8 @@ void jojo_write(const File& aFile)
 {
     FileOutputStream outputStream(aFile);
     
-    if (!outputStream.openedOk( )) { 
-        error("Failed to open %s", outputStream.getFile( ).getFileName( ).toRawUTF8( )); 
+    if (!outputStream.openedOk()) { 
+        error("Failed to open %s", outputStream.getFile().getFileName().toRawUTF8()); 
         return;
     }
 
@@ -189,12 +189,12 @@ void jojo_read(const File& aFile)
 {
     FileInputStream inputStream(aFile);
         
-    if (!inputStream.openedOk( )) { 
-        error("Failed to open %s", inputStream.getFile( ).getFileName( ).toRawUTF8( )); 
+    if (!inputStream.openedOk()) { 
+        error("Failed to open %s", inputStream.getFile().getFileName().toRawUTF8()); 
         return;
     }
         
-    post("%s", inputStream.readEntireStreamAsString( ).toRawUTF8( ));       /* File::loadFileAsString( ) */
+    post("%s", inputStream.readEntireStreamAsString().toRawUTF8());       /* File::loadFileAsString() */
 }
 
 // ------------------------------------------------------------------------------------------------------------

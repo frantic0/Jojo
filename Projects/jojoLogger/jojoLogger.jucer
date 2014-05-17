@@ -8,7 +8,8 @@
               pluginWantsMidiIn="0" pluginProducesMidiOut="0" pluginSilenceInIsSilenceOut="0"
               pluginEditorRequiresKeys="0" pluginAUExportPrefix="jojoLoggerAU"
               pluginRTASCategory="" aaxIdentifier="com.yourcompany.jojoLogger"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0">
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0"
+              buildVST3="0" buildRTAS="0" buildAAX="0">
   <MAINGROUP id="MTK3Jm" name="jojoLogger">
     <GROUP id="{B86690A6-6E6A-D8B0-FC8D-92E788548A73}" name="Source">
       <FILE id="cOOBBx" name="jojoLogger.cpp" compile="1" resource="0" file="Source/jojoLogger.cpp"/>

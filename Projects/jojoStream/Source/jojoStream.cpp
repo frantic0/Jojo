@@ -52,7 +52,7 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo() { }
 
 public:
     t_object    ob;
@@ -140,7 +140,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -155,10 +155,10 @@ void jojo_bang(t_jojo *x)
 
     /* Write to the file one shot. */
     
-    File folder(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory( ));
+    File folder(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory());
     FileOutputStream outputStream(folder.getNonexistentChildFile("jojoStream", ".txt", false));
     
-    if (outputStream.openedOk( )) { 
+    if (outputStream.openedOk()) { 
         outputStream << tempStream;
     }
 }

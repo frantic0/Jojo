@@ -52,10 +52,10 @@
 class Kitty : public ReferenceCountedObject {
 
 public:
-    explicit Kitty( )   { post("Kitty ctor"); }
-    ~Kitty( )           { post("Kitty dtor / %x", this); }
+    explicit Kitty()   { post("Kitty ctor"); }
+    ~Kitty()           { post("Kitty dtor / %x", this); }
     
-    void doSomething( ) const { post("Kitty %x do something very fun!", this); }
+    void doSomething() const { post("Kitty %x do something very fun!", this); }
 
 private:
     JUCE_LEAK_DETECTOR(Kitty)
@@ -73,7 +73,7 @@ typedef ReferenceCountedObjectPtr<Kitty> KittyPtr;
 
 struct MyHashGenerator {
     int generateHash(Uuid key, int upperLimit) const {
-        return (int)(((uint32)key.toString( ).hashCode( )) % (uint32)upperLimit);
+        return (int)(((uint32)key.toString().hashCode()) % (uint32)upperLimit);
     }
 };
 
@@ -89,12 +89,12 @@ typedef HashMap<Uuid, KittyPtr, MyHashGenerator> MyHash;
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mHash( ) { }
+    _jojo() : mHash() { }
 
 public:
     t_object    ob;
     ulong       mError;
-    MyHash      mHash;          /* HashMap uses slots and linked-list for collisions. */
+    MyHash      mHash;      /* HashMap uses slots and linked-list for collisions. */
     
     } t_jojo;
     
@@ -178,7 +178,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    KittyPtr ptrKitty(new Kitty( ));
+    KittyPtr ptrKitty(new Kitty());
     
     Uuid a;
     Uuid b;
@@ -196,11 +196,11 @@ void jojo_bang(t_jojo *x)
     x->mHash.set(b, ptrKitty);
     
     KittyPtr temp(x->mHash[a]);
-    post("%ld", temp->getReferenceCount( ));        /* Should be 4!*/
-    temp->doSomething( );
+    post("%ld", temp->getReferenceCount());         /* Should be 4!*/
+    temp->doSomething();
     
     x->mHash.set(a, temp);                          /* Overwrite an existing key. */
-    post("%ld", temp->getReferenceCount( ));        /* Should be 4! */
+    post("%ld", temp->getReferenceCount());         /* Should be 4! */
 }
 
 // ------------------------------------------------------------------------------------------------------------

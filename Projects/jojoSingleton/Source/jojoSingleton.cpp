@@ -60,10 +60,10 @@
 class Oizo {
 
 public:
-    explicit Oizo( )    { post("Oizo ctor"); }
-    ~Oizo( )            { post("Oizo dtor"); cpost("Oizo dtor"); clearSingletonInstance( ); }
+    explicit Oizo()    { post("Oizo ctor"); }
+    ~Oizo()            { post("Oizo dtor"); cpost("Oizo dtor"); clearSingletonInstance(); }
     
-    void doSomething( ) const { post("Cuicui"); }
+    void doSomething() const { post("Cuicui"); }
     
     juce_DeclareSingleton(Oizo, false)
 
@@ -92,7 +92,7 @@ typedef struct _jojo {
 public :
     /* Initialize it first for foolproof multithreading. */
     
-    _jojo( ) { Oizo *o = Oizo::getInstance( ); (void)o; }   
+    _jojo() { Oizo *o = Oizo::getInstance(); (void)o; }   
 
 public:
     t_object    ob;
@@ -182,7 +182,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -191,7 +191,7 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    Oizo::getInstance( )->doSomething( );
+    Oizo::getInstance()->doSomething();
 }
 
 // ------------------------------------------------------------------------------------------------------------

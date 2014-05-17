@@ -56,10 +56,10 @@
 class Oizo : public Value::Listener {
 
 public:
-    explicit Oizo( )    { cpost("Oizo ctor\n"); }
-    ~Oizo( )            { cpost("Oizo dtor\n"); }
+    explicit Oizo()    { cpost("Oizo ctor\n"); }
+    ~Oizo()            { cpost("Oizo dtor\n"); }
 
-    void valueChanged(Value &value) { post("Changed / %s", value.toString( ).toRawUTF8( )); }
+    void valueChanged(Value &value) { post("Changed / %s", value.toString().toRawUTF8()); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -69,9 +69,9 @@ public:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mOizo(new Oizo( )), mValue(var::undefined( )) { mValue.addListener(mOizo); }
+    _jojo() : mOizo(new Oizo()), mValue(var::undefined()) { mValue.addListener(mOizo); }
     
-    ~_jojo( ) { mValue.removeListener(mOizo); }     /* Currently not necessary, but for future! */
+    ~_jojo() { mValue.removeListener(mOizo); }     /* Currently not necessary, but for future! */
 
 public:
     t_object            ob;
@@ -110,7 +110,7 @@ public:
 void jojo_quit(void);
 void jojo_quit(void)
 {
-    shutdownJuce_GUI( ); cpost("Shutdown JUCE\n");
+    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ void jojo_quit(void)
 
 #define JOJO_INITIALIZE \
     {   \
-    initialiseJuce_GUI( );   \
+    initialiseJuce_GUI();   \
     cpost("Initialize JUCE\n"); \
     quittask_install((method)jojo_quit, NULL);  \
     }
@@ -188,7 +188,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -197,15 +197,15 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x) 
 {
-    if (!systhread_ismainthread( )) { error("Always in the main thread!"); }        
+    if (!systhread_ismainthread()) { error("Always in the main thread!"); }        
     else {
-        post("%s", x->mValue.toString( ).toRawUTF8( ));
+        post("%s", x->mValue.toString().toRawUTF8());
     }
 }
 
 void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
-    if (!systhread_ismainthread( )) { error("Always in the main thread!"); }        
+    if (!systhread_ismainthread()) { error("Always in the main thread!"); }        
     else if (argc) {
     //
     if (atom_gettype(argv) == A_SYM) { 

@@ -65,9 +65,9 @@
 class JojoTest : public UnitTest {
 
 public:
-    explicit JojoTest( ) : UnitTest("Testing Jojo!") { }
+    explicit JojoTest() : UnitTest("Testing Jojo!") { }
     
-    void runTest( ) { beginTest("Math"); expect(0 + 0 == 0); }
+    void runTest() { beginTest("Math"); expect(0 + 0 == 0); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ public:
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo() { }
 
 public:
     t_object    ob;
@@ -203,7 +203,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -222,9 +222,9 @@ void jojo_bang(t_jojo *x)
 void jojo_test(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
     UnitTestRunner testRunner;
-    testRunner.runAllTests( );
+    testRunner.runAllTests();
     
-    Logger::getCurrentLogger( )->writeToLog(newLine);   /* Cosmetic. */
+    Logger::getCurrentLogger()->writeToLog(newLine);   /* Cosmetic. */
 }
 
 // ------------------------------------------------------------------------------------------------------------

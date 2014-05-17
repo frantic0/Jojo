@@ -57,7 +57,7 @@ static uint8 myKey[ ] = { 0xFA, 0xDA, 0xFA, 0xDA };     /* Never hard code passw
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mFish(myKey, numElementsInArray(myKey)), mLock( ) { }
+    _jojo() : mFish(myKey, numElementsInArray(myKey)), mLock() { }
 
 public:
     t_object        ob;
@@ -153,7 +153,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -189,19 +189,19 @@ void jojo_write(t_jojo *x, const File& aFile)
             << "Stately, plump Buck Mulligan came from the stairhead," << newLine
             << "bearing a bowl of lather on which a mirror and a razor lay crossed." << newLine;
     
-    const size_t textSize = myText.getNumBytesAsUTF8( ) + 1;    /* Caution: UTF_8 size != string length. */
+    const size_t textSize = myText.getNumBytesAsUTF8() + 1;     /* Caution: UTF_8 size != string length. */
     const size_t blockSize = (textSize + 7) & ~7;               /* Round up to the next multiple of 8. */
 
     /* Pad with zeros (handy for a null terminated string). */
     
     juce::MemoryBlock myBlock(blockSize, true);
-    myBlock.copyFrom(myText.toRawUTF8( ), 0, textSize);         
+    myBlock.copyFrom(myText.toRawUTF8(), 0, textSize);         
     
     for (size_t i = 0; i < blockSize; i += 8) {
         x->mFish.encrypt(reinterpret_cast<uint32&>(myBlock[i]), reinterpret_cast<uint32&>(myBlock[i + 4]));
     }
     
-    aFile.replaceWithData(myBlock.getData( ), blockSize);
+    aFile.replaceWithData(myBlock.getData(), blockSize);
 }
     
 void jojo_read(t_jojo *x, const File& aFile)
@@ -210,16 +210,16 @@ void jojo_read(t_jojo *x, const File& aFile)
     
     if (aFile.loadFileAsData(myBlock)) {
     //
-    const size_t blockSize = myBlock.getSize( );
+    const size_t blockSize = myBlock.getSize();
     
     for (size_t i = 0; i < blockSize; i += 8) {
         x->mFish.decrypt(reinterpret_cast<uint32&>(myBlock[i]), reinterpret_cast<uint32&>(myBlock[i + 4]));
     }
     
-    StringArray myText(StringArray::fromLines(myBlock.toString( ).toRawUTF8( )));
+    StringArray myText(StringArray::fromLines(myBlock.toString().toRawUTF8()));
     
-    for (int i = 0; i < myText.size( ); ++i) {
-        post("%s", myText.getReference(i).toRawUTF8( ));
+    for (int i = 0; i < myText.size(); ++i) {
+        post("%s", myText.getReference(i).toRawUTF8());
     }
     //
     }

@@ -8,7 +8,8 @@
               pluginWantsMidiIn="0" pluginProducesMidiOut="0" pluginSilenceInIsSilenceOut="0"
               pluginEditorRequiresKeys="0" pluginAUExportPrefix="jojoStreamAU"
               pluginRTASCategory="" aaxIdentifier="com.yourcompany.jojoStream"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0">
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0"
+              buildVST3="0" buildRTAS="0" buildAAX="0">
   <MAINGROUP id="Nq1koN" name="jojoStream">
     <GROUP id="{9667EDCB-568A-AC8A-249E-F48B778D1A6E}" name="Source">
       <FILE id="S56QFt" name="jojoStream.cpp" compile="1" resource="0" file="Source/jojoStream.cpp"/>

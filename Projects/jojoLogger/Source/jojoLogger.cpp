@@ -52,7 +52,7 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mLogger(nullptr) { 
+    _jojo() : mLogger(nullptr) { 
     
         /* File::currentApplicationFile returns the ".mxo" package path. */
         
@@ -150,7 +150,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -160,14 +160,14 @@ void jojo_free(t_jojo *x)
 void jojo_bang(t_jojo *x)
 {
     Array<File> files;
-    File folder(x->mLogger->getLogFile( ).getParentDirectory( ));
+    File folder(x->mLogger->getLogFile().getParentDirectory());
     
     /* Find all the bundles in the directory. */
     
     folder.findChildFiles(files, File::findFilesAndDirectories, false, "*.mxo");
 
-    for (int i = 0; i < files.size( ); ++i) {
-        x->mLogger->logMessage(files[i].getFullPathName( ));
+    for (int i = 0; i < files.size(); ++i) {
+        x->mLogger->logMessage(files[i].getFullPathName());
     }
 }
 

@@ -6,7 +6,7 @@
  *  Permission is hereby granted, free of charge, to any person obtaining
  *  a copy of this software and associated documentation files (the
  *  "Software"), to deal in the Software without restriction, including
- *  without limitation the rights to use, copy, modify, merge, publish,
+ *  without limitation the rights to use, copy, modify, merge, publish, 
  *  distribute, sublicense, and/or sell copies of the Software, and to
  *  permit persons to whom the Software is furnished to do so, subject to
  *  the following conditions:
@@ -14,7 +14,7 @@
  *  The above copyright notice and this permission notice shall be
  *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
  *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  *  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
@@ -86,7 +86,7 @@
 void jojo_quit(void);
 void jojo_quit(void)
 {
-    shutdownJuce_GUI( ); cpost("Shutdown JUCE\n");
+    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ void jojo_quit(void)
 
 #define JOJO_INITIALIZE \
     {   \
-    initialiseJuce_GUI( );   \
+    initialiseJuce_GUI();   \
     cpost("Initialize JUCE\n"); \
     quittask_install((method)jojo_quit, NULL);  \
     }
@@ -112,14 +112,14 @@ void jojo_quit(void)
 class MainWindow : public DocumentWindow {
 
 public:
-    MainWindow( ) : DocumentWindow("MainWindow", Colours::lightgrey, DocumentWindow::allButtons) {
-        setContentOwned(new MainComponent( ), true);
-        centreWithSize(getWidth( ), getHeight( ));
+    MainWindow() : DocumentWindow("MainWindow", Colours::lightgrey, DocumentWindow::allButtons) {
+        setContentOwned(new MainComponent(), true);
+        centreWithSize(getWidth(), getHeight());
         setResizable(true, true);
         setUsingNativeTitleBar(true);
     }
     
-    void closeButtonPressed( ) { setVisible(false); }
+    void closeButtonPressed() { setVisible(false); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
@@ -132,7 +132,7 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mWindow(new MainWindow( )) { }
+    _jojo() : mWindow(new MainWindow()) { }
 
 public:
     t_object                    ob;
@@ -199,7 +199,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -207,7 +207,7 @@ void jojo_free(t_jojo *x)
 
 void jojo_bang(t_jojo *x)
 {
-    if (!systhread_ismainthread( )) { error("Always in the main thread!"); } 
+    if (!systhread_ismainthread()) { error("Always in the main thread!"); } 
     else {
         x->mWindow->setVisible(true);
     }

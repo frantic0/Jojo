@@ -57,13 +57,13 @@
 class aScope : public Expression::Scope {
 
 public:
-    String getScopeUID( ) const { return String("A scope!"); }
+    String getScopeUID() const { return String("A scope!"); }
 };
 
 class aVisitor : public Expression::Scope::Visitor {
     
 public:
-    void visit(const Expression::Scope& scope) { post("%s", scope.getScopeUID( ).toRawUTF8( )); }
+    void visit(const Expression::Scope& scope) { post("%s", scope.getScopeUID().toRawUTF8()); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ public:
     }
     
     void visitRelativeScope(const String& scopeName, Visitor& visitor) const {
-        if (scopeName == "Foo") { visitor.visit(aScope( )); return; }
+        if (scopeName == "Foo") { visitor.visit(aScope()); return; }
         Expression::Scope::visitRelativeScope(scopeName, visitor);
     }
 };
@@ -100,7 +100,7 @@ public:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mScope( ), mLock( ) { }
+    _jojo() : mScope(), mLock() { }
 
 public:
     t_object        ob;
@@ -192,7 +192,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -206,16 +206,16 @@ void jojo_bang(t_jojo *x)
     Expression a("(two + 2) * five");
     Expression b("x * 2");
     
-    post("%s = %f", a.toString( ).toRawUTF8( ), a.evaluate(x->mScope));  
-    post("%s = %f", b.toString( ).toRawUTF8( ), b.evaluate(x->mScope));   
+    post("%s = %f", a.toString().toRawUTF8(), a.evaluate(x->mScope));  
+    post("%s = %f", b.toString().toRawUTF8(), b.evaluate(x->mScope));   
     
     Expression c = a - b;
     
-    post("%s = %f", c.toString( ).toRawUTF8( ), c.evaluate(x->mScope));
+    post("%s = %f", c.toString().toRawUTF8(), c.evaluate(x->mScope));
     
     Expression d("half(five)");
     
-    post("%s = %f", d.toString( ).toRawUTF8( ), d.evaluate(x->mScope));
+    post("%s = %f", d.toString().toRawUTF8(), d.evaluate(x->mScope));
 }
 
 // ------------------------------------------------------------------------------------------------------------

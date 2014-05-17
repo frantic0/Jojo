@@ -51,10 +51,10 @@
 class Momo : public DeletedAtShutdown {
 
 public:
-    explicit Momo( )    { cpost("Momo ctor\n"); }
-    ~Momo( )            { cpost("Momo dtor\n"); }
+    explicit Momo()    { cpost("Momo ctor\n"); }
+    ~Momo()            { cpost("Momo dtor\n"); }
     
-    void doSomething( ) { cpost("I am momo!\n"); }
+    void doSomething() { cpost("I am momo!\n"); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Momo)
@@ -68,9 +68,9 @@ static Momo* momo;
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-Momo& getMomo( ) 
+Momo& getMomo() 
 {
-    if (momo == nullptr) { momo = new Momo( ); }        /* Called only by the main thread. */
+    if (momo == nullptr) { momo = new Momo(); }        /* Called only by the main thread. */
     return *momo;
 }
 
@@ -81,7 +81,7 @@ Momo& getMomo( )
 typedef struct _jojo {
 
 public :
-    _jojo( ) { }
+    _jojo() { }
 
 public:
     t_object    ob;
@@ -118,7 +118,7 @@ public:
 void jojo_quit(void);
 void jojo_quit(void)
 {
-    shutdownJuce_GUI( ); cpost("Shutdown JUCE\n");       /* DeletedAtShutdown::deleteAll is called there. */
+    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");       /* DeletedAtShutdown::deleteAll is called there. */
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -127,7 +127,7 @@ void jojo_quit(void)
 
 #define JOJO_INITIALIZE \
     {   \
-    initialiseJuce_GUI( );   \
+    initialiseJuce_GUI();   \
     cpost("Initialize JUCE\n"); \
     quittask_install((method)jojo_quit, NULL);  \
     }
@@ -157,7 +157,7 @@ JOJO_EXPORT int main(void)
     
     JOJO_INITIALIZE
     
-    getMomo( ).doSomething( );
+    getMomo().doSomething();
 
     return 0;
 }
@@ -194,7 +194,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -203,7 +203,7 @@ void jojo_free(t_jojo *x)
 
 class Toto : public CallbackMessage {
     public:
-        void messageCallback( ) { cpost("My name is Toto.\n"); }
+        void messageCallback() { cpost("My name is Toto.\n"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -211,7 +211,7 @@ class Toto : public CallbackMessage {
 
 void jojo_bang(t_jojo *x)
 {
-    (new Toto( ))->post( );         /* AFAIK it is thread-safe. */
+    (new Toto())->post();         /* AFAIK it is thread-safe. */
 }
 
 // ------------------------------------------------------------------------------------------------------------

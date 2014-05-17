@@ -59,10 +59,10 @@ class Oizo {
 friend class ContainerDeletePolicy<Oizo>;
 
 public:
-    explicit Oizo( )    { post("Oizo ctor"); }
+    explicit Oizo()    { post("Oizo ctor"); }
 
 private:
-    ~Oizo( )            { post("Oizo dtor"); }
+    ~Oizo()            { post("Oizo dtor"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -91,10 +91,10 @@ static void destroy (Oizo* o) { post("Oizo policy"); delete o; }
 class Kitty : public ReferenceCountedObject {
 
 public:
-    explicit Kitty( )   { post("Kitty ctor"); }
-    ~Kitty( )           { post("Kitty dtor"); }
+    explicit Kitty()   { post("Kitty ctor"); }
+    ~Kitty()           { post("Kitty dtor"); }
     
-    void doSomething( ) const { post("Kitty do something very fun!"); }
+    void doSomething() const { post("Kitty do something very fun!"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -117,8 +117,8 @@ class Felix {
 friend class WeakReference<Felix>;
 
 public:
-    explicit Felix( )   { post("Felix ctor"); }
-    ~Felix( )           { post("Felix dtor"); masterReference.clear(); }
+    explicit Felix()   { post("Felix ctor"); }
+    ~Felix()           { post("Felix dtor"); masterReference.clear(); }
 
 private:
     WeakReference<Felix>::Master masterReference;
@@ -131,7 +131,7 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mOizo(new Oizo( )) { }
+    _jojo() : mOizo(new Oizo()) { }
 
 public:
     t_object            ob;
@@ -220,7 +220,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -236,15 +236,15 @@ void jojo_bang(t_jojo *x)
 {
     /* Avoid to accidentally delete a raw pointer owned by a ScopedPointer. */
     
-    //delete x->mOizo.get( );       /* Error: 'Oizo::~Oizo()' is private! */
+    //delete x->mOizo.get();       /* Error: 'Oizo::~Oizo()' is private! */
     
     /* */
     
-    KittyPtr ptrA(new Kitty( ));
+    KittyPtr ptrA(new Kitty());
     KittyPtr ptrB(ptrA);  
     
-    ptrA->doSomething( );
-    ptrB->doSomething( );
+    ptrA->doSomething();
+    ptrB->doSomething();
     
     ReferenceCountedArray<Kitty> RCArray;
     
@@ -254,11 +254,11 @@ void jojo_bang(t_jojo *x)
     ptrA = nullptr;
     ptrB = nullptr;
     
-    post("?"); RCArray.clear( ); post("!");
+    post("?"); RCArray.clear(); post("!");
     
     /* */
     
-    Felix* n = new Felix( );
+    Felix* n = new Felix();
     WeakReference<Felix> myObjectRef = n;
 
     Felix* p = myObjectRef; post("%ld", p == nullptr);
@@ -268,7 +268,7 @@ void jojo_bang(t_jojo *x)
     Felix* q = myObjectRef; post("%ld", q == nullptr);
     
     post("Temporary");
-    jojo_test(new Kitty( ));    /* Properly freed? */
+    jojo_test(new Kitty());    /* Properly freed? */
 }
 
 // ------------------------------------------------------------------------------------------------------------

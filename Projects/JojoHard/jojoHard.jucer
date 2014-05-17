@@ -8,7 +8,8 @@
               pluginWantsMidiIn="0" pluginProducesMidiOut="0" pluginSilenceInIsSilenceOut="0"
               pluginEditorRequiresKeys="0" pluginAUExportPrefix="jojoHardAU"
               pluginRTASCategory="" aaxIdentifier="com.yourcompany.jojoHard"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0">
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0"
+              buildVST3="0" buildRTAS="0" buildAAX="0">
   <MAINGROUP id="MIb9dt" name="jojoHard">
     <GROUP id="{828B47A3-7BF6-BF4B-D429-8371C3A88342}" name="Source">
       <FILE id="cQPRNK" name="jojoHard.cpp" compile="1" resource="0" file="Source/jojoHard.cpp"/>

@@ -67,9 +67,9 @@ int main(int argc, char* argv[])
     //
     DBG("Pipe2");
     MemoryBlock msg(numberOfBytes + 1, true);                       /* Zero terminated in case of. */
-    int result = pipe.read(msg.getData( ), numberOfBytes, -1);
+    int result = pipe.read(msg.getData(), numberOfBytes, -1);
     DBG(result);
-    DBG(msg.toString( ));  
+    DBG(msg.toString());  
     Thread::sleep(1000);
     //
     }

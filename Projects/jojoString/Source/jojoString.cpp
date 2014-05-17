@@ -54,11 +54,11 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mPair( ), mLock( ) { 
+    _jojo() : mPair(), mLock() { 
         /* Use a text file to translate strings in the bundle. */
         
         File tr(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoString.txt"));
-        if (tr.existsAsFile( )) {
+        if (tr.existsAsFile()) {
             LocalisedStrings::setCurrentMappings(new LocalisedStrings(tr, false));
         }
     }
@@ -153,7 +153,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -164,22 +164,22 @@ void jojo_bang(t_jojo *x)
 {
     /* Caution : translation is a linear lookup with a pair of StringArray. */
     
-    post("%s", TRANS("The trail skirted the cliff.").toRawUTF8( ));     /* Should be in french! */
+    post("%s", TRANS("The trail skirted the cliff.").toRawUTF8());     /* Should be in french! */
     
     /* */
     
     String toto(CharPointer_UTF8("P\xc3\xa9p\xc3\xa9 p\xc3\xa8te en ao\xc3\xbbt!"));
     
-    post("%s", toto.toRawUTF8( ));
-    post("    Length: %ld", toto.length( ));
-    post("    Bytes: %ld", CharPointer_UTF8::getBytesRequiredFor(toto.getCharPointer( )));
+    post("%s", toto.toRawUTF8());
+    post("    Length: %ld", toto.length());
+    post("    Bytes: %ld", CharPointer_UTF8::getBytesRequiredFor(toto.getCharPointer()));
     
     /* */
     
     const ScopedLock myLock(x->mLock); 
     
-    post("Keys: %s", x->mPair.getAllKeys( ).joinIntoString(" / ").toRawUTF8( ));
-    post("Values: %s", x->mPair.getAllValues( ).joinIntoString(" / ").toRawUTF8( ));
+    post("Keys: %s", x->mPair.getAllKeys().joinIntoString(" / ").toRawUTF8());
+    post("Values: %s", x->mPair.getAllValues().joinIntoString(" / ").toRawUTF8());
 }
 
 // ------------------------------------------------------------------------------------------------------------

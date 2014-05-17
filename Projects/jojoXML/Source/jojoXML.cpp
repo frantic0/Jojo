@@ -52,7 +52,7 @@
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mLock( ) { }
+    _jojo() : mLock() { }
 
 public:
     t_object        ob;
@@ -147,7 +147,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -177,16 +177,16 @@ void jojo_write(t_jojo *x, const File& aFile)
     myElement->setAttribute("Oreilles", "Deux");
     myElement->setAttribute("Rapide", true);
 
-    post("%s", myDocument.createDocument(String::empty, true).toRawUTF8( ));
+    post("%s", myDocument.createDocument(String::empty, true).toRawUTF8());
     myDocument.writeToFile(aFile, String::empty);
 }
     
 void jojo_read(t_jojo *x, const File& aFile)
 {
     XmlDocument myDocument(aFile);
-    XmlElement* myElement = myDocument.getDocumentElement( );
+    XmlElement* myElement = myDocument.getDocumentElement();
     
-    if (myElement == nullptr) { post("%s", myDocument.getLastParseError( ).toRawUTF8( )); }
+    if (myElement == nullptr) { post("%s", myDocument.getLastParseError().toRawUTF8()); }
     else if (myElement->hasTagName("Jojo")) {
     //
     forEachXmlChildElement(*myElement, child)
@@ -194,12 +194,12 @@ void jojo_read(t_jojo *x, const File& aFile)
     //
     /* Iterate through the linked list once. */
     
-    const int count = child->getNumAttributes( );   
+    const int count = child->getNumAttributes();   
     
     /* Iterate through the linked list twice at each iteration! */
     
     for (int i = 0; i < count; ++i) {
-        post("%s %s", child->getAttributeName(i).toRawUTF8( ), child->getAttributeValue(i).toRawUTF8( ));
+        post("%s %s", child->getAttributeName(i).toRawUTF8(), child->getAttributeValue(i).toRawUTF8());
     }
     //
     }

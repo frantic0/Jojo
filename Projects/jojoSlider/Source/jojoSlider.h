@@ -68,12 +68,12 @@ public:
     MainWindow(void *o) : DocumentWindow("Jojo", Colours::lightgrey, DocumentWindow::allButtons) {
         setContentOwned(new MainComponent(o), true);
         setSize(250, 250);
-        centreWithSize(getWidth( ), getHeight( ));
+        centreWithSize(getWidth(), getHeight());
         setResizable(true, true);
         setUsingNativeTitleBar(true);
     }
     
-    void closeButtonPressed( ) { setVisible(false); }
+    void closeButtonPressed() { setVisible(false); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
@@ -85,10 +85,10 @@ private:
 
 typedef struct _jojo {
 
-/* Note that juce::Value must be construct before the MainWindow. */
+/* Note that juce::Value must be constructed before the MainWindow. */
 
 public :
-    _jojo( ) :  mSlider( ), mWindow(new MainWindow(this)) { }       /* Pass a pointer to self. */
+    _jojo() :  mSlider(), mWindow(new MainWindow(this)) { }       /* Pass a pointer to self. */
 
 public:
     t_object                    ob;

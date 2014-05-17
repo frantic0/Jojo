@@ -60,7 +60,7 @@ public:
     explicit JojoJob(_jojo *x, const String& name = "Jojo") : ThreadPoolJob(name), owner(x) { }
 
 public:
-    JobStatus runJob( );
+    JobStatus runJob();
 
 private:
     _jojo *owner;
@@ -73,7 +73,7 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo( ) : mPool( ), mLock( ) { }
+    _jojo() : mPool(), mLock() { }
 
 public:
     t_object        ob;
@@ -88,14 +88,14 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-ThreadPoolJob::JobStatus JojoJob::runJob( ) 
+ThreadPoolJob::JobStatus JojoJob::runJob() 
 { 
     long counter = 0;
     
     juce::Random rand; 
     int k = rand.nextInt(100);
         
-    while (!shouldExit( )) {
+    while (!shouldExit()) {
     //
     if (++counter < k) { Thread::sleep(10); }
     else {
@@ -194,7 +194,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free(t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo( ); }
+    if (!x->mError) { x->~t_jojo(); }
     
     if (x->mClock) {
         object_free(x->mClock);
@@ -207,7 +207,7 @@ void jojo_free(t_jojo *x)
 
 void jojo_task(t_jojo *x)
 {
-    post("%ld", x->mPool.getNumJobs( ));
+    post("%ld", x->mPool.getNumJobs());
 }
 
 // ------------------------------------------------------------------------------------------------------------

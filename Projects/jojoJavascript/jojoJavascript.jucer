@@ -8,7 +8,8 @@
               pluginWantsMidiIn="0" pluginProducesMidiOut="0" pluginSilenceInIsSilenceOut="0"
               pluginEditorRequiresKeys="0" pluginAUExportPrefix="jojoJavascriptAU"
               pluginRTASCategory="" aaxIdentifier="com.yourcompany.jojoJavascript"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0">
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0"
+              buildVST3="0" buildRTAS="0" buildAAX="0">
   <MAINGROUP id="mEVGmy" name="jojoJavascript">
     <GROUP id="{47B170C1-1E01-4044-20B3-99E8CA6013B3}" name="Source">
       <FILE id="XkYN9U" name="jojoJavascript.cpp" compile="1" resource="0"
