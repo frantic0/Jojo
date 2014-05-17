@@ -91,12 +91,12 @@ public:
     }
 
 private:
-    void doSpawn() { ++eggs; post("Great! %ld eggs!", eggs.get()); }
+    void doSpawn() { ++eggs; post("Great, %ld eggs!", eggs.get()); }
     
     /* Copy constructor is used in the clone method. */
     
     Oizo(const Oizo& o) : DynamicObject(o), eggs(12) { cloneAllProperties(); post("Oizo copy"); } 
-    Oizo& operator=(const Oizo&);
+    Oizo& operator = (const Oizo&);
 
     Atomic<int> eggs;
     

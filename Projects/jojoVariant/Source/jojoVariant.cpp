@@ -55,10 +55,9 @@ public:
     explicit Oizo()    { post("Oizo ctor"); }
     ~Oizo()            { post("Oizo dtor"); }
     
-    Oizo(const Oizo& o)             { post("Oizo copy"); }
-    Oizo& operator=(const Oizo& o)  { post("Oizo ="); return *this; }
-    
-    void doSomething() const       { post("Cui-cui"); }
+    Oizo(const Oizo& o)                 { post("Oizo copy"); }
+    Oizo& operator = (const Oizo& o)    { post("Oizo = "); return *this; }
+    void doSomething() const            { post("Cui-cui"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -171,7 +170,7 @@ void jojo_bang(t_jojo *x)
     v = 3.14;
     post("Var / %s", v.toString().toRawUTF8());
     
-    /* */
+    //
     
     v = "Carotte";
     post("IsArray / %ld", v.isArray());
@@ -184,11 +183,11 @@ void jojo_bang(t_jojo *x)
     post("Var / %s", v[1].toString().toRawUTF8());
     post("Var / %s", v[2].toString().toRawUTF8());
     
-    /* */
+    //
     
     v = var::null;
     
-    /* */
+    //
     
     v = var(Array<var>());
     Array<var> * const temp = v.getArray();
@@ -202,7 +201,7 @@ void jojo_bang(t_jojo *x)
         post("Var / %s", temp->getUnchecked(i).toString().toRawUTF8());
     }
     
-    /* */
+    //
     
     v = var(new Oizo());
     

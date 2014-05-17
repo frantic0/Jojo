@@ -87,7 +87,7 @@ public:
     
     void valueTreeChildAdded(ValueTree&, ValueTree&)    { }
     void valueTreeChildRemoved(ValueTree&, ValueTree&)  { }
-	void valueTreeChildOrderChanged(ValueTree&)         { }
+    void valueTreeChildOrderChanged(ValueTree&)         { }
     void valueTreeParentChanged (ValueTree&)            { }
     void valueTreeRedirected(ValueTree&)                { }
 

@@ -58,7 +58,7 @@ public:
     t_object                        ob;
     ulong                           mError;
     Array<long, CriticalSection>    mArray;
-    //Array<long, SpinLock>         mArray;     /* Not reentrant. Use it with care! */
+    // Array<long, SpinLock>         mArray;     /* Not reentrant. Use it with care! */
     
     } t_jojo;
     
@@ -179,7 +179,7 @@ void jojo_int(t_jojo *x, long n)
 
 void jojo_foo(t_jojo *x)
 {
-    const long k[ ] = { 4, 1, 3, 5, 2 };
+    const long k[] = { 4, 1, 3, 5, 2 };
     Array<long> foo(k, numElementsInArray(k));
     
     DefaultElementComparator<long> sorter;

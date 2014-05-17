@@ -48,7 +48,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-static uint8 myKey[ ] = { 0xFA, 0xDA, 0xFA, 0xDA };     /* Never hard code password (don't do that)! */
+static uint8 myKey[] = { 0xFA, 0xDA, 0xFA, 0xDA };     /* Never hard code password (don't do that)! */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -176,7 +176,7 @@ void jojo_bang(t_jojo *x)
 
 /* Example padded with zeros with ECB to chain the blocks. */
 
-/* https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation */
+/* < https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation > */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ void jojo_write(t_jojo *x, const File& aFile)
     String myText(CharPointer_UTF8("P\xc3\xa9p\xc3\xa9 p\xc3\xa8te en ao\xc3\xbbt!"));
 
     myText  << newLine << "###" << newLine
-            << "Stately, plump Buck Mulligan came from the stairhead," << newLine
+            << "Stately, plump Buck Mulligan came from the stairhead, " << newLine
             << "bearing a bowl of lather on which a mirror and a razor lay crossed." << newLine;
     
     const size_t textSize = myText.getNumBytesAsUTF8() + 1;     /* Caution: UTF_8 size != string length. */

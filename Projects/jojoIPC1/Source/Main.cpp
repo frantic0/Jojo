@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
     String myText("- How are you?");
     const MemoryBlock msg(myText.toRawUTF8(), myText.getNumBytesAsUTF8() + 1);
     
-    while(running) { 
+    while (running) { 
     //
     myIPC->sendMessage(msg);     /* Caution: block until jojoIPC2. */
     Thread::sleep(1000);

@@ -250,7 +250,7 @@ void jojo_read(t_jojo *x, const File& aFile)
         post("? / %s", test[i].toString().toRawUTF8());
         if (DynamicObject::Ptr o = test[i].getDynamicObject()) {
             for (int j = 0; j < o->getProperties().size(); ++j) {
-                post("? / --- %s", o->getProperties().getName(j).toString().toRawUTF8());
+                post("? / --- %s", o->getProperties().getName(j).toString().toRawUTF8());   // --
             }
         }
     }

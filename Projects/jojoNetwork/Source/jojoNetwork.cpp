@@ -173,18 +173,18 @@ void jojo_doBang(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     
     /* Launch an URL in your favorite browser. */
     
-    URL("http://www.juce.com").launchInDefaultBrowser();
+    URL("http://www.juce.com").launchInDefaultBrowser();    // --
 }
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* LSOpenFromURLSpec() returned -43 for application (null) path http://www.juce.com. */
+/* LSOpenFromURLSpec() returned -43 for application (null) path ... */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* juce_mac_Files.mm / Process::openDocument */
+// juce_mac_Files.mm / Process::openDocument
 
 /*
 if (parameters.isEmpty()) {

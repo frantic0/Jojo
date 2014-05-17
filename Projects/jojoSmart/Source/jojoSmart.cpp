@@ -236,9 +236,7 @@ void jojo_bang(t_jojo *x)
 {
     /* Avoid to accidentally delete a raw pointer owned by a ScopedPointer. */
     
-    //delete x->mOizo.get();       /* Error: 'Oizo::~Oizo()' is private! */
-    
-    /* */
+    // delete x->mOizo.get();       /* Error: 'Oizo::~Oizo()' is private! */
     
     KittyPtr ptrA(new Kitty());
     KittyPtr ptrB(ptrA);  
@@ -256,7 +254,7 @@ void jojo_bang(t_jojo *x)
     
     post("?"); RCArray.clear(); post("!");
     
-    /* */
+    //
     
     Felix* n = new Felix();
     WeakReference<Felix> myObjectRef = n;

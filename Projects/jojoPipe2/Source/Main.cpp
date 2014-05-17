@@ -51,7 +51,7 @@ void intHandler(int dummy = 0) { running = false; }     /* Stop me with CTRL-C p
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-const size_t numberOfBytes = 12;                                /* HelloWorld!\0 */
+const size_t numberOfBytes = 12;    // HelloWorld!\0
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     NamedPipe pipe;
     pipe.openExisting("jojoLapin1234");                             /* Caution: always return true. */
     
-    while(running) {
+    while (running) {
     //
     DBG("Pipe2");
     MemoryBlock msg(numberOfBytes + 1, true);                       /* Zero terminated in case of. */

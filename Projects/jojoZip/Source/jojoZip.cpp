@@ -160,7 +160,7 @@ void jojo_bang(t_jojo *x)
     
     File zipFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoZip.txt"));
     
-    /* https://fr.wikipedia.org/wiki/Gzip */
+    /* < https://fr.wikipedia.org/wiki/Gzip > */
     
     jojo_write(x, zipFile);     /* Caution: it doesn't produce a compliant gzip file! */
     jojo_read(x, zipFile);
@@ -175,7 +175,7 @@ void jojo_write(t_jojo *x, const File& aFile)
     MemoryOutputStream myText;
     GZIPCompressorOutputStream zipper(&myText);
     
-    zipper << "Stately, plump Buck Mulligan came from the stairhead," << newLine
+    zipper << "Stately, plump Buck Mulligan came from the stairhead, " << newLine
            << "bearing a bowl of lather on which a mirror and a razor lay crossed." << newLine;
 
     zipper.flush();

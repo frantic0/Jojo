@@ -28,7 +28,7 @@
 
 /* JUCE::String miscellaneous. */
 
-/* ( https://github.com/julianstorer/JUCE/blob/master/modules/juce_core/text/juce_String.cpp#L2134 ). */
+/* < https://github.com/julianstorer/JUCE/blob/master/modules/juce_core/text/juce_String.cpp#L2134 > */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -166,7 +166,7 @@ void jojo_bang(t_jojo *x)
     
     post("%s", TRANS("The trail skirted the cliff.").toRawUTF8());     /* Should be in french! */
     
-    /* */
+    //
     
     String toto(CharPointer_UTF8("P\xc3\xa9p\xc3\xa9 p\xc3\xa8te en ao\xc3\xbbt!"));
     
@@ -174,7 +174,7 @@ void jojo_bang(t_jojo *x)
     post("    Length: %ld", toto.length());
     post("    Bytes: %ld", CharPointer_UTF8::getBytesRequiredFor(toto.getCharPointer()));
     
-    /* */
+    //
     
     const ScopedLock myLock(x->mLock); 
     

@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
     
     ScopedPointer<SlaveIPC> myIPC(new SlaveIPC());
     
-    while(running) {
+    while (running) {
     //
     Thread::sleep(1000);
     //
