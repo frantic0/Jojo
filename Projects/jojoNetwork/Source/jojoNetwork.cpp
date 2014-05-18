@@ -192,7 +192,7 @@ if (parameters.isEmpty()) {
         if ([workspace openFile: juceStringToNS (fileName)]) { return YES; }
     } 
             
-    return [workspace openURL: filenameAsURL];
+    return ([workspace openURL: filenameAsURL]);
 }
 */
 
