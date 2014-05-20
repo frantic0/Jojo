@@ -44,9 +44,9 @@ public :
     }
 
 public:
-    t_object                    ob;
-    ulong                       mError;
-    ScopedPointer<FileLogger>   mLogger;
+    t_object                  ob;
+    ulong                     mError;
+    ScopedPointer<FileLogger> mLogger;
     
     } t_jojo;
     

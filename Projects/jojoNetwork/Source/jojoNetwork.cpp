@@ -35,10 +35,10 @@ public :
     _jojo() : mIP(), mMAC() { }
 
 public:
-    t_object            ob;
-    ulong               mError;
-    Array<IPAddress>    mIP;
-    Array<MACAddress>   mMAC;
+    t_object          ob;
+    ulong             mError;
+    Array<IPAddress>  mIP;      // --
+    Array<MACAddress> mMAC;
     
     } t_jojo;
     

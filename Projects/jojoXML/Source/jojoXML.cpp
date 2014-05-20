@@ -166,7 +166,7 @@ void jojo_read (t_jojo *x, const File& aFile)
     XmlDocument myDocument (aFile);
     XmlElement* myElement = myDocument.getDocumentElement();
     
-    if  (myElement == nullptr) { post ("%s", myDocument.getLastParseError().toRawUTF8()); }
+    if (myElement == nullptr) { post ("%s", myDocument.getLastParseError().toRawUTF8()); }
     else if (myElement->hasTagName ("Jojo")) {
     //
     forEachXmlChildElement (*myElement, child)

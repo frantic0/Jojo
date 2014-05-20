@@ -132,8 +132,8 @@ void jojo_anything (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     File toHash (s->s_name);
     
     if (toHash.existsAsFile()) {
-        post("%s", MD5 (toHash).toHexString().toRawUTF8());
-        post("%s", SHA256 (toHash).toHexString().toRawUTF8());
+        post ("%s", MD5 (toHash).toHexString().toRawUTF8());
+        post ("%s", SHA256 (toHash).toHexString().toRawUTF8());
     }
 }
 

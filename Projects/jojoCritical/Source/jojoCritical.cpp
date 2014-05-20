@@ -35,10 +35,10 @@ public :
     _jojo() : mArray() { }
 
 public:
-    t_object                        ob;
-    ulong                           mError;
-    Array<long, CriticalSection>    mArray;
-    // Array<long, SpinLock>         mArray;     /* Not reentrant. Use it with care! */
+    t_object                     ob;
+    ulong                        mError;
+    Array<long, CriticalSection> mArray;
+    // Array<long, SpinLock> mArray;            /* Not reentrant. Use it with care! */
     
     } t_jojo;
     

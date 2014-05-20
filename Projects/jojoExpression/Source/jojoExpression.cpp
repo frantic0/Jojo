@@ -193,7 +193,7 @@ void jojo_bang (t_jojo *x)
     
     post ("%s = %f", c.toString().toRawUTF8(), c.evaluate (x->mScope));
     
-    Expression d ("half(five)");
+    Expression d ("half (five)");
     
     post ("%s = %f", d.toString().toRawUTF8(), d.evaluate (x->mScope));
 }

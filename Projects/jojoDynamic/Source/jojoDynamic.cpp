@@ -144,7 +144,7 @@ void jojo_bang (t_jojo *x)
     
     jojoFunction f = reinterpret_cast<jojoFunction> (myDLL.getFunction ("jojoHello"));
     
-    if (f) { (*f) (); }
+    if (f) { (*f)(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------

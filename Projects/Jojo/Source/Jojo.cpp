@@ -115,9 +115,9 @@ public :
     _jojo() : mWindow (new MainWindow()) { }
 
 public:
-    t_object                    ob;
-    ulong                       mError;
-    ScopedPointer<MainWindow>   mWindow;
+    t_object                  ob;
+    ulong                     mError;
+    ScopedPointer<MainWindow> mWindow;
     
     } t_jojo;
 

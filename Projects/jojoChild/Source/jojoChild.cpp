@@ -143,7 +143,7 @@ void jojo_doBang (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     StringArray processResult (StringArray::fromLines (process.readAllProcessOutput()));
     
     for (int i = 0; i < processResult.size(); ++i) {
-        post("%s", processResult.getReference (i).toRawUTF8());
+        post ("%s", processResult.getReference (i).toRawUTF8());
     }
 }
 

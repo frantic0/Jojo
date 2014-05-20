@@ -130,7 +130,7 @@ void jojo_free (t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
 
 }

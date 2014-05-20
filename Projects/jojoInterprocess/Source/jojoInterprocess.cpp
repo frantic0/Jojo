@@ -61,9 +61,9 @@ public :
     }
     
 public:
-    t_object                ob;
-    ulong                   mError;
-    ScopedPointer<Master>   mMaster;
+    t_object              ob;
+    ulong                 mError;
+    ScopedPointer<Master> mMaster;
 
     } t_jojo;
     
@@ -142,7 +142,7 @@ JOJO_EXPORT int main (void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     

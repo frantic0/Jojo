@@ -41,7 +41,7 @@ public:
     void connectionMade()  { DBG ("Master ConnectionMade"); }
     void connectionLost()  { DBG ("Master ConnectionLost"); }
  
-    void messageReceived(const MemoryBlock& mb) { DBG (mb.toString()); }
+    void messageReceived (const MemoryBlock& mb) { DBG (mb.toString()); }
 };
  
 // ------------------------------------------------------------------------------------------------------------

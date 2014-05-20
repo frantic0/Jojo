@@ -72,10 +72,10 @@ public :
     ~_jojo() { mProperties->removeChangeListener (mOizo); mProperties->saveIfNeeded(); }
     
 public:
-    t_object                        ob;
-    ulong                           mError;
-    ScopedPointer<Oizo>             mOizo;
-    ScopedPointer<PropertiesFile>   mProperties;    /* Consider to use ApplicationProperties in your code. */
+    t_object                      ob;
+    ulong                         mError;
+    ScopedPointer<Oizo>           mOizo;          // --
+    ScopedPointer<PropertiesFile> mProperties;    /* Consider to use ApplicationProperties in your code. */
     
     } t_jojo;
     
