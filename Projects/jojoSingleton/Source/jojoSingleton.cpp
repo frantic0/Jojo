@@ -75,8 +75,8 @@ public :
     _jojo() { Oizo *o = Oizo::getInstance(); (void)o; }   
 
 public:
-    t_object    ob;
-    ulong       mError;
+    t_object ob;
+    ulong mError;
     
     } t_jojo;
     

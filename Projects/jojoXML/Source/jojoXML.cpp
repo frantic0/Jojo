@@ -35,8 +35,8 @@ public :
     _jojo() : mLock() { }
 
 public:
-    t_object        ob;
-    ulong           mError;
+    t_object ob;
+    ulong mError;
     CriticalSection mLock;
     
     } t_jojo;

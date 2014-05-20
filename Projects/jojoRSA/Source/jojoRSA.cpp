@@ -37,10 +37,10 @@ public :
     _jojo() : mPublic(), mPrivate(), mLock() { RSAKey::createKeyPair (mPublic, mPrivate, 128); }
  
 public:
-    t_object        ob;
-    ulong           mError;
-    RSAKey          mPublic;
-    RSAKey          mPrivate;
+    t_object ob;
+    ulong mError;
+    RSAKey mPublic;
+    RSAKey mPrivate;
     CriticalSection mLock;
     
     } t_jojo;

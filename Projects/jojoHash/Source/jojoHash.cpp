@@ -72,9 +72,9 @@ public :
     _jojo() : mHash() { }
 
 public:
-    t_object    ob;
-    ulong       mError;
-    MyHash      mHash;      /* HashMap uses slots and linked-list for collisions. */
+    t_object ob;
+    ulong mError;
+    MyHash mHash;       /* HashMap uses slots and linked-list for collisions. */
     
     } t_jojo;
     

@@ -101,7 +101,7 @@ public:
     ~Felix()           { post ("Felix dtor"); masterReference.clear(); }
 
 private:
-    WeakReference<Felix>::Master masterReference;
+    WeakReference <Felix>::Master masterReference;
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -114,9 +114,9 @@ public :
     _jojo() : mOizo (new Oizo()) { }
 
 public:
-    t_object            ob;
-    ulong               mError;
-    ScopedPointer<Oizo> mOizo;
+    t_object ob;
+    ulong mError;
+    ScopedPointer <Oizo> mOizo;
     
     } t_jojo;
     

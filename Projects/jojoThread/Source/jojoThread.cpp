@@ -63,10 +63,10 @@ public :
     ~_jojo() { mThread->stopThread (-1); }  /* Must be stopped before deletion. */
 
 public:
-    t_object                  ob;
-    ulong                     mError;
-    ScopedPointer<JojoThread> mThread;
-    void                      *mClock; 
+    t_object ob;
+    ulong mError;
+    ScopedPointer <JojoThread> mThread;
+    void *mClock; 
     
     } t_jojo;
 

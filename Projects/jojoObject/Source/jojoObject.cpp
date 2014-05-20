@@ -97,9 +97,9 @@ public :
     }
 
 public:
-    t_object        ob;
-    ulong           mError;
-    OizoPtr         mOizo;
+    t_object ob;
+    ulong mError;
+    OizoPtr mOizo;
     CriticalSection mLock;      /* DynamicObject is not thread-safe. */
     
     } t_jojo;

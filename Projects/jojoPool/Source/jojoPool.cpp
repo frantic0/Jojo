@@ -56,11 +56,11 @@ public :
     _jojo() : mPool(), mLock() { }
 
 public:
-    t_object        ob;
-    ulong           mError;
-    ThreadPool      mPool;
+    t_object ob;
+    ulong mError;
+    ThreadPool mPool;
     CriticalSection mLock;
-    void            *mClock; 
+    void *mClock; 
     
     } t_jojo;
 

@@ -83,9 +83,9 @@ public :
     _jojo() : mScope(), mLock() { }
 
 public:
-    t_object        ob;
-    ulong           mError;
-    Oizo            mScope;
+    t_object ob;
+    ulong mError;
+    Oizo mScope;
     CriticalSection mLock;                  /* I guess that is not thread-safe, isn't it? */
     
     } t_jojo;

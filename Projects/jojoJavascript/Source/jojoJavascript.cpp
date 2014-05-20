@@ -77,10 +77,10 @@ public :
     }
 
 public:
-    t_object                        ob;
-    ulong                           mError;
-    ScopedPointer<JavascriptEngine> mJS;
-    CriticalSection                 mLock;
+    t_object ob;
+    ulong mError;
+    ScopedPointer <JavascriptEngine> mJS;
+    CriticalSection mLock;
     
     } t_jojo;
     

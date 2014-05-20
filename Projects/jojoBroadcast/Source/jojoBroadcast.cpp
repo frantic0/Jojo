@@ -55,9 +55,9 @@ public :
     /* The broadcaster can be freed with messages still pending in the queue. */
     
 public:
-    t_object            ob;
-    ulong               mError;
-    ActionBroadcaster   mActionBroadcaster;
+    t_object ob;
+    ulong mError;
+    ActionBroadcaster mActionBroadcaster;
     ScopedPointer<Oizo> mOizo;
     } t_jojo;
     

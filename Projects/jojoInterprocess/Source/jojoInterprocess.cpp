@@ -61,9 +61,9 @@ public :
     }
     
 public:
-    t_object              ob;
-    ulong                 mError;
-    ScopedPointer<Master> mMaster;
+    t_object ob;
+    ulong mError;
+    ScopedPointer <Master> mMaster;
 
     } t_jojo;
     

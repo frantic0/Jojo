@@ -62,10 +62,10 @@ public :
     _jojo() : mWindow (new MainWindow (this)) { }
 
 public:
-    t_object                  ob;
-    ulong                     mError;
-    ScopedPointer<MainWindow> mWindow;
-    void                      *mOutlet;
+    t_object ob;
+    ulong mError;
+    ScopedPointer <MainWindow> mWindow;
+    void *mOutlet;
     
     } t_jojo;
 

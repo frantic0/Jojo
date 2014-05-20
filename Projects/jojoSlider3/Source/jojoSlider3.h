@@ -74,11 +74,11 @@ public :
     _jojo() : mValue(), mWindow (new MainWindow (this)) { }
 
 public:
-    t_object                  ob;
-    ulong                     mError;
-    Atomic<double>            mValue;             // -- Atomic for thread safety.
-    ScopedPointer<MainWindow> mWindow;
-    void                      *mOutlet;
+    t_object ob;
+    ulong mError;
+    Atomic <double> mValue;                         /* Atomic for thread safety. */
+    ScopedPointer <MainWindow> mWindow;
+    void *mOutlet;
     
     } t_jojo;
 

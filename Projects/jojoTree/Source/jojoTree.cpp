@@ -96,11 +96,11 @@ public :
     ~_jojo() { mTree->removeListener (mOizo); }     /* Currently not necessary, but for future! */
 
 public:
-    t_object                   ob;
-    ulong                      mError;
-    ScopedPointer<UndoManager> mUndo;
-    ScopedPointer<Oizo>        mOizo;               // --
-    ScopedPointer<ValueTree>   mTree;               // --
+    t_object ob;
+    ulong mError;
+    ScopedPointer <UndoManager> mUndo;
+    ScopedPointer <Oizo> mOizo;
+    ScopedPointer <ValueTree> mTree;
                      
     } t_jojo;
 

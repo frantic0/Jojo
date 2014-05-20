@@ -79,9 +79,9 @@ public :
     }
 
 public:
-    t_object        ob;
-    ulong           mError;
-    OizoPtr         mOizo;
+    t_object ob;
+    ulong mError;
+    OizoPtr mOizo;
     CriticalSection mLock;
     
     } t_jojo;

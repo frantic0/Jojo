@@ -54,7 +54,7 @@ public:
     ~Oizo() { }
     
 public:
-    Array<long, CriticalSection> mValues;
+    Array <long, CriticalSection> mValues;
     
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oizo);
@@ -72,9 +72,9 @@ public :
     _jojo() : mShared() { }
 
 public:
-    t_object                    ob;
-    ulong                       mError;
-    SharedResourcePointer<Oizo> mShared;
+    t_object ob;
+    ulong mError;
+    SharedResourcePointer <Oizo> mShared;
     
     } t_jojo;
     

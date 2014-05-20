@@ -40,9 +40,9 @@ public :
     _jojo() : mFish (myKey, numElementsInArray (myKey)), mLock() { }
 
 public:
-    t_object        ob;
-    ulong           mError;
-    BlowFish        mFish;
+    t_object ob;
+    ulong mError;
+    BlowFish mFish;
     CriticalSection mLock;
     
     } t_jojo;

@@ -54,10 +54,10 @@ public :
     ~_jojo() { mValue.removeListener (mOizo); }     /* Currently not necessary, but for future! */
 
 public:
-    t_object            ob;
-    ulong               mError;
-    ScopedPointer<Oizo> mOizo;
-    Value               mValue;     
+    t_object ob;
+    ulong mError;
+    ScopedPointer <Oizo> mOizo;
+    Value mValue;     
     
     } t_jojo;
     
