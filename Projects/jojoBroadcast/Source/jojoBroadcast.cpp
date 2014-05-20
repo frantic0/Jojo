@@ -31,14 +31,14 @@
 class Oizo : public ActionListener {
 
 public:
-    explicit Oizo()    { cpost("Oizo ctor\n"); }
-    ~Oizo()            { cpost("Oizo dtor\n"); }
+    explicit Oizo()    { cpost ("Oizo ctor\n"); }
+    ~Oizo()            { cpost ("Oizo dtor\n"); }
 
 public:
-    void actionListenerCallback(const String& message)  { post("%s", message.toRawUTF8()); } 
+    void actionListenerCallback (const String& message)  { post ("%s", message.toRawUTF8()); } 
     
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oizo)
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -48,8 +48,8 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo() : mActionBroadcaster(), mOizo(new Oizo()) { mActionBroadcaster.addActionListener(mOizo); }
-    ~_jojo() { mActionBroadcaster.removeActionListener(mOizo); }
+    _jojo() : mActionBroadcaster(), mOizo (new Oizo()) { mActionBroadcaster.addActionListener (mOizo); }
+    ~_jojo() { mActionBroadcaster.removeActionListener (mOizo); }
     
     /* Listener must be deregister from the broadcaster before to be freed. */
     /* The broadcaster can be freed with messages still pending in the queue. */
@@ -87,10 +87,10 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_quit(void);
-void jojo_quit(void)
+void jojo_quit (void);
+void jojo_quit (void)
 {
-    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");
+    shutdownJuce_GUI(); cpost ("Shutdown JUCE\n");
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -100,8 +100,8 @@ void jojo_quit(void)
 #define JOJO_INITIALIZE \
     {   \
     initialiseJuce_GUI();   \
-    cpost("Initialize JUCE\n"); \
-    quittask_install((method)jojo_quit, NULL);  \
+    cpost ("Initialize JUCE\n"); \
+    quittask_install ((method)jojo_quit, NULL);  \
     }
     
 // ------------------------------------------------------------------------------------------------------------
@@ -118,13 +118,13 @@ void jojo_bang  (t_jojo *x);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoBroadcast", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoBroadcast", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     JOJO_INITIALIZE
@@ -136,16 +136,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -153,7 +153,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -162,7 +162,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -170,9 +170,9 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    x->mActionBroadcaster.sendActionMessage("Hello World!");    /* Thread-safe (mutex). */
+    x->mActionBroadcaster.sendActionMessage ("Hello World!");    /* Thread-safe (mutex). */
 }
 
 // ------------------------------------------------------------------------------------------------------------

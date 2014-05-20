@@ -37,13 +37,13 @@
 class aScope : public Expression::Scope {
 
 public:
-    String getScopeUID() const { return String("A scope!"); }
+    String getScopeUID() const { return String ("A scope!"); }
 };
 
 class aVisitor : public Expression::Scope::Visitor {
     
 public:
-    void visit(const Expression::Scope& scope) { post("%s", scope.getScopeUID().toRawUTF8()); }
+    void visit (const Expression::Scope& scope) { post ("%s", scope.getScopeUID().toRawUTF8()); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -54,22 +54,22 @@ class Oizo : public Expression::Scope
 {
 
 public:    
-    Expression getSymbolValue(const String& symbol) const {
-        if (symbol == "two")        { return Expression(2); }
-        else if (symbol == "five")  { return Expression(5); }
-        else if (symbol == "x")     { return Expression("two + five"); }
+    Expression getSymbolValue (const String& symbol) const {
+        if (symbol == "two")        { return Expression (2); }
+        else if (symbol == "five")  { return Expression (5); }
+        else if (symbol == "x")     { return Expression ("two + five"); }
         
-        return Expression::Scope::getSymbolValue(symbol);   /* Call base class function. */
+        return Expression::Scope::getSymbolValue (symbol);   /* Call base class function. */
     }
     
-    double evaluateFunction(const String& functionName, const double* parameters, int numParams) const {
+    double evaluateFunction (const String& functionName, const double* parameters, int numParams) const {
         if ((numParams > 0) && (functionName == "half")) { return (parameters[0] / 2.); }
-        return Expression::Scope::evaluateFunction(functionName, parameters, numParams);
+        return Expression::Scope::evaluateFunction (functionName, parameters, numParams);
     }
     
-    void visitRelativeScope(const String& scopeName, Visitor& visitor) const {
-        if (scopeName == "Foo") { visitor.visit(aScope()); return; }
-        Expression::Scope::visitRelativeScope(scopeName, visitor);
+    void visitRelativeScope (const String& scopeName, Visitor& visitor) const {
+        if (scopeName == "Foo") { visitor.visit (aScope()); return; }
+        Expression::Scope::visitRelativeScope (scopeName, visitor);
     }
 };
 
@@ -127,14 +127,14 @@ void jojo_visitor   (t_jojo *x);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoExpression", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang,       "bang",     0);
-    class_addmethod(c, (method)jojo_visitor,    "visitor",  0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoExpression", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang,       "bang",     0);
+    class_addmethod (c, (method)jojo_visitor,    "visitor",  0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -144,16 +144,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -161,7 +161,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
     
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -170,7 +170,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -179,23 +179,23 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)                       
+void jojo_bang (t_jojo *x)                       
 {
-    const ScopedLock myLock(x->mLock);
+    const ScopedLock myLock (x->mLock);
     
-    Expression a("(two + 2) * five");
-    Expression b("x * 2");
+    Expression a ("(two + 2) * five");
+    Expression b ("x * 2");
     
-    post("%s = %f", a.toString().toRawUTF8(), a.evaluate(x->mScope));  
-    post("%s = %f", b.toString().toRawUTF8(), b.evaluate(x->mScope));   
+    post ("%s = %f", a.toString().toRawUTF8(), a.evaluate (x->mScope));  
+    post ("%s = %f", b.toString().toRawUTF8(), b.evaluate (x->mScope));   
     
     Expression c = a - b;
     
-    post("%s = %f", c.toString().toRawUTF8(), c.evaluate(x->mScope));
+    post ("%s = %f", c.toString().toRawUTF8(), c.evaluate (x->mScope));
     
-    Expression d("half(five)");
+    Expression d ("half(five)");
     
-    post("%s = %f", d.toString().toRawUTF8(), d.evaluate(x->mScope));
+    post ("%s = %f", d.toString().toRawUTF8(), d.evaluate (x->mScope));
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -207,10 +207,10 @@ void jojo_bang(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-void jojo_visitor(t_jojo *x)
+void jojo_visitor (t_jojo *x)
 {
     aVisitor visitor;
-    x->mScope.visitRelativeScope("Foo", visitor);
+    x->mScope.visitRelativeScope ("Foo", visitor);
 }
 
 // ------------------------------------------------------------------------------------------------------------

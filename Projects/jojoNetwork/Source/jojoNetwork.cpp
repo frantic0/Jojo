@@ -79,13 +79,13 @@ void jojo_doBang    (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoNetwork", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoNetwork", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -95,16 +95,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -112,7 +112,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
     
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -121,7 +121,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -130,30 +130,30 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)                       
+void jojo_bang (t_jojo *x)                       
 {
-    defer_low(x, (method)jojo_doBang, NULL, 0, NULL);
+    defer_low (x, (method)jojo_doBang, NULL, 0, NULL);
 }
 
-void jojo_doBang(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
+void jojo_doBang (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
     /* Basic getters. */
     
-    IPAddress::findAllAddresses(x->mIP);
+    IPAddress::findAllAddresses (x->mIP);
     
     for (int i = 0; i < x->mIP.size(); ++i) {
-        post("IP / %s", x->mIP.getReference(i).toString().toRawUTF8());
+        post ("IP / %s", x->mIP.getReference (i).toString().toRawUTF8());
     }
     
-    MACAddress::findAllAddresses(x->mMAC);
+    MACAddress::findAllAddresses (x->mMAC);
         
     for (int i = 0; i < x->mMAC.size(); ++i) {
-        post("MAC / %s", x->mMAC.getReference(i).toString().toRawUTF8());
+        post ("MAC / %s", x->mMAC.getReference (i).toString().toRawUTF8());
     }
     
     /* Launch an URL in your favorite browser. */
     
-    URL("http://www.juce.com").launchInDefaultBrowser();    // --
+    URL ("http://www.juce.com").launchInDefaultBrowser();    // --
 }
 
 // ------------------------------------------------------------------------------------------------------------

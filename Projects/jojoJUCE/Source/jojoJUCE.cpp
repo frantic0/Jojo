@@ -32,11 +32,11 @@
 class Oizo {
 
 public:
-    explicit Oizo()    { cpost("Oizo ctor\n"); }
-    ~Oizo()            { cpost("Oizo dtor\n"); }
+    explicit Oizo()    { cpost ("Oizo ctor\n"); }
+    ~Oizo()            { cpost ("Oizo dtor\n"); }
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oizo)
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -46,13 +46,13 @@ private:
 class Momo {
 
 public:
-    explicit Momo()    { cpost("Momo ctor\n"); }
-    ~Momo()            { cpost("Momo dtor\n"); }
+    explicit Momo()    { cpost ("Momo ctor\n"); }
+    ~Momo()            { cpost ("Momo dtor\n"); }
     
-    void doSomething() { cpost("I am momo!\n"); }
+    void doSomething() { cpost ("I am momo!\n"); }
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Momo)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Momo)
 };
 
 Momo& getMomo() 
@@ -107,16 +107,16 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_quit(void);
-void jojo_quit(void)
+void jojo_quit (void);
+void jojo_quit (void)
 {
-    StringArray backtrace(StringArray::fromLines(SystemStats::getStackBacktrace()));
+    StringArray backtrace (StringArray::fromLines (SystemStats::getStackBacktrace()));
     
     for (int i = 0; i < backtrace.size(); ++i) {
-        cpost("%s\n", backtrace.getReference(i).toRawUTF8());
+        cpost ("%s\n", backtrace.getReference (i).toRawUTF8());
     }
     
-    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");   /* AFAIK: Yes! */
+    shutdownJuce_GUI(); cpost ("Shutdown JUCE\n");   /* AFAIK: Yes! */
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -126,8 +126,8 @@ void jojo_quit(void)
 #define JOJO_INITIALIZE \
     {   \
     initialiseJuce_GUI();   \
-    cpost("Initialize JUCE\n"); \
-    quittask_install((method)jojo_quit, NULL);  \
+    cpost ("Initialize JUCE\n"); \
+    quittask_install ((method)jojo_quit, NULL);  \
     }
     
 // ------------------------------------------------------------------------------------------------------------
@@ -143,12 +143,12 @@ void jojo_free  (t_jojo *x);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoJUCE", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoJUCE", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     JOJO_INITIALIZE
@@ -162,16 +162,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -179,7 +179,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -188,7 +188,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }

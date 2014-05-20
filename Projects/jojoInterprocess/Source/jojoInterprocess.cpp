@@ -36,14 +36,14 @@
 class Master : public ChildProcessMaster {
 
 public:
-    explicit Master()  { DBG("Master ctor"); }
-    ~Master()          { DBG("Master dtor"); }
+    explicit Master()  { DBG ("Master ctor"); }
+    ~Master()          { DBG ("Master dtor"); }
     
 public:
     /* Caution: those methods are called by custom threads (consider to use a t_clock). */
     
-    void handleMessageFromSlave(const juce::MemoryBlock& mb)    { post("%s", mb.toString().toRawUTF8()); }
-    void handleConnectionLost()                                { DBG("Master ConnectionLost"); }
+    void handleMessageFromSlave (const juce::MemoryBlock& mb)   { post ("%s", mb.toString().toRawUTF8()); }
+    void handleConnectionLost()                                 { DBG ("Master ConnectionLost"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -53,10 +53,10 @@ public:
 typedef struct _jojo {
 
 public :
-    _jojo() : mMaster(new Master()) { 
+    _jojo() : mMaster (new Master()) { 
     //
-    File appPath(File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("jojoSlave.app"));
-    mMaster->launchSlaveProcess(appPath.getChildFile("Contents/MacOS/jojoSlave"), "jojoUID");
+    File appPath (File::getSpecialLocation (File::currentApplicationFile).getSiblingFile ("jojoSlave.app"));
+    mMaster->launchSlaveProcess (appPath.getChildFile ("Contents/MacOS/jojoSlave"), "jojoUID");
     //
     }
     
@@ -93,10 +93,10 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_quit(void);
-void jojo_quit(void)
+void jojo_quit (void);
+void jojo_quit (void)
 {
-    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");
+    shutdownJuce_GUI(); cpost ("Shutdown JUCE\n");
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -106,8 +106,8 @@ void jojo_quit(void)
 #define JOJO_INITIALIZE \
     {   \
     initialiseJuce_GUI();   \
-    cpost("Initialize JUCE\n"); \
-    quittask_install((method)jojo_quit, NULL);  \
+    cpost ("Initialize JUCE\n"); \
+    quittask_install ((method)jojo_quit, NULL);  \
     }
     
 // ------------------------------------------------------------------------------------------------------------
@@ -124,13 +124,13 @@ void jojo_bang  (t_jojo *x);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoInterprocess", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoInterprocess", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     JOJO_INITIALIZE
@@ -146,12 +146,12 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -159,7 +159,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -168,7 +168,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -177,18 +177,18 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)   /* Kept it in the main thread in order to preserve timer accuracy. */
+void jojo_bang (t_jojo *x)   /* Kept it in the main thread in order to preserve timer accuracy. */
 {
-    if (!systhread_ismainthread()) { error("Always in the main thread!"); }        
+    if (!systhread_ismainthread()) { error ("Always in the main thread!"); }        
     else {
     //
-    String myText("- How are you?");
-    post("%s", myText.toRawUTF8());
+    String myText ("- How are you?");
+    post ("%s", myText.toRawUTF8());
     
-    const juce::MemoryBlock mb(myText.toRawUTF8(), myText.getNumBytesAsUTF8() + 1);
+    const juce::MemoryBlock mb (myText.toRawUTF8(), myText.getNumBytesAsUTF8() + 1);
     
-    if (!(x->mMaster->sendMessageToSlave(mb))) {     /* Thread-safe. */
-        post("- Are you dead?");
+    if (!(x->mMaster->sendMessageToSlave (mb))) {     /* Thread-safe. */
+        post ("- Are you dead?");
     }
     //
     }

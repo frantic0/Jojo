@@ -32,27 +32,27 @@
 class Oizo : public DynamicObject {
 
 public:
-    explicit Oizo()    { setMethod("hello", Oizo::hello); post("Oizo ctor"); }
-    ~Oizo()            { post("Oizo dtor"); }
+    explicit Oizo()    { setMethod ("hello", Oizo::hello); post ("Oizo ctor"); }
+    ~Oizo()            { post ("Oizo dtor"); }
 
-    static Identifier getClassName() { static const Identifier i("Oizo"); return i; }
+    static Identifier getClassName() { static const Identifier i ("Oizo"); return i; }
     
 public:
 
     /* Custom method to be added to the DynamicObject. */
     
-    static var hello(const var::NativeFunctionArgs& args) {
+    static var hello (const var::NativeFunctionArgs& args) {
     //
-    post("Hello World!");
+    post ("Hello World!");
     
-    if (dynamic_cast<Oizo*>(args.thisObject.getObject())) {             /* Class call. */
+    if (dynamic_cast<Oizo*> (args.thisObject.getObject())) {             /* Class call. */
     //
-    post("Class / %s", args.thisObject.toString().toRawUTF8());
+    post ("Class / %s", args.thisObject.toString().toRawUTF8());
     //
     } else {                                                            /* Prototype call. */
     //
-    post("Prototype / %s", args.thisObject.toString().toRawUTF8());
-    post("From / %s", args.thisObject.getDynamicObject()->getProperty("prototype").toString().toRawUTF8());
+    post ("Prototype / %s", args.thisObject.toString().toRawUTF8());
+    post ("From / %s", args.thisObject.getDynamicObject()->getProperty ("prototype").toString().toRawUTF8());
     //
     }
         
@@ -61,7 +61,7 @@ public:
     }
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oizo)
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -72,8 +72,8 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo() : mJS(new JavascriptEngine()), mLock() { 
-        mJS->registerNativeObject(Oizo::getClassName(), new Oizo());      /* Takes Oizo's ownership. */
+    _jojo() : mJS (new JavascriptEngine()), mLock() { 
+        mJS->registerNativeObject (Oizo::getClassName(), new Oizo());      /* Takes Oizo's ownership. */
     }
 
 public:
@@ -120,13 +120,13 @@ void jojo_bang  (t_jojo *x);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoJavascript", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoJavascript", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -136,16 +136,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -153,7 +153,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
     
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -162,7 +162,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -171,15 +171,15 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    const ScopedLock myLock(x->mLock);      /* Javacript engine is not thread-safe. */
+    const ScopedLock myLock (x->mLock);      /* Javacript engine is not thread-safe. */
 
-    const Result result(x->mJS->execute("var o = new Oizo(); Oizo.hello(); o.hello();"));
+    const Result result (x->mJS->execute ("var o = new Oizo(); Oizo.hello(); o.hello();"));
         
     if (result.wasOk()) { }
     else {
-        post("%s", result.getErrorMessage().toRawUTF8());
+        post ("%s", result.getErrorMessage().toRawUTF8());
     }
 }
 

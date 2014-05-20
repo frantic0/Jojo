@@ -82,13 +82,13 @@ void jojo_read  (const File& aFile);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoFile", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoFile", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -98,16 +98,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -115,7 +115,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -124,7 +124,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -133,48 +133,48 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    File folder(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory());
+    File folder (File::getSpecialLocation (File::currentApplicationFile).getParentDirectory());
     
     /* Return "jojoFile.txt" "jojoFile2.txt" "jojoFile3.txt"... */
     
-    File testFile(folder.getNonexistentChildFile("jojoFile", ".txt", false));
+    File testFile (folder.getNonexistentChildFile ("jojoFile", ".txt", false));
     
-    jojo_write(testFile);
-    jojo_read(testFile);
+    jojo_write (testFile);
+    jojo_read (testFile);
 }
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_write(const File& aFile)
+void jojo_write (const File& aFile)
 {
-    FileOutputStream outputStream(aFile);
+    FileOutputStream outputStream (aFile);
     
     if (!outputStream.openedOk()) { 
-        error("Failed to open %s", outputStream.getFile().getFileName().toRawUTF8()); 
+        error ("Failed to open %s", outputStream.getFile().getFileName().toRawUTF8()); 
         return;
     }
 
-    String text("Le sentier longeait la falaise.");
-    outputStream.writeText(text, false, false);
+    String text ("Le sentier longeait la falaise.");
+    outputStream.writeText (text, false, false);
     outputStream << newLine;
     
     // stream << "Le sentier longeait la falaise." << newLine;
 }
 
-void jojo_read(const File& aFile)
+void jojo_read (const File& aFile)
 {
-    FileInputStream inputStream(aFile);
+    FileInputStream inputStream (aFile);
         
     if (!inputStream.openedOk()) { 
-        error("Failed to open %s", inputStream.getFile().getFileName().toRawUTF8()); 
+        error ("Failed to open %s", inputStream.getFile().getFileName().toRawUTF8()); 
         return;
     }
         
-    post("%s", inputStream.readEntireStreamAsString().toRawUTF8());       // File::loadFileAsString()
+    post ("%s", inputStream.readEntireStreamAsString().toRawUTF8());       // File::loadFileAsString()
 }
 
 // ------------------------------------------------------------------------------------------------------------

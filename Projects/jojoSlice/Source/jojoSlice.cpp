@@ -37,7 +37,7 @@ struct _jojo;
 class JojoClient : public TimeSliceClient {
 
 public: 
-    explicit JojoClient(_jojo *x) : owner(x) { }
+    explicit JojoClient (_jojo *x) : owner (x) { }
 
 public:
     int useTimeSlice();
@@ -46,7 +46,7 @@ private:
     _jojo *owner;
 
 private:
-    JUCE_LEAK_DETECTOR(JojoClient)
+    JUCE_LEAK_DETECTOR (JojoClient)
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -56,8 +56,8 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo() : mClient(new JojoClient(this)), mThread("Jojo"), mLock() { mThread.startThread(); }
-    ~_jojo() { mThread.stopThread(-1); } 
+    _jojo() : mClient (new JojoClient (this)), mThread ("Jojo"), mLock() { mThread.startThread(); }
+    ~_jojo() { mThread.stopThread (-1); } 
 
 public:
     t_object                    ob;
@@ -76,10 +76,10 @@ public:
 int JojoClient::useTimeSlice()
 { 
     juce::Random rand; 
-    int k = rand.nextInt(10);
+    int k = rand.nextInt (10);
     
     if (k) {
-        clock_fdelay(owner->mClock, 0.);    /* Always use a clock from custom thread! */
+        clock_fdelay (owner->mClock, 0.);    /* Always use a clock from custom thread! */
         return 100;
     }
     
@@ -123,13 +123,13 @@ void jojo_bang  (t_jojo *x);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoSlice", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoSlice", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -139,18 +139,18 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
-    err |= !(x->mClock = clock_new(x, (method)jojo_task));
+    err |= !(x->mClock = clock_new (x, (method)jojo_task));
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -158,7 +158,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
     
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -167,12 +167,12 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
     
     if (x->mClock) {
-        object_free(x->mClock);
+        object_free (x->mClock);
     }
 }
 
@@ -180,23 +180,23 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_task(t_jojo *x)
+void jojo_task (t_jojo *x)
 {
-    post("Le sentier longeait la falaise.");
+    post ("Le sentier longeait la falaise.");
 }
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    const ScopedLock myLock(x->mLock);
+    const ScopedLock myLock (x->mLock);
     
     if (!x->mThread.getNumClients()) {
-        x->mThread.addTimeSliceClient(x->mClient, 0.);
+        x->mThread.addTimeSliceClient (x->mClient, 0.);
     } else {
-        post("I'm already working!");
+        post ("I'm already working!");
     }
 }
 

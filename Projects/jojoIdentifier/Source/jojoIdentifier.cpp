@@ -35,10 +35,10 @@
 
 namespace JojoIdentifier
 {
-    #define JOJO_ID(name)   const Identifier name(#name)
+    #define JOJO_ID(name)   const Identifier name (#name)
     
-    JOJO_ID(One);
-    JOJO_ID(Two);
+    JOJO_ID (One);
+    JOJO_ID (Two);
     
     #undef JOJO_ID
 }
@@ -94,13 +94,13 @@ void jojo_bang  (t_jojo *x);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoIdentifier", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoIdentifier", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -110,16 +110,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -127,7 +127,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -136,7 +136,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -145,10 +145,10 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    post("%s", JojoIdentifier::One.toString().toRawUTF8());
-    post("%s", JojoIdentifier::Two.toString().toRawUTF8());
+    post ("%s", JojoIdentifier::One.toString().toRawUTF8());
+    post ("%s", JojoIdentifier::Two.toString().toRawUTF8());
 }
 
 // ------------------------------------------------------------------------------------------------------------

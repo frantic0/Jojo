@@ -32,12 +32,12 @@
 class Oizo : public ReferenceCountedObject {
 
 public:
-    explicit Oizo()    { post("Oizo ctor"); }
-    ~Oizo()            { post("Oizo dtor"); }
+    explicit Oizo()    { post ("Oizo ctor"); }
+    ~Oizo()            { post ("Oizo dtor"); }
     
-    Oizo(const Oizo& o)                 { post("Oizo copy"); }
-    Oizo& operator = (const Oizo& o)    { post("Oizo = "); return *this; }
-    void doSomething() const            { post("Cui-cui"); }
+    Oizo (const Oizo& o)                { post ("Oizo copy"); }
+    Oizo& operator = (const Oizo& o)    { post ("Oizo = "); return *this; }
+    void doSomething() const            { post ("Cui-cui"); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -91,13 +91,13 @@ void jojo_bang  (t_jojo *x);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoVariant", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoVariant", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -107,16 +107,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -124,7 +124,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -133,7 +133,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -142,26 +142,26 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    var v(1234);
-    post("Var / %s", v.toString().toRawUTF8());
+    var v (1234);
+    post ("Var / %s", v.toString().toRawUTF8());
     
     v = 3.14;
-    post("Var / %s", v.toString().toRawUTF8());
+    post ("Var / %s", v.toString().toRawUTF8());
     
     //
     
     v = "Carotte";
-    post("IsArray / %ld", v.isArray());
+    post ("IsArray / %ld", v.isArray());
     
-    v.append("Lapin");
-    v.append("Fusil");
-    post("IsArray / %ld", v.isArray());
+    v.append ("Lapin");
+    v.append ("Fusil");
+    post ("IsArray / %ld", v.isArray());
     
-    post("Var / %s", v[0].toString().toRawUTF8());
-    post("Var / %s", v[1].toString().toRawUTF8());
-    post("Var / %s", v[2].toString().toRawUTF8());
+    post ("Var / %s", v[0].toString().toRawUTF8());
+    post ("Var / %s", v[1].toString().toRawUTF8());
+    post ("Var / %s", v[2].toString().toRawUTF8());
     
     //
     
@@ -169,26 +169,26 @@ void jojo_bang(t_jojo *x)
     
     //
     
-    v = var(Array<var>());
+    v = var (Array<var>());
     Array<var> * const temp = v.getArray();
     
-    temp->add(var("Toto"));
-    temp->add(var("Jojo"));
-    temp->add(var("1234"));
-    temp->add(var::undefined());
+    temp->add (var ("Toto"));
+    temp->add (var ("Jojo"));
+    temp->add (var ("1234"));
+    temp->add (var::undefined());
     
     for (int i = 0; i < temp->size(); ++i) {
-        post("Var / %s", temp->getUnchecked(i).toString().toRawUTF8());
+        post ("Var / %s", temp->getUnchecked (i).toString().toRawUTF8());
     }
     
     //
     
-    v = var(new Oizo());
+    v = var (new Oizo());
     
     var w = v;
-    post("RefCount / %ld", v.getObject()->getReferenceCount());
+    post ("RefCount / %ld", v.getObject()->getReferenceCount());
     
-    Oizo* const q = dynamic_cast<Oizo*>(v.getObject());
+    Oizo* const q = dynamic_cast<Oizo*> (v.getObject());
     if (q != nullptr) { q->doSomething(); }
 }
 

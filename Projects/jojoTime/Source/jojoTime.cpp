@@ -72,18 +72,18 @@ void waste_constructor  (void);
 
 #if defined ( __clang__ ) || defined ( __GNUC__ )
 
-void waste_ctor(void)  __attribute__ ((constructor));
-void waste_ctor(void)  { waste_constructor(); }
+void waste_ctor (void)  __attribute__((constructor));
+void waste_ctor (void)  { waste_constructor(); }
 
 #endif
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-void waste_constructor(void)
+void waste_constructor (void)
 {
     long i;
-    unsigned long long seed = time(NULL) & 0xffULL;
+    unsigned long long seed = time (NULL) & 0xffULL;
     
     for (i = 0; i < FLOP_SIZE_WASTE; i++) {
         values[i] = ((seed = ((seed * 0x5deece66dULL + 0xbULL) & 0xffffffffffffULL)) >> 16);
@@ -94,15 +94,15 @@ void waste_constructor(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void waste_init(t_waste *x)
+void waste_init (t_waste *x)
 {
-    long k = ATOMIC_INCREMENT(&counter);
+    long k = ATOMIC_INCREMENT (&counter);
     
     x->bStep = (k % (FLOP_SIZE_WASTE - 1)) + 1;
     x->bIndex = 0;
 }
 
-void waste_time(t_waste *x)
+void waste_time (t_waste *x)
 {
     long i;
     
@@ -124,7 +124,7 @@ void waste_time(t_waste *x)
 typedef struct _jojo {
 
 public :
-    _jojo() : mTime(Time::getCurrentTime()) { }
+    _jojo() : mTime (Time::getCurrentTime()) { }
 
 public:
     t_object    ob;
@@ -171,16 +171,16 @@ void jojo_doSomething   (void);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoTime", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new ("jojoTime", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
     
-    class_addmethod(c, (method)jojo_bang,       "bang",         0);
-    class_addmethod(c, (method)jojo_benchmark,  "benchmark",    0);
+    class_addmethod (c, (method)jojo_bang,       "bang",         0);
+    class_addmethod (c, (method)jojo_benchmark,  "benchmark",    0);
     
-    class_register(CLASS_BOX, c);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -190,16 +190,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -207,7 +207,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -216,7 +216,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -225,25 +225,25 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    RelativeTime elapsedTime(Time::getCurrentTime() - x->mTime);
+    RelativeTime elapsedTime (Time::getCurrentTime() - x->mTime);
     
-    post("Origin / %s", x->mTime.toString(true, true, true, true).toRawUTF8());
-    post("Elapsed / %s", elapsedTime.getDescription().toRawUTF8());
+    post ("Origin / %s", x->mTime.toString (true, true, true, true).toRawUTF8());
+    post ("Elapsed / %s", elapsedTime.getDescription().toRawUTF8());
 }
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_benchmark(t_jojo *x) 
+void jojo_benchmark (t_jojo *x) 
 {
-    File folder(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory());
+    File folder (File::getSpecialLocation (File::currentApplicationFile).getParentDirectory());
     
     /* Return "jojoTime.txt" "jojoTime2.txt" "jojoTime3.txt"... */
     
-    PerformanceCounter benchmark("Jojo", 100, folder.getNonexistentChildFile("jojoTime", ".txt", false));
+    PerformanceCounter benchmark ("Jojo", 100, folder.getNonexistentChildFile ("jojoTime", ".txt", false));
 
     for (int i = 0; i < 1000; ++i) {
     //
@@ -254,12 +254,12 @@ void jojo_benchmark(t_jojo *x)
     }
 }
 
-void jojo_doSomething(void)
+void jojo_doSomething (void)
 {
     t_waste waste;
-    waste_init(&waste);
+    waste_init (&waste);
     
-    for (int i = 0; i < 100; ++i) { waste_time(&waste); }       /* Waste only few CPU cycles. */
+    for (int i = 0; i < 100; ++i) { waste_time (&waste); }       /* Waste only few CPU cycles. */
 }
 
 // ------------------------------------------------------------------------------------------------------------

@@ -23,12 +23,12 @@ public:
     ~Slave()            { }
 
 public:
-    void handleMessageFromMaster(const MemoryBlock& mb) {
+    void handleMessageFromMaster (const MemoryBlock& mb) {
     //
     (void)mb;
-    String myText("- I am fine, thank you. And you?");
-    const MemoryBlock msg(myText.toRawUTF8(), myText.getNumBytesAsUTF8() + 1);
-    sendMessageToMaster(msg);
+    String myText ("- I am fine, thank you. And you?");
+    const MemoryBlock msg (myText.toRawUTF8(), myText.getNumBytesAsUTF8() + 1);
+    sendMessageToMaster (msg);
     //
     }
     
@@ -50,9 +50,9 @@ public:
 
     void initialise (const String& commandLine) {
     //
-    ScopedPointer<Slave> slave(new Slave());
+    ScopedPointer<Slave> slave (new Slave());
 
-    if (slave->initialiseFromCommandLine(commandLine, "jojoUID")) { slave.release(); }
+    if (slave->initialiseFromCommandLine (commandLine, "jojoUID")) { slave.release(); }
     else {
         quit();
     }
@@ -67,7 +67,7 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-START_JUCE_APPLICATION(jojoSlaveApplication)
+START_JUCE_APPLICATION (jojoSlaveApplication)
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------

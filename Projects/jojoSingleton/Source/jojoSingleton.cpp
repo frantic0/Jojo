@@ -40,25 +40,25 @@
 class Oizo {
 
 public:
-    explicit Oizo()    { post("Oizo ctor"); }
-    ~Oizo()            { post("Oizo dtor"); cpost("Oizo dtor"); clearSingletonInstance(); }
+    explicit Oizo()    { post ("Oizo ctor"); }
+    ~Oizo()            { post ("Oizo dtor"); cpost ("Oizo dtor"); clearSingletonInstance(); }
     
-    void doSomething() const { post("Cuicui"); }
+    void doSomething() const { post ("Cuicui"); }
     
-    juce_DeclareSingleton(Oizo, false)
+    juce_DeclareSingleton (Oizo, false)
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oizo)
 };
 
-juce_ImplementSingleton(Oizo)
+juce_ImplementSingleton (Oizo)
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_quit(void);
-void jojo_quit(void)
+void jojo_quit (void);
+void jojo_quit (void)
 {
     Oizo::deleteInstance();     /* Could use DeletedAtShutdown inheritance instead. */
 }
@@ -116,16 +116,16 @@ void jojo_bang  (t_jojo *x);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoSingleton", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoSingleton", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
-    quittask_install((method)jojo_quit, NULL);      /* Avoid leak reports. */
+    quittask_install ((method)jojo_quit, NULL);      /* Avoid leak reports. */
     
     return 0;
 }
@@ -134,16 +134,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -151,7 +151,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
     
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -160,7 +160,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -169,7 +169,7 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
     Oizo::getInstance()->doSomething();
 }

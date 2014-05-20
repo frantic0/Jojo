@@ -26,7 +26,7 @@ static bool running = true;
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-void intHandler(int dummy = 0) { running = false; }     /* Stop me with CTRL-C please! */
+void intHandler (int dummy = 0) { running = false; }     /* Stop me with CTRL-C please! */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -36,21 +36,21 @@ const size_t numberOfBytes = 12;    // HelloWorld!\0
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-int main(int argc, char* argv[])
+int main (int argc, char* argv[])
 {
-    signal(SIGINT, intHandler);
+    signal (SIGINT, intHandler);
     
     NamedPipe pipe;
-    pipe.openExisting("jojoLapin1234");                             /* Caution: always return true. */
+    pipe.openExisting ("jojoLapin1234");                             /* Caution: always return true. */
     
     while (running) {
     //
-    DBG("Pipe2");
-    MemoryBlock msg(numberOfBytes + 1, true);                       /* Zero terminated in case of. */
-    int result = pipe.read(msg.getData(), numberOfBytes, -1);
-    DBG(result);
-    DBG(msg.toString());  
-    Thread::sleep(1000);
+    DBG ("Pipe2");
+    MemoryBlock msg (numberOfBytes + 1, true);                       /* Zero terminated in case of. */
+    int result = pipe.read (msg.getData(), numberOfBytes, -1);
+    DBG (result);
+    DBG (msg.toString());  
+    Thread::sleep (1000);
     //
     }
     

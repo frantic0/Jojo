@@ -45,9 +45,9 @@
 class JojoTest : public UnitTest {
 
 public:
-    explicit JojoTest() : UnitTest("Testing Jojo!") { }
+    explicit JojoTest() : UnitTest ("Testing Jojo!") { }
     
-    void runTest() { beginTest("Math"); expect(0 + 0 == 0); }
+    void runTest() { beginTest ("Math"); expect (0 + 0 == 0); }
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -110,19 +110,19 @@ void jojo_test  (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_initLogger(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
+void jojo_initLogger (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
     if (logger == nullptr) {
-        File folder(File::getSpecialLocation(File::currentApplicationFile));
-        logger = new FileLogger(folder.getSiblingFile("jojoUnit.txt"), "Hello!");
-        Logger::setCurrentLogger(logger);
+        File folder (File::getSpecialLocation (File::currentApplicationFile));
+        logger = new FileLogger (folder.getSiblingFile ("jojoUnit.txt"), "Hello!");
+        Logger::setCurrentLogger (logger);
     } 
 }
 
-void jojo_releaseLogger(void)
+void jojo_releaseLogger (void)
 {
     if (logger != nullptr) {
-        Logger::setCurrentLogger(nullptr);
+        Logger::setCurrentLogger (nullptr);
         delete logger;
     }
 }
@@ -133,16 +133,16 @@ void jojo_releaseLogger(void)
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoUnit", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoUnit", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
-    quittask_install((method)jojo_releaseLogger, NULL);
+    quittask_install ((method)jojo_releaseLogger, NULL);
     
     return 0;
 }
@@ -151,16 +151,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -168,11 +168,11 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
     
     if (!err) {
-        defer(x, (method)jojo_initLogger, NULL, 0, NULL);   /* Just to be sure it occurs in the mainthread. */
+        defer (x, (method)jojo_initLogger, NULL, 0, NULL);   /* Just to be sure it occurs in the mainthread. */
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -181,7 +181,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -190,21 +190,21 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    defer(x, (method)jojo_test, NULL, 0, NULL);         /* UnitTest is not threadsafe. */
+    defer (x, (method)jojo_test, NULL, 0, NULL);         /* UnitTest is not threadsafe. */
 }
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_test(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
+void jojo_test (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
     UnitTestRunner testRunner;
     testRunner.runAllTests();
     
-    Logger::getCurrentLogger()->writeToLog(newLine);   /* Cosmetic. */
+    Logger::getCurrentLogger()->writeToLog (newLine);   /* Cosmetic. */
 }
 
 // ------------------------------------------------------------------------------------------------------------

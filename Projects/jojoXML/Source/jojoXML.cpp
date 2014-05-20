@@ -83,13 +83,13 @@ void jojo_read  (t_jojo *x, const File& aFile);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoXML", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoXML", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -99,16 +99,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -116,7 +116,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -125,7 +125,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -134,42 +134,42 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    const ScopedLock myLock(x->mLock); 
+    const ScopedLock myLock (x->mLock); 
     
-    File xmlFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoXML.txt"));
+    File xmlFile ((File::getSpecialLocation (File::currentApplicationFile)).getSiblingFile ("jojoXML.txt"));
     
-    jojo_write(x, xmlFile);
-    jojo_read(x, xmlFile);          /* Caution : fetch the attributes is rather inefficient. */
+    jojo_write (x, xmlFile);
+    jojo_read (x, xmlFile);          /* Caution : fetch the attributes is rather inefficient. */
 }
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_write(t_jojo *x, const File& aFile)
+void jojo_write (t_jojo *x, const File& aFile)
 {
-    XmlElement myDocument("Jojo");
-    XmlElement* myElement = myDocument.createNewChildElement("Lapin");
+    XmlElement myDocument ("Jojo");
+    XmlElement* myElement = myDocument.createNewChildElement ("Lapin");
 
-    myElement->setAttribute("Carottes", 4);
-    myElement->setAttribute("Oreilles", "Deux");
-    myElement->setAttribute("Rapide", true);
+    myElement->setAttribute ("Carottes", 4);
+    myElement->setAttribute ("Oreilles", "Deux");
+    myElement->setAttribute ("Rapide", true);
 
-    post("%s", myDocument.createDocument(String::empty, true).toRawUTF8());
-    myDocument.writeToFile(aFile, String::empty);
+    post ("%s", myDocument.createDocument (String::empty, true).toRawUTF8());
+    myDocument.writeToFile (aFile, String::empty);
 }
     
-void jojo_read(t_jojo *x, const File& aFile)
+void jojo_read (t_jojo *x, const File& aFile)
 {
-    XmlDocument myDocument(aFile);
+    XmlDocument myDocument (aFile);
     XmlElement* myElement = myDocument.getDocumentElement();
     
-    if (myElement == nullptr) { post("%s", myDocument.getLastParseError().toRawUTF8()); }
-    else if (myElement->hasTagName("Jojo")) {
+    if  (myElement == nullptr) { post ("%s", myDocument.getLastParseError().toRawUTF8()); }
+    else if (myElement->hasTagName ("Jojo")) {
     //
-    forEachXmlChildElement(*myElement, child)
+    forEachXmlChildElement (*myElement, child)
     {
     //
     /* Iterate through the linked list once. */
@@ -179,7 +179,7 @@ void jojo_read(t_jojo *x, const File& aFile)
     /* Iterate through the linked list twice at each iteration! */
     
     for (int i = 0; i < count; ++i) {
-        post("%s %s", child->getAttributeName(i).toRawUTF8(), child->getAttributeValue(i).toRawUTF8());
+        post ("%s %s", child->getAttributeName (i).toRawUTF8(), child->getAttributeValue (i).toRawUTF8());
     }
     //
     }

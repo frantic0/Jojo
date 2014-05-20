@@ -37,7 +37,7 @@ static uint8 myKey[] = { 0xFA, 0xDA, 0xFA, 0xDA };     /* Never hard code passwo
 typedef struct _jojo {
 
 public :
-    _jojo() : mFish(myKey, numElementsInArray(myKey)), mLock() { }
+    _jojo() : mFish (myKey, numElementsInArray (myKey)), mLock() { }
 
 public:
     t_object        ob;
@@ -89,13 +89,13 @@ void jojo_read  (t_jojo *x, const File& aFile);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoFish", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoFish", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -105,16 +105,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -122,7 +122,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -131,7 +131,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -140,14 +140,14 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    const ScopedLock myLock(x->mLock); 
+    const ScopedLock myLock (x->mLock); 
     
-    File myFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoFish.txt"));
+    File myFile ((File::getSpecialLocation (File::currentApplicationFile)).getSiblingFile ("jojoFish.txt"));
     
-    jojo_write(x, myFile);
-    jojo_read(x, myFile);
+    jojo_write (x, myFile);
+    jojo_read (x, myFile);
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -161,9 +161,9 @@ void jojo_bang(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-void jojo_write(t_jojo *x, const File& aFile)
+void jojo_write (t_jojo *x, const File& aFile)
 {
-    String myText(CharPointer_UTF8("P\xc3\xa9p\xc3\xa9 p\xc3\xa8te en ao\xc3\xbbt!"));
+    String myText (CharPointer_UTF8 ("P\xc3\xa9p\xc3\xa9 p\xc3\xa8te en ao\xc3\xbbt!"));
 
     myText  << newLine << "###" << newLine
             << "Stately, plump Buck Mulligan came from the stairhead, " << newLine
@@ -174,32 +174,32 @@ void jojo_write(t_jojo *x, const File& aFile)
 
     /* Pad with zeros (handy for a null terminated string). */
     
-    juce::MemoryBlock myBlock(blockSize, true);
-    myBlock.copyFrom(myText.toRawUTF8(), 0, textSize);         
+    juce::MemoryBlock myBlock (blockSize, true);
+    myBlock.copyFrom (myText.toRawUTF8(), 0, textSize);         
     
     for (size_t i = 0; i < blockSize; i += 8) {
-        x->mFish.encrypt(reinterpret_cast<uint32&>(myBlock[i]), reinterpret_cast<uint32&>(myBlock[i + 4]));
+        x->mFish.encrypt (reinterpret_cast<uint32&> (myBlock[i]), reinterpret_cast<uint32&> (myBlock[i + 4]));
     }
     
-    aFile.replaceWithData(myBlock.getData(), blockSize);
+    aFile.replaceWithData (myBlock.getData(), blockSize);
 }
     
-void jojo_read(t_jojo *x, const File& aFile)
+void jojo_read (t_jojo *x, const File& aFile)
 {
     juce::MemoryBlock myBlock;
     
-    if (aFile.loadFileAsData(myBlock)) {
+    if (aFile.loadFileAsData (myBlock)) {
     //
     const size_t blockSize = myBlock.getSize();
     
     for (size_t i = 0; i < blockSize; i += 8) {
-        x->mFish.decrypt(reinterpret_cast<uint32&>(myBlock[i]), reinterpret_cast<uint32&>(myBlock[i + 4]));
+        x->mFish.decrypt (reinterpret_cast<uint32&> (myBlock[i]), reinterpret_cast<uint32&> (myBlock[i + 4]));
     }
     
-    StringArray myText(StringArray::fromLines(myBlock.toString().toRawUTF8()));
+    StringArray myText (StringArray::fromLines (myBlock.toString().toRawUTF8()));
     
     for (int i = 0; i < myText.size(); ++i) {
-        post("%s", myText.getReference(i).toRawUTF8());
+        post ("%s", myText.getReference (i).toRawUTF8());
     }
     //
     }

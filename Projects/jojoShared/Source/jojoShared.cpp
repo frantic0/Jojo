@@ -57,7 +57,7 @@ public:
     Array<long, CriticalSection> mValues;
     
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oizo);
 };
 
 */
@@ -115,16 +115,16 @@ void jojo_int   (t_jojo *x, long n);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoShared", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new ("jojoShared", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
     
-    class_addmethod(c, (method)jojo_bang,   "bang", 0);
-    class_addmethod(c, (method)jojo_int,    "int",  A_LONG, 0);
+    class_addmethod (c, (method)jojo_bang,   "bang", 0);
+    class_addmethod (c, (method)jojo_int,    "int",  A_LONG, 0);
     
-    class_register(CLASS_BOX, c);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -134,16 +134,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -151,7 +151,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -160,7 +160,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -169,24 +169,24 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    const ScopedLock lock(x->mShared->mValues.getLock());
+    const ScopedLock lock (x->mShared->mValues.getLock());
     const int argc = x->mShared->mValues.size();
     long * const argv = x->mShared->mValues.getRawDataPointer();
-    for (int i = 0; i < argc; ++i) { post("%ld / %ld", i, *(argv + i)); }
+    for (int i = 0; i < argc; ++i) { post ("%ld / %ld", i, *(argv + i)); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-void jojo_int(t_jojo *x, long n)
+void jojo_int (t_jojo *x, long n)
 {
-    x->mShared->mValues.add(n);
+    x->mShared->mValues.add (n);
     
     /* On the stack also. */
     
-    // SharedResourcePointer<Oizo> mShared; mShared->mValues.add(n);
+    // SharedResourcePointer<Oizo> mShared; mShared->mValues.add (n);
 }
 
 // ------------------------------------------------------------------------------------------------------------

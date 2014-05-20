@@ -32,13 +32,13 @@
 class Kitty : public ReferenceCountedObject {
 
 public:
-    explicit Kitty()   { post("Kitty ctor"); }
-    ~Kitty()           { post("Kitty dtor / %x", this); }
+    explicit Kitty()   { post ("Kitty ctor"); }
+    ~Kitty()           { post ("Kitty dtor / %x", this); }
     
-    void doSomething() const { post("Kitty %x do something very fun!", this); }
+    void doSomething() const { post ("Kitty %x do something very fun!", this); }
 
 private:
-    JUCE_LEAK_DETECTOR(Kitty)
+    JUCE_LEAK_DETECTOR (Kitty)
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ typedef ReferenceCountedObjectPtr<Kitty> KittyPtr;
 #pragma mark -
 
 struct MyHashGenerator {
-    int generateHash(Uuid key, int upperLimit) const {
+    int generateHash (Uuid key, int upperLimit) const {
         return (int)(((uint32)key.toString().hashCode()) % (uint32)upperLimit);
     }
 };
@@ -114,13 +114,13 @@ void jojo_bang  (t_jojo *x);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoHash", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoHash", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -130,16 +130,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -147,7 +147,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -156,7 +156,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -165,22 +165,22 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    KittyPtr ptrKitty(new Kitty());
+    KittyPtr ptrKitty (new Kitty());
     
     Uuid a;
     Uuid b;
     
-    x->mHash.set(a, ptrKitty);
-    x->mHash.set(b, ptrKitty);
+    x->mHash.set (a, ptrKitty);
+    x->mHash.set (b, ptrKitty);
     
-    KittyPtr temp(x->mHash[a]);
-    post("%ld", temp->getReferenceCount());         /* Should be 4!*/
+    KittyPtr temp (x->mHash[a]);
+    post ("%ld", temp->getReferenceCount());         /* Should be 4!*/
     temp->doSomething();
     
-    x->mHash.set(a, temp);                          /* Overwrite an existing key. */
-    post("%ld", temp->getReferenceCount());         /* Should be 4! */
+    x->mHash.set (a, temp);                          /* Overwrite an existing key. */
+    post ("%ld", temp->getReferenceCount());         /* Should be 4! */
 }
 
 // ------------------------------------------------------------------------------------------------------------

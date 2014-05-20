@@ -35,9 +35,9 @@
 
 namespace JojoId
 {
-    #define JOJO_ID(name)   const Identifier name(#name)
+    #define JOJO_ID(name)   const Identifier name (#name)
     
-    JOJO_ID(JojoTree);
+    JOJO_ID (JojoTree);
     
     #undef JOJO_ID
 }
@@ -56,20 +56,20 @@ struct _jojo;
 class Oizo : public ValueTree::Listener, private Timer {                /* Timer for convenience only. */
 
 public:
-    explicit Oizo(_jojo* o) : owner(o) { startTimer(500); }
+    explicit Oizo (_jojo* o) : owner (o) { startTimer (500); }
 
 public:
-    void valueTreePropertyChanged(ValueTree& tree, const Identifier& property) { 
+    void valueTreePropertyChanged (ValueTree& tree, const Identifier& property) { 
     //
-    post("Changed / %s", property.toString().toRawUTF8());
+    post ("Changed / %s", property.toString().toRawUTF8());
     //
     }
     
-    void valueTreeChildAdded(ValueTree&, ValueTree&)    { }
-    void valueTreeChildRemoved(ValueTree&, ValueTree&)  { }
-    void valueTreeChildOrderChanged(ValueTree&)         { }
-    void valueTreeParentChanged (ValueTree&)            { }
-    void valueTreeRedirected(ValueTree&)                { }
+    void valueTreeChildAdded (ValueTree&, ValueTree&)    { }
+    void valueTreeChildRemoved (ValueTree&, ValueTree&)  { }
+    void valueTreeChildOrderChanged (ValueTree&)         { }
+    void valueTreeParentChanged  (ValueTree&)            { }
+    void valueTreeRedirected (ValueTree&)                { }
 
 private: 
     struct _jojo* owner; 
@@ -77,7 +77,7 @@ private:
     void timerCallback();
     
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Oizo)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oizo)
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -87,13 +87,13 @@ private:
 typedef struct _jojo {
 
 public :
-    _jojo() : mUndo(new UndoManager()), mOizo(new Oizo(this)), mTree(new ValueTree(JojoId::JojoTree)) { 
+    _jojo() : mUndo (new UndoManager()), mOizo (new Oizo (this)), mTree (new ValueTree (JojoId::JojoTree)) { 
     //
-    mTree->addListener(mOizo);
+    mTree->addListener (mOizo);
     //
     }
     
-    ~_jojo() { mTree->removeListener(mOizo); }     /* Currently not necessary, but for future! */
+    ~_jojo() { mTree->removeListener (mOizo); }     /* Currently not necessary, but for future! */
 
 public:
     t_object                    ob;
@@ -139,10 +139,10 @@ void Oizo::timerCallback()
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_quit(void);
-void jojo_quit(void)
+void jojo_quit (void);
+void jojo_quit (void)
 {
-    shutdownJuce_GUI(); cpost("Shutdown JUCE\n");
+    shutdownJuce_GUI(); cpost ("Shutdown JUCE\n");
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -152,8 +152,8 @@ void jojo_quit(void)
 #define JOJO_INITIALIZE \
     {   \
     initialiseJuce_GUI();   \
-    cpost("Initialize JUCE\n"); \
-    quittask_install((method)jojo_quit, NULL);  \
+    cpost ("Initialize JUCE\n"); \
+    quittask_install ((method)jojo_quit, NULL);  \
     }
     
 // ------------------------------------------------------------------------------------------------------------
@@ -173,18 +173,18 @@ void jojo_anything  (t_jojo *x, t_symbol *s, long argc, t_atom *argv);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoTree", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
+    c = class_new ("jojoTree", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
     
-    class_addmethod(c, (method)jojo_bang,       "bang", 0);
-    class_addmethod(c, (method)jojo_undo,       "undo", 0);
-    class_addmethod(c, (method)jojo_redo,       "redo", 0);
-    class_addmethod(c, (method)jojo_anything,   "anything", A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang,       "bang", 0);
+    class_addmethod (c, (method)jojo_undo,       "undo", 0);
+    class_addmethod (c, (method)jojo_redo,       "redo", 0);
+    class_addmethod (c, (method)jojo_anything,   "anything", A_GIMME, 0);
     
-    class_register(CLASS_BOX, c);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     JOJO_INITIALIZE
@@ -196,16 +196,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -213,7 +213,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
     
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -222,7 +222,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -236,43 +236,43 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-void jojo_bang(t_jojo *x) 
+void jojo_bang (t_jojo *x) 
 {
     if (systhread_ismainthread()) {        
-        post("%s", x->mTree->toXmlString().toRawUTF8());
+        post ("%s", x->mTree->toXmlString().toRawUTF8());
     }
 }
 
-void jojo_undo(t_jojo *x) 
+void jojo_undo (t_jojo *x) 
 {
     if (systhread_ismainthread()) {        
-        post("Undo / %ld", x->mUndo->undo());
+        post ("Undo / %ld", x->mUndo->undo());
     }
 }
 
-void jojo_redo(t_jojo *x) 
+void jojo_redo (t_jojo *x) 
 {
     if (systhread_ismainthread()) {
-        post("Redo / %ld", x->mUndo->redo());
+        post ("Redo / %ld", x->mUndo->redo());
     }
 }
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-void jojo_anything(t_jojo *x, t_symbol *s, long argc, t_atom *argv)
+void jojo_anything (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
-    if (!systhread_ismainthread()) { error("Always in the main thread!"); }        
+    if (!systhread_ismainthread()) { error ("Always in the main thread!"); }        
     else if (argc) {
     //
-    const String property(s->s_name);
+    const String property (s->s_name);
     
-    if (Identifier::isValidIdentifier(property)) {
+    if (Identifier::isValidIdentifier (property)) {
     //
-    if (atom_gettype(argv) == A_SYM) { 
-        x->mTree->setProperty(property, atom_getsym(argv)->s_name, x->mUndo);
+    if (atom_gettype (argv) == A_SYM) { 
+        x->mTree->setProperty (property, atom_getsym (argv)->s_name, x->mUndo);
     } else {
-        x->mTree->setProperty(property, atom_getfloat(argv), x->mUndo);
+        x->mTree->setProperty (property, atom_getfloat (argv), x->mUndo);
     }
     //
     }

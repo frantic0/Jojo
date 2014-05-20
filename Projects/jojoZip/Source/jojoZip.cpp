@@ -83,13 +83,13 @@ void jojo_read  (t_jojo *x, const File& aFile);
 
 static t_class *jojo_class;
 
-JOJO_EXPORT int main(void)
+JOJO_EXPORT int main (void)
 {   
     t_class *c = NULL;
     
-    c = class_new("jojoZip", (method)jojo_new, (method)jojo_free, sizeof(t_jojo), NULL, A_GIMME, 0);
-    class_addmethod(c, (method)jojo_bang, "bang", 0);
-    class_register(CLASS_BOX, c);
+    c = class_new ("jojoZip", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang, "bang", 0);
+    class_register (CLASS_BOX, c);
     jojo_class = c;
     
     return 0;
@@ -99,16 +99,16 @@ JOJO_EXPORT int main(void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new(t_symbol *s, long argc, t_atom *argv)
+void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 {
     t_jojo *x = NULL;
     
-    if ((x = (t_jojo *)object_alloc(jojo_class))) {
+    if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
     ulong err = (x->mError = JOJO_GOOD);
     
     try {
-        new(x)t_jojo;
+        new (x) t_jojo;
     }
     
     catch (...) {
@@ -116,7 +116,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     }
 
     if (err) {
-        object_free(x);
+        object_free (x);
         x = NULL;
     }
     //
@@ -125,7 +125,7 @@ void *jojo_new(t_symbol *s, long argc, t_atom *argv)
     return x;
 }
 
-void jojo_free(t_jojo *x)
+void jojo_free (t_jojo *x)
 {
     if (!x->mError) { x->~t_jojo(); }
 }
@@ -134,46 +134,46 @@ void jojo_free(t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_bang(t_jojo *x)
+void jojo_bang (t_jojo *x)
 {
-    const ScopedLock myLock(x->mLock); 
+    const ScopedLock myLock (x->mLock); 
     
-    File zipFile((File::getSpecialLocation(File::currentApplicationFile)).getSiblingFile("jojoZip.txt"));
+    File zipFile ((File::getSpecialLocation (File::currentApplicationFile)).getSiblingFile ("jojoZip.txt"));
     
     /* < https://fr.wikipedia.org/wiki/Gzip > */
     
-    jojo_write(x, zipFile);     /* Caution: it doesn't produce a compliant gzip file! */
-    jojo_read(x, zipFile);
+    jojo_write (x, zipFile);     /* Caution: it doesn't produce a compliant gzip file! */
+    jojo_read (x, zipFile);
 }
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void jojo_write(t_jojo *x, const File& aFile)
+void jojo_write (t_jojo *x, const File& aFile)
 {
     MemoryOutputStream myText;
-    GZIPCompressorOutputStream zipper(&myText);
+    GZIPCompressorOutputStream zipper (&myText);
     
     zipper << "Stately, plump Buck Mulligan came from the stairhead, " << newLine
            << "bearing a bowl of lather on which a mirror and a razor lay crossed." << newLine;
 
     zipper.flush();
     
-    aFile.replaceWithData(myText.getData(), myText.getDataSize());
+    aFile.replaceWithData (myText.getData(), myText.getDataSize());
 }
     
-void jojo_read(t_jojo *x, const File& aFile)
+void jojo_read (t_jojo *x, const File& aFile)
 {
-    FileInputStream zipped(aFile);
+    FileInputStream zipped (aFile);
     
     if (zipped.openedOk()) {
     //
-    GZIPDecompressorInputStream unzipper(&zipped, false);
-    StringArray myText(StringArray::fromLines(unzipper.readEntireStreamAsString()));
+    GZIPDecompressorInputStream unzipper (&zipped, false);
+    StringArray myText (StringArray::fromLines (unzipper.readEntireStreamAsString()));
     
     for (int i = 0; i < myText.size(); ++i) {
-        post("%s", myText.getReference(i).toRawUTF8());
+        post ("%s", myText.getReference (i).toRawUTF8());
     }
     //
     }

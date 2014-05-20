@@ -26,7 +26,7 @@ static bool running = true;
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-void intHandler(int dummy = 0) { running = false; }     /* Stop me with CTRL-C please! */
+void intHandler (int dummy = 0) { running = false; }     /* Stop me with CTRL-C please! */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -34,32 +34,32 @@ void intHandler(int dummy = 0) { running = false; }     /* Stop me with CTRL-C p
 class MasterIPC : public InterprocessConnection {
 
 public : 
-    MasterIPC() : InterprocessConnection(false) { createPipe("jojoLapin1234", -1); }
+    MasterIPC() : InterprocessConnection (false) { createPipe ("jojoLapin1234", -1); }
     ~MasterIPC() { }
 
 public:
-    void connectionMade()  { DBG("Master ConnectionMade"); }
-    void connectionLost()  { DBG("Master ConnectionLost"); }
+    void connectionMade()  { DBG ("Master ConnectionMade"); }
+    void connectionLost()  { DBG ("Master ConnectionLost"); }
  
-    void messageReceived(const MemoryBlock& mb) { DBG(mb.toString()); }
+    void messageReceived(const MemoryBlock& mb) { DBG (mb.toString()); }
 };
  
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-int main(int argc, char* argv[])
+int main (int argc, char* argv[])
 {
-    signal(SIGINT, intHandler);
+    signal (SIGINT, intHandler);
     
-    ScopedPointer<MasterIPC> myIPC(new MasterIPC());
+    ScopedPointer<MasterIPC> myIPC (new MasterIPC());
     
-    String myText("- How are you?");
-    const MemoryBlock msg(myText.toRawUTF8(), myText.getNumBytesAsUTF8() + 1);
+    String myText ("- How are you?");
+    const MemoryBlock msg (myText.toRawUTF8(), myText.getNumBytesAsUTF8() + 1);
     
     while (running) { 
     //
-    myIPC->sendMessage(msg);     /* Caution: block until jojoIPC2. */
-    Thread::sleep(1000);
+    myIPC->sendMessage (msg);     /* Caution: block until jojoIPC2. */
+    Thread::sleep (1000);
     //
     }
     
