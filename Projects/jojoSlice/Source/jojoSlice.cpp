@@ -60,12 +60,12 @@ public :
     ~_jojo() { mThread.stopThread (-1); } 
 
 public:
-    t_object                  ob;
-    ulong                     mError;
-    ScopedPointer<JojoClient> mClient;    /* Before TimeSliceThread. */
-    TimeSliceThread           mThread;    /* Use a ScopedPointer also? */
-    CriticalSection           mLock;
-    void                      *mClock; 
+    t_object ob;
+    ulong mError;
+    ScopedPointer <JojoClient> mClient;     /* Before TimeSliceThread. */
+    TimeSliceThread mThread;                /* Use a ScopedPointer also? */
+    CriticalSection mLock;
+    void *mClock; 
     
     } t_jojo;
 

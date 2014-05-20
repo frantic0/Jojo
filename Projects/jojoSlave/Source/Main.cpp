@@ -50,7 +50,7 @@ public:
 
     void initialise (const String& commandLine) {
     //
-    ScopedPointer<Slave> slave (new Slave());
+    ScopedPointer <Slave> slave (new Slave());
 
     if (slave->initialiseFromCommandLine (commandLine, "jojoUID")) { slave.release(); }
     else {

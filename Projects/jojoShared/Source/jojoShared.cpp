@@ -34,7 +34,7 @@
 // ------------------------------------------------------------------------------------------------------------
 
 struct Oizo {
-    Array<long, CriticalSection> mValues;
+    Array <long, CriticalSection> mValues;
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ void jojo_int (t_jojo *x, long n)
     
     /* On the stack also. */
     
-    // SharedResourcePointer<Oizo> mShared; mShared->mValues.add (n);
+    // SharedResourcePointer <Oizo> mShared; mShared->mValues.add (n);
 }
 
 // ------------------------------------------------------------------------------------------------------------

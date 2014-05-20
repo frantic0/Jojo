@@ -44,9 +44,9 @@ public :
     }
 
 public:
-    t_object                  ob;
-    ulong                     mError;
-    ScopedPointer<FileLogger> mLogger;
+    t_object ob;
+    ulong mError;
+    ScopedPointer <FileLogger> mLogger;
     
     } t_jojo;
     
@@ -139,7 +139,7 @@ void jojo_free (t_jojo *x)
 
 void jojo_bang (t_jojo *x)
 {
-    Array<File> files;
+    Array <File> files;
     File folder (x->mLogger->getLogFile().getParentDirectory());
     
     /* Find all the bundles in the directory. */

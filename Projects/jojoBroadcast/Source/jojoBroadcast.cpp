@@ -58,7 +58,7 @@ public:
     t_object ob;
     ulong mError;
     ActionBroadcaster mActionBroadcaster;
-    ScopedPointer<Oizo> mOizo;
+    ScopedPointer <Oizo> mOizo;
     } t_jojo;
     
 // ------------------------------------------------------------------------------------------------------------

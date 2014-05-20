@@ -166,7 +166,7 @@ void jojo_doFloat (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     juce::Slider *q = nullptr;
     juce::Component *p = x->mWindow->findChildWithID ("myComponent"); 
     
-    if ((p != nullptr) && ((q = dynamic_cast<juce::Slider *> (p->findChildWithID ("mySlider"))) != nullptr)) {
+    if ((p != nullptr) && ((q = dynamic_cast <juce::Slider *> (p->findChildWithID ("mySlider"))) != nullptr)) {
         if (argc && argv) { q->setValue (atom_getfloat (argv), dontSendNotification); }
     }
 }

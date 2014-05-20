@@ -178,7 +178,9 @@ void jojo_write (t_jojo *x, const File& aFile)
     myBlock.copyFrom (myText.toRawUTF8(), 0, textSize);         
     
     for (size_t i = 0; i < blockSize; i += 8) {
-        x->mFish.encrypt (reinterpret_cast<uint32&> (myBlock[i]), reinterpret_cast<uint32&> (myBlock[i + 4]));
+    //
+    x->mFish.encrypt (reinterpret_cast <uint32&> (myBlock[i]), reinterpret_cast <uint32&> (myBlock[i + 4]));
+    //
     }
     
     aFile.replaceWithData (myBlock.getData(), blockSize);
@@ -193,7 +195,9 @@ void jojo_read (t_jojo *x, const File& aFile)
     const size_t blockSize = myBlock.getSize();
     
     for (size_t i = 0; i < blockSize; i += 8) {
-        x->mFish.decrypt (reinterpret_cast<uint32&> (myBlock[i]), reinterpret_cast<uint32&> (myBlock[i + 4]));
+    //
+    x->mFish.decrypt (reinterpret_cast <uint32&> (myBlock[i]), reinterpret_cast <uint32&> (myBlock[i + 4]));
+    //
     }
     
     StringArray myText (StringArray::fromLines (myBlock.toString().toRawUTF8()));

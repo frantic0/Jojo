@@ -57,7 +57,7 @@ int main (int argc, char* argv[])
 {
     signal (SIGINT, intHandler);
     
-    ScopedPointer<SlaveIPC> myIPC (new SlaveIPC());
+    ScopedPointer <SlaveIPC> myIPC (new SlaveIPC());
     
     while (running) {
     //

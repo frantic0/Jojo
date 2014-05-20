@@ -48,7 +48,7 @@ class Oizo;
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-typedef ReferenceCountedObjectPtr<Oizo> OizoPtr;
+typedef ReferenceCountedObjectPtr <Oizo> OizoPtr;
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ public:
     /* Spawn method to be set dynamically. */
     
     static var spawn (const var::NativeFunctionArgs& args) {
-        if (Oizo* o = dynamic_cast<Oizo*> (args.thisObject.getObject())) { o->doSpawn(); } 
+        if (Oizo* o = dynamic_cast <Oizo*> (args.thisObject.getObject())) { o->doSpawn(); } 
         return var::undefined();
     }
 
@@ -78,7 +78,7 @@ private:
     Oizo (const Oizo& o) : DynamicObject (o), eggs (12) { cloneAllProperties(); post ("Oizo copy"); } 
     Oizo& operator = (const Oizo&);
 
-    Atomic<int> eggs;
+    Atomic <int> eggs;
     
 private:
     JUCE_LEAK_DETECTOR (Oizo)

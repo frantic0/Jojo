@@ -36,7 +36,7 @@
 
 class Oizo {
 
-friend class ContainerDeletePolicy<Oizo>;
+friend class ContainerDeletePolicy <Oizo>;
 
 public:
     explicit Oizo()    { post ("Oizo ctor"); }
@@ -51,7 +51,7 @@ private:
 
 namespace juce {
 
-template <> struct ContainerDeletePolicy<Oizo> {
+template <> struct ContainerDeletePolicy <Oizo> {
 
 static void destroy (Oizo* o) { post ("Oizo policy"); delete o; }
 
@@ -81,7 +81,7 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-typedef ReferenceCountedObjectPtr<Kitty> KittyPtr;
+typedef ReferenceCountedObjectPtr <Kitty> KittyPtr;
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ typedef ReferenceCountedObjectPtr<Kitty> KittyPtr;
 
 class Felix {
 
-friend class WeakReference<Felix>;
+friend class WeakReference <Felix>;
 
 public:
     explicit Felix()   { post ("Felix ctor"); }
@@ -224,7 +224,7 @@ void jojo_bang (t_jojo *x)
     ptrA->doSomething();
     ptrB->doSomething();
     
-    ReferenceCountedArray<Kitty> RCArray;
+    ReferenceCountedArray <Kitty> RCArray;
     
     RCArray.add (ptrA);
     RCArray.add (ptrB);
@@ -237,11 +237,11 @@ void jojo_bang (t_jojo *x)
     //
     
     Felix* n = new Felix();
-    WeakReference<Felix> myObjectRef = n;
+    WeakReference <Felix> myObjectRef = n;
 
     Felix* p = myObjectRef; post ("%ld", p == nullptr);
     delete n;
-    post ("%ld", p == nullptr);  /* Caution: pointer is no more valid! */
+    post ("%ld", p == nullptr);     /* Caution: pointer is no more valid! */
     
     Felix* q = myObjectRef; post ("%ld", q == nullptr);
     

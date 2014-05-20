@@ -169,8 +169,8 @@ void jojo_bang (t_jojo *x)
     
     //
     
-    v = var (Array<var>());
-    Array<var> * const temp = v.getArray();
+    v = var (Array <var>());
+    Array <var> * const temp = v.getArray();
     
     temp->add (var ("Toto"));
     temp->add (var ("Jojo"));
@@ -188,7 +188,7 @@ void jojo_bang (t_jojo *x)
     var w = v;
     post ("RefCount / %ld", v.getObject()->getReferenceCount());
     
-    Oizo* const q = dynamic_cast<Oizo*> (v.getObject());
+    Oizo* const q = dynamic_cast <Oizo*> (v.getObject());
     if (q != nullptr) { q->doSomething(); }
 }
 

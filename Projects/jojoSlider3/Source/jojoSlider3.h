@@ -58,7 +58,7 @@ public:
     void closeButtonPressed() { setVisible (false); }
 
 public:
-    ScopedPointer<MainComponent> mainComponent;     /* Private (or delete policy) should be better! */
+    ScopedPointer <MainComponent> mainComponent;        /* Private (or delete policy) should be better! */
     
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
