@@ -67,7 +67,7 @@ typedef struct _jojo {
 
 /* Note that juce::Value must be constructed before the MainWindow. */
 
-public :
+public:
     _jojo() : mSlider(), mWindow (new MainWindow (this)) { }       /* Pass a pointer to self. */
 
 public:

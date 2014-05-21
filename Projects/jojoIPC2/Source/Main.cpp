@@ -33,7 +33,7 @@ void intHandler (int dummy = 0) { running = false; }     /* Stop me with CTRL-C 
 
 class SlaveIPC : public InterprocessConnection {
 
-public : 
+public:
     SlaveIPC() : InterprocessConnection (false) { connectToPipe ("jojoLapin1234", -1); }
     ~SlaveIPC() { }
 

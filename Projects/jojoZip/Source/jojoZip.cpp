@@ -31,7 +31,7 @@
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mLock() { }
 
 public:
@@ -142,7 +142,7 @@ void jojo_bang (t_jojo *x)
     
     /* < https://fr.wikipedia.org/wiki/Gzip > */
     
-    jojo_write (x, zipFile);     /* Caution: it doesn't produce a compliant gzip file! */
+    jojo_write (x, zipFile);     /* It doesn't produce a compliant gzip file! */
     jojo_read (x, zipFile);
 }
 

@@ -79,7 +79,7 @@ public:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mScope(), mLock() { }
 
 public:

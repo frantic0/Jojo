@@ -48,7 +48,7 @@ public:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mOizo (new Oizo()), mValue (var::undefined()) { mValue.addListener (mOizo); }
     
     ~_jojo() { mValue.removeListener (mOizo); }     /* Currently not necessary, but for future! */

@@ -71,7 +71,7 @@ public:
     void valueTreeParentChanged  (ValueTree&)            { }
     void valueTreeRedirected (ValueTree&)                { }
 
-private: 
+private:
     struct _jojo* owner; 
     
     void timerCallback();
@@ -86,7 +86,7 @@ private:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mUndo (new UndoManager()), mOizo (new Oizo (this)), mTree (new ValueTree (JojoId::JojoTree)) { 
     //
     mTree->addListener (mOizo);

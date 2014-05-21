@@ -44,7 +44,7 @@ int main (int argc, char* argv[])
     while (running) { 
     //
     DBG ("Pipe1"); 
-    int result = pipe.write (msg.getData(), msg.getSize(), -1);    /* Caution: block until jojoPipe2. */
+    int result = pipe.write (msg.getData(), msg.getSize(), -1);    /* Block until jojoPipe2. */
     DBG (result);
     Thread::sleep (1000);
     //

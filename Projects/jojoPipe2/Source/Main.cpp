@@ -41,7 +41,7 @@ int main (int argc, char* argv[])
     signal (SIGINT, intHandler);
     
     NamedPipe pipe;
-    pipe.openExisting ("jojoLapin1234");                             /* Caution: always return true. */
+    pipe.openExisting ("jojoLapin1234");                             /* Always return true. */
     
     while (running) {
     //

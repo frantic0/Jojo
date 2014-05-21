@@ -11,7 +11,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Caution: JUCE's singleton uses "unreliable" DCLP. */
+/* JUCE's singleton uses "unreliable" DCLP. */
 
 /* < http://www.aristeia.com/Papers/DDJ_Jul_Aug_2004_revised.pdf > */
 /* < http://preshing.com/20130930/double-checked-locking-is-fixed-in-cpp11/ > */
@@ -69,7 +69,7 @@ void jojo_quit (void)
 
 typedef struct _jojo {
 
-public :
+public:
     /* Initialize it first for foolproof multithreading. */
     
     _jojo() { Oizo *o = Oizo::getInstance(); (void)o; }   

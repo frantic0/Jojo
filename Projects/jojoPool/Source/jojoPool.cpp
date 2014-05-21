@@ -36,7 +36,7 @@ struct _jojo;
 
 class JojoJob : public ThreadPoolJob {
 
-public: 
+public:
     explicit JojoJob (_jojo *x, const String& name = "Jojo") : ThreadPoolJob (name), owner (x) { }
 
 public:
@@ -52,7 +52,7 @@ private:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mPool(), mLock() { }
 
 public:

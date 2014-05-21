@@ -47,7 +47,7 @@ private:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mActionBroadcaster(), mOizo (new Oizo()) { mActionBroadcaster.addActionListener (mOizo); }
     ~_jojo() { mActionBroadcaster.removeActionListener (mOizo); }
     

@@ -72,7 +72,7 @@ static Oizo oizo;
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() { }
 
 public:
@@ -116,7 +116,7 @@ void jojo_quit (void)
         cpost ("%s\n", backtrace.getReference (i).toRawUTF8());
     }
     
-    shutdownJuce_GUI(); cpost ("Shutdown JUCE\n");   /* AFAIK: Yes! */
+    shutdownJuce_GUI(); cpost ("Shutdown JUCE\n");
 }
 
 // ------------------------------------------------------------------------------------------------------------

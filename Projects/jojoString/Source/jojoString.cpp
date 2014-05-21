@@ -33,7 +33,7 @@
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mPair(), mLock() { 
         /* Use a text file to translate strings in the bundle. */
         
@@ -151,15 +151,15 @@ void jojo_bang (t_jojo *x)
     String toto (CharPointer_UTF8 ("P\xc3\xa9p\xc3\xa9 p\xc3\xa8te en ao\xc3\xbbt!"));
     
     post ("%s", toto.toRawUTF8());
-    post ("    Length: %ld", toto.length());
-    post ("    Bytes: %ld", CharPointer_UTF8::getBytesRequiredFor (toto.getCharPointer()));
+    post ("    Length / %ld", toto.length());
+    post ("    Bytes / %ld", CharPointer_UTF8::getBytesRequiredFor (toto.getCharPointer()));
     
     //
     
     const ScopedLock myLock (x->mLock); 
     
-    post ("Keys: %s", x->mPair.getAllKeys().joinIntoString (" / ").toRawUTF8());
-    post ("Values: %s", x->mPair.getAllValues().joinIntoString (" / ").toRawUTF8());
+    post ("Keys / %s", x->mPair.getAllKeys().joinIntoString (" / ").toRawUTF8());
+    post ("Values / %s", x->mPair.getAllValues().joinIntoString (" / ").toRawUTF8());
 }
 
 // ------------------------------------------------------------------------------------------------------------

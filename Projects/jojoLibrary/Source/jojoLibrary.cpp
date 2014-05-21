@@ -41,7 +41,7 @@
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() { }
 
 public:

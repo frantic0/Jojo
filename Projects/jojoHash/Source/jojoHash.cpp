@@ -68,7 +68,7 @@ typedef HashMap <Uuid, KittyPtr, MyHashGenerator> MyHash;
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mHash() { }
 
 public:

@@ -71,7 +71,7 @@ private:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mJS (new JavascriptEngine()), mLock() { 
         mJS->registerNativeObject (Oizo::getClassName(), new Oizo());      /* Takes Oizo's ownership. */
     }

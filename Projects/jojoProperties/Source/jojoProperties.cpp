@@ -11,7 +11,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Note: due to the message manager loop, thread-safety needs extra care. */
+/* Due to the message manager loop, thread-safety needs extra care. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ private:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mOizo (new Oizo()), mProperties (nullptr) { 
     //
     /* File is next to the bundle for convenience only. */
@@ -201,8 +201,8 @@ void jojo_bang (t_jojo *x)
     else {
     //
     // const ScopedLock lock (x->mProperties->getLock());
-    post ("Keys: %s", x->mProperties->getAllProperties().getAllKeys().joinIntoString (" / ").toRawUTF8());
-    post ("Values: %s", x->mProperties->getAllProperties().getAllValues().joinIntoString (" / ").toRawUTF8());
+    post ("Keys / %s", x->mProperties->getAllProperties().getAllKeys().joinIntoString (" / ").toRawUTF8());
+    post ("Values / %s", x->mProperties->getAllProperties().getAllValues().joinIntoString (" / ").toRawUTF8());
     //
     }
 }

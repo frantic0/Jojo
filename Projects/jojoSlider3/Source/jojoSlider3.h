@@ -70,7 +70,7 @@ private:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mValue(), mWindow (new MainWindow (this)) { }
 
 public:

@@ -36,7 +36,7 @@ static uint8 myKey[] = { 0xFA, 0xDA, 0xFA, 0xDA };     /* Never hard code passwo
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mFish (myKey, numElementsInArray (myKey)), mLock() { }
 
 public:
@@ -169,7 +169,7 @@ void jojo_write (t_jojo *x, const File& aFile)
             << "Stately, plump Buck Mulligan came from the stairhead, " << newLine
             << "bearing a bowl of lather on which a mirror and a razor lay crossed." << newLine;
     
-    const size_t textSize = myText.getNumBytesAsUTF8() + 1;     /* Caution: UTF_8 size != string length. */
+    const size_t textSize = myText.getNumBytesAsUTF8() + 1;     /* UTF_8 size != string length. */
     const size_t blockSize = (textSize + 7) & ~7;               /* Round up to the next multiple of 8. */
 
     /* Pad with zeros (handy for a null terminated string). */

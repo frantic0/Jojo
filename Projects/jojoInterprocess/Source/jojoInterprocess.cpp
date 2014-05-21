@@ -40,7 +40,7 @@ public:
     ~Master()          { DBG ("Master dtor"); }
     
 public:
-    /* Caution: those methods are called by custom threads (consider to use a t_clock). */
+    /* Those methods are called by custom threads (consider to use a t_clock). */
     
     void handleMessageFromSlave (const juce::MemoryBlock& mb)   { post ("%s", mb.toString().toRawUTF8()); }
     void handleConnectionLost()                                 { DBG ("Master ConnectionLost"); }
@@ -52,7 +52,7 @@ public:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mMaster (new Master()) { 
     //
     File appPath (File::getSpecialLocation (File::currentApplicationFile).getSiblingFile ("jojoSlave.app"));

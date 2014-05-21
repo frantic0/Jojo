@@ -31,7 +31,7 @@
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mIP(), mMAC() { }
 
 public:
@@ -168,11 +168,11 @@ void jojo_doBang (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 
 /*
 if (parameters.isEmpty()) {
-    if ([[NSFileManager defaultManager] fileExistsAtPath: juceStringToNS (fileName)]) {
-        if ([workspace openFile: juceStringToNS (fileName)]) { return YES; }
+    if ([[NSFileManager defaultManager] fileExistsAtPath: juceStringToNS (fileName)]) {     // --
+        if ([workspace openFile: juceStringToNS (fileName)]) { return YES; }                // --
     } 
             
-    return ([workspace openURL: filenameAsURL]);
+    return ([workspace openURL: filenameAsURL]);                                            // --
 }
 */
 

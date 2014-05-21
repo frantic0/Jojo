@@ -86,7 +86,7 @@ typedef ReferenceCountedObjectPtr <Kitty> KittyPtr;
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* WeakReference (caution: it doesn't retain the object like weak_ptr). */
+/* WeakReference (it doesn't retain the object like weak_ptr). */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ private:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mOizo (new Oizo()) { }
 
 public:
@@ -216,7 +216,7 @@ void jojo_bang (t_jojo *x)
 {
     /* Avoid to accidentally delete a raw pointer owned by a ScopedPointer. */
     
-    // delete x->mOizo.get();       /* Error: 'Oizo::~Oizo()' is private! */
+    // delete x->mOizo.get();       /* 'Oizo::~Oizo()' is private! */
     
     KittyPtr ptrA (new Kitty());
     KittyPtr ptrB (ptrA);  
@@ -241,7 +241,7 @@ void jojo_bang (t_jojo *x)
 
     Felix* p = myObjectRef; post ("%ld", p == nullptr);
     delete n;
-    post ("%ld", p == nullptr);     /* Caution: pointer is no more valid! */
+    post ("%ld", p == nullptr);     /* Pointer is no more valid! */
     
     Felix* q = myObjectRef; post ("%ld", q == nullptr);
     

@@ -90,7 +90,7 @@ private:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mOizo (new Oizo()), mLock() { 
         mOizo->setProperty (JojoIdentifier::One, "Carotte");         /* The DynamicObject stuff. */
         mOizo->setMethod (JojoIdentifier::Two, Oizo::spawn);

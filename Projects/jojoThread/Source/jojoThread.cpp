@@ -11,8 +11,8 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Note: Threads are created suspended, and signaled right after. */
-/* Note: All the thread creation machinery is done in the startThread() method. */
+/* Threads are created suspended, and signaled right after. */
+/* All the thread creation machinery is done in the startThread() method. */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ private:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mThread (new JojoThread (this)) { mThread->startThread(); }  
     ~_jojo() { mThread->stopThread (-1); }  /* Must be stopped before deletion. */
 

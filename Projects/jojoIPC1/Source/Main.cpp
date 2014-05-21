@@ -33,7 +33,7 @@ void intHandler (int dummy = 0) { running = false; }     /* Stop me with CTRL-C 
 
 class MasterIPC : public InterprocessConnection {
 
-public : 
+public:
     MasterIPC() : InterprocessConnection (false) { createPipe ("jojoLapin1234", -1); }
     ~MasterIPC() { }
 
@@ -58,7 +58,7 @@ int main (int argc, char* argv[])
     
     while (running) { 
     //
-    myIPC->sendMessage (msg);     /* Caution: block until jojoIPC2. */
+    myIPC->sendMessage (msg);     /* Block until jojoIPC2. */
     Thread::sleep (1000);
     //
     }

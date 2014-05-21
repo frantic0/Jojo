@@ -31,7 +31,7 @@
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mLogger (nullptr) { 
     
         /* File::currentApplicationFile returns the ".mxo" package path. */

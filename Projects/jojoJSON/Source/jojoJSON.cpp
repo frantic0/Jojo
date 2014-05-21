@@ -72,7 +72,7 @@ typedef ReferenceCountedObjectPtr <Oizo> OizoPtr;
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mOizo (new Oizo()), mLock() { 
         mOizo->setProperty (JojoIdentifier::One, "Carotte");
         mOizo->setProperty (JojoIdentifier::Two, "Olive");

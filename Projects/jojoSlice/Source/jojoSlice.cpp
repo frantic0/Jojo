@@ -36,7 +36,7 @@ struct _jojo;
 
 class JojoClient : public TimeSliceClient {
 
-public: 
+public:
     explicit JojoClient (_jojo *x) : owner (x) { }
 
 public:
@@ -55,7 +55,7 @@ private:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mClient (new JojoClient (this)), mThread ("Jojo"), mLock() { mThread.startThread(); }
     ~_jojo() { mThread.stopThread (-1); } 
 

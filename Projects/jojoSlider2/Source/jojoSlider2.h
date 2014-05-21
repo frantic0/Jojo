@@ -58,7 +58,7 @@ private:
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mWindow (new MainWindow (this)) { }
 
 public:

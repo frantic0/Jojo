@@ -33,7 +33,7 @@
 
 typedef struct _jojo {
 
-public :
+public:
     _jojo() : mPublic(), mPrivate(), mLock() { RSAKey::createKeyPair (mPublic, mPrivate, 128); }
  
 public:
