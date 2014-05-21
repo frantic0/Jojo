@@ -27,10 +27,10 @@
 class JojoComponent : public juce::Component
 {
 protected:
-    JojoComponent (void *o) : jojoPtr (o) { }
+    JojoComponent (void *o) : ptr_ (o) { }
 
 protected:
-    void *jojoPtr;
+    void *ptr_;
 };
 
 //[/Headers]

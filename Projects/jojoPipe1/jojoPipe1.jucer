@@ -22,7 +22,7 @@
     </XCODE_MAC>
   </EXPORTFORMATS>
   <MODULES>
-    <MODULES id="juce_core" showAllCode="1" useLocalCopy="0"/>
+    <MODULES id="juce_core" showAllCode="0" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS/>
 </JUCERPROJECT>

@@ -50,7 +50,7 @@ MainComponent::MainComponent (void *o)
 
     /* Bind that slider to the Value in t_jojo. */
 
-    slider->getValueObject().referTo ((*(static_cast<t_jojo *>(jojoPtr))).slider_);
+    slider->getValueObject().referTo ((*(static_cast<t_jojo *>(ptr_))).slider_);
 
     LookAndFeel::setDefaultLookAndFeel (&mainLookAndFeel);
 
@@ -97,7 +97,7 @@ void MainComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_slider] -- add your slider handling code here..
 
-        outlet_int ((static_cast<t_jojo *>(jojoPtr))->outlet_, static_cast<long>(slider->getValue()));
+        outlet_int ((static_cast<t_jojo *>(ptr_))->outlet_, static_cast<long>(slider->getValue()));
 
         //[/UserSliderCode_slider]
     }
