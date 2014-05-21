@@ -48,17 +48,17 @@ private:
 typedef struct _jojo {
 
 public:
-    _jojo() : mActionBroadcaster(), mOizo (new Oizo()) { mActionBroadcaster.addActionListener (mOizo); }
-    ~_jojo() { mActionBroadcaster.removeActionListener (mOizo); }
+    _jojo() : actionBroadcaster_(), oizo_ (new Oizo()) { actionBroadcaster_.addActionListener (oizo_); }
+    ~_jojo() { actionBroadcaster_.removeActionListener (oizo_); }
     
     /* Listener must be deregister from the broadcaster before to be freed. */
     /* The broadcaster can be freed with messages still pending in the queue. */
     
 public:
-    t_object ob;
-    ulong mError;
-    ActionBroadcaster mActionBroadcaster;
-    ScopedPointer <Oizo> mOizo;
+    t_object ob_;
+    ulong error_;
+    ActionBroadcaster actionBroadcaster_;
+    ScopedPointer <Oizo> oizo_;
     } t_jojo;
     
 // ------------------------------------------------------------------------------------------------------------
@@ -142,14 +142,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
 
     if (err) {
@@ -164,7 +164,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ void jojo_free (t_jojo *x)
 
 void jojo_bang (t_jojo *x)
 {
-    x->mActionBroadcaster.sendActionMessage ("Hello World!");    /* Thread-safe (mutex). */
+    x->actionBroadcaster_.sendActionMessage ("Hello World!");    /* Thread-safe (mutex). */
 }
 
 // ------------------------------------------------------------------------------------------------------------

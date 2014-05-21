@@ -40,8 +40,8 @@
 #pragma mark -
 
 typedef struct _waste {
-    long bStep;
-    long bIndex;
+    long step_;
+    long index_;
     } t_waste;
 
 // ------------------------------------------------------------------------------------------------------------
@@ -98,8 +98,8 @@ void waste_init (t_waste *x)
 {
     long k = ATOMIC_INCREMENT (&counter);
     
-    x->bStep = (k % (FLOP_SIZE_WASTE - 1)) + 1;
-    x->bIndex = 0;
+    x->step_ = (k % (FLOP_SIZE_WASTE - 1)) + 1;
+    x->index_ = 0;
 }
 
 void waste_time (t_waste *x)
@@ -108,10 +108,10 @@ void waste_time (t_waste *x)
     
     do {
     //
-    i = values[x->bIndex];
-    x->bIndex += x->bStep;
-    if (x->bIndex >= FLOP_SIZE_WASTE) {
-        x->bIndex -= FLOP_SIZE_WASTE;
+    i = values[x->index_];
+    x->index_ += x->step_;
+    if (x->index_ >= FLOP_SIZE_WASTE) {
+        x->index_ -= FLOP_SIZE_WASTE;
     }
     //
     } while (i & 7);
@@ -124,12 +124,12 @@ void waste_time (t_waste *x)
 typedef struct _jojo {
 
 public:
-    _jojo() : mTime (Time::getCurrentTime()) { }
+    _jojo() : time_ (Time::getCurrentTime()) { }
 
 public:
-    t_object    ob;
-    ulong       mError;
-    Time        mTime;
+    t_object ob_;
+    ulong error_;
+    Time time_;
     
     } t_jojo;
     
@@ -177,8 +177,8 @@ JOJO_EXPORT int main (void)
     
     c = class_new ("jojoTime", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
     
-    class_addmethod (c, (method)jojo_bang,       "bang",         0);
-    class_addmethod (c, (method)jojo_benchmark,  "benchmark",    0);
+    class_addmethod (c, (method)jojo_bang,      "bang",         0);
+    class_addmethod (c, (method)jojo_benchmark, "benchmark",    0);
     
     class_register (CLASS_BOX, c);
     jojo_class = c;
@@ -196,14 +196,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
 
     if (err) {
@@ -218,7 +218,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -227,9 +227,9 @@ void jojo_free (t_jojo *x)
 
 void jojo_bang (t_jojo *x)
 {
-    RelativeTime elapsedTime (Time::getCurrentTime() - x->mTime);
+    RelativeTime elapsedTime (Time::getCurrentTime() - x->time_);
     
-    post ("Origin / %s", x->mTime.toString (true, true, true, true).toRawUTF8());
+    post ("Origin / %s", x->time_.toString (true, true, true, true).toRawUTF8());
     post ("Elapsed / %s", elapsedTime.getDescription().toRawUTF8());
 }
 

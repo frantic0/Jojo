@@ -32,13 +32,13 @@
 typedef struct _jojo {
 
 public:
-    _jojo() : mIP(), mMAC() { }
+    _jojo() : IP_(), MAC_() { }
 
 public:
-    t_object ob;
-    ulong mError;
-    Array <IPAddress> mIP;
-    Array <MACAddress> mMAC;
+    t_object ob_;
+    ulong error_;
+    Array <IPAddress> IP_;
+    Array <MACAddress> MAC_;
     
     } t_jojo;
     
@@ -101,14 +101,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
     
     if (err) {
@@ -123,7 +123,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -139,16 +139,16 @@ void jojo_doBang (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
     /* Basic getters. */
     
-    IPAddress::findAllAddresses (x->mIP);
+    IPAddress::findAllAddresses (x->IP_);
     
-    for (int i = 0; i < x->mIP.size(); ++i) {
-        post ("IP / %s", x->mIP.getReference (i).toString().toRawUTF8());
+    for (int i = 0; i < x->IP_.size(); ++i) {
+        post ("IP / %s", x->IP_.getReference (i).toString().toRawUTF8());
     }
     
-    MACAddress::findAllAddresses (x->mMAC);
+    MACAddress::findAllAddresses (x->MAC_);
         
-    for (int i = 0; i < x->mMAC.size(); ++i) {
-        post ("MAC / %s", x->mMAC.getReference (i).toString().toRawUTF8());
+    for (int i = 0; i < x->MAC_.size(); ++i) {
+        post ("MAC / %s", x->MAC_.getReference (i).toString().toRawUTF8());
     }
     
     /* Launch an URL in your favorite browser. */

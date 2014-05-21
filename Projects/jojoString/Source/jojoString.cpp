@@ -34,7 +34,7 @@
 typedef struct _jojo {
 
 public:
-    _jojo() : mPair(), mLock() { 
+    _jojo() : pair_(), lock_() { 
         /* Use a text file to translate strings in the bundle. */
         
         File tr (File::getSpecialLocation (File::currentApplicationFile).getSiblingFile ("jojoString.txt"));
@@ -44,10 +44,10 @@ public:
     }
 
 public:
-    t_object ob;
-    ulong mError;
-    StringPairArray mPair;          /* Not thread-safe. */
-    CriticalSection mLock;
+    t_object ob_;
+    ulong error_;
+    StringPairArray pair_;          /* Not thread-safe. */
+    CriticalSection lock_;
     
     } t_jojo;
     
@@ -93,8 +93,10 @@ JOJO_EXPORT int main (void)
     t_class *c = NULL;
     
     c = class_new ("jojoString", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
-    class_addmethod (c, (method)jojo_bang,       "bang", 0);
-    class_addmethod (c, (method)jojo_anything,   "anything", A_GIMME, 0);
+    
+    class_addmethod (c, (method)jojo_bang,      "bang",     0);
+    class_addmethod (c, (method)jojo_anything,  "anything", A_GIMME, 0);
+    
     class_register (CLASS_BOX, c);
     jojo_class = c;
     
@@ -111,14 +113,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
     
     if (err) {
@@ -133,7 +135,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -156,10 +158,10 @@ void jojo_bang (t_jojo *x)
     
     //
     
-    const ScopedLock myLock (x->mLock); 
+    const ScopedLock myLock (x->lock_); 
     
-    post ("Keys / %s", x->mPair.getAllKeys().joinIntoString (" / ").toRawUTF8());
-    post ("Values / %s", x->mPair.getAllValues().joinIntoString (" / ").toRawUTF8());
+    post ("Keys / %s", x->pair_.getAllKeys().joinIntoString (" / ").toRawUTF8());
+    post ("Values / %s", x->pair_.getAllValues().joinIntoString (" / ").toRawUTF8());
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -167,10 +169,10 @@ void jojo_bang (t_jojo *x)
 
 void jojo_anything (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
-    const ScopedLock myLock (x->mLock); 
+    const ScopedLock myLock (x->lock_); 
     
     if (argc && (atom_gettype (argv) == A_SYM)) {
-        x->mPair.set (s->s_name, atom_getsym (argv)->s_name);             /* A StringPairArray exemple. */
+        x->pair_.set (s->s_name, atom_getsym (argv)->s_name);             /* A StringPairArray exemple. */
     }
 }
 

@@ -53,17 +53,17 @@ public:
 typedef struct _jojo {
 
 public:
-    _jojo() : mMaster (new Master()) { 
+    _jojo() : master_ (new Master()) { 
     //
     File appPath (File::getSpecialLocation (File::currentApplicationFile).getSiblingFile ("jojoSlave.app"));
-    mMaster->launchSlaveProcess (appPath.getChildFile ("Contents/MacOS/jojoSlave"), "jojoUID");
+    master_->launchSlaveProcess (appPath.getChildFile ("Contents/MacOS/jojoSlave"), "jojoUID");
     //
     }
     
 public:
-    t_object ob;
-    ulong mError;
-    ScopedPointer <Master> mMaster;
+    t_object ob_;
+    ulong error_;
+    ScopedPointer <Master> master_;
 
     } t_jojo;
     
@@ -148,14 +148,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
 
     if (err) {
@@ -170,7 +170,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ void jojo_bang (t_jojo *x)   /* Kept it in the main thread in order to preserve 
     
     const juce::MemoryBlock mb (myText.toRawUTF8(), myText.getNumBytesAsUTF8() + 1);
     
-    if (!(x->mMaster->sendMessageToSlave (mb))) {     /* Thread-safe. */
+    if (!(x->master_->sendMessageToSlave (mb))) {     /* Thread-safe. */
         post ("- Are you dead?");
     }
     //

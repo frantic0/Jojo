@@ -45,7 +45,8 @@ class MainWindow : public DocumentWindow {
 /* Pass a raw t_jojo pointer in the constructor of the MainComponent class. */
 
 public:
-    MainWindow (void *o) : DocumentWindow ("Jojo", Colours::lightgrey, DocumentWindow::allButtons) {
+    MainWindow (void *o) : DocumentWindow ("Jojo", Colours::lightgrey, DocumentWindow::allButtons) 
+    {
         setContentOwned (new MainComponent (o), true);
         setSize (250, 250);
         centreWithSize (getWidth(), getHeight());
@@ -68,14 +69,14 @@ typedef struct _jojo {
 /* Note that juce::Value must be constructed before the MainWindow. */
 
 public:
-    _jojo() : mSlider(), mWindow (new MainWindow (this)) { }       /* Pass a pointer to self. */
+    _jojo() : slider_(), window_ (new MainWindow (this)) { }       /* Pass a pointer to self. */
 
 public:
-    t_object ob;
-    ulong mError;
-    Value mSlider;
-    ScopedPointer <MainWindow> mWindow;
-    void *mOutlet;
+    t_object ob_;
+    ulong error_;
+    Value slider_;
+    ScopedPointer <MainWindow> window_;
+    void *outlet_;
     
     } t_jojo;
 

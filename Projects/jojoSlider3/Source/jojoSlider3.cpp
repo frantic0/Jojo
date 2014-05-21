@@ -76,8 +76,10 @@ JOJO_EXPORT int main (void)
     t_class *c = NULL;
     
     c = class_new ("jojoSlider3", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
-    class_addmethod (c, (method)jojo_bang,   "bang",     0);
-    class_addmethod (c, (method)jojo_float,  "float",    A_FLOAT, 0);
+    
+    class_addmethod (c, (method)jojo_bang,  "bang",     0);
+    class_addmethod (c, (method)jojo_float, "float",    A_FLOAT, 0);
+    
     class_register (CLASS_BOX, c);
     jojo_class = c;
     
@@ -96,18 +98,18 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
     
     if (!err) {
-        err |= !(x->mOutlet = floatout ((t_object *)x));
+        err |= !(x->outlet_ = floatout ((t_object *)x));
     }
     
     if (err) {
@@ -122,7 +124,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -133,7 +135,7 @@ void jojo_bang (t_jojo *x)
 {
     if (!systhread_ismainthread()) { defer (x, (method)jojo_bang, NULL, 0, NULL); return; } 
     else {
-        x->mWindow->setVisible (true);
+        x->window_->setVisible (true);
     }
 }
 
@@ -141,10 +143,10 @@ void jojo_float (t_jojo *x, double f)
 {
     /* Set the value and trigger the MainComponent's update. */
     
-    x->mValue.set (f);
-    x->mWindow->mainComponent->triggerAsyncUpdate();
+    x->value_.set (f);
+    x->window_->mainComponent->triggerAsyncUpdate();
     
-    outlet_float (x->mOutlet, f);
+    outlet_float (x->outlet_, f);
 }
 
 // ------------------------------------------------------------------------------------------------------------

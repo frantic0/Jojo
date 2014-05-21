@@ -76,8 +76,10 @@ JOJO_EXPORT int main (void)
     t_class *c = NULL;
     
     c = class_new ("jojoSlider", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
-    class_addmethod (c, (method)jojo_bang,   "bang", 0);
-    class_addmethod (c, (method)jojo_int,    "int",  A_LONG, 0);
+    
+    class_addmethod (c, (method)jojo_bang,  "bang", 0);
+    class_addmethod (c, (method)jojo_int,   "int",  A_LONG, 0);
+    
     class_register (CLASS_BOX, c);
     jojo_class = c;
     
@@ -96,18 +98,18 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
     
     if (!err) {
-        err |= !(x->mOutlet = intout ((t_object *)x));
+        err |= !(x->outlet_ = intout ((t_object *)x));
     }
     
     if (err) {
@@ -122,7 +124,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -132,7 +134,7 @@ void jojo_bang (t_jojo *x)
 {
     if (!systhread_ismainthread()) { error ("Always in the main thread!"); } 
     else {
-        x->mWindow->setVisible (true);
+        x->window_->setVisible (true);
     }
 }
 
@@ -140,8 +142,8 @@ void jojo_int (t_jojo *x, long n)
 {
     if (!systhread_ismainthread()) { error ("Always in the main thread!"); }
     else {
-        x->mSlider.setValue (static_cast <double> (n));         /* JUCE::Value machinery. */
-        outlet_int (x->mOutlet, n);    
+        x->slider_.setValue (static_cast <double> (n));         /* JUCE::Value machinery. */
+        outlet_int (x->outlet_, n);    
     }
 }
 

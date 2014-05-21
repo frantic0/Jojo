@@ -56,7 +56,7 @@ struct _jojo;
 class Oizo : public ValueTree::Listener, private Timer {                /* Timer for convenience only. */
 
 public:
-    explicit Oizo (_jojo* o) : owner (o) { startTimer (500); }
+    explicit Oizo (_jojo* o) : owner_ (o) { startTimer (500); }
 
 public:
     void valueTreePropertyChanged (ValueTree& tree, const Identifier& property) { 
@@ -72,7 +72,7 @@ public:
     void valueTreeRedirected (ValueTree&)                { }
 
 private:
-    struct _jojo* owner; 
+    struct _jojo* owner_; 
     
     void timerCallback();
     
@@ -87,20 +87,20 @@ private:
 typedef struct _jojo {
 
 public:
-    _jojo() : mUndo (new UndoManager()), mOizo (new Oizo (this)), mTree (new ValueTree (JojoId::JojoTree)) { 
+    _jojo() : undo_ (new UndoManager()), oizo_ (new Oizo (this)), tree_ (new ValueTree (JojoId::JojoTree)) { 
     //
-    mTree->addListener (mOizo);
+    tree_->addListener (oizo_);
     //
     }
     
-    ~_jojo() { mTree->removeListener (mOizo); }     /* Currently not necessary, but for future! */
+    ~_jojo() { tree_->removeListener (oizo_); }     /* Currently not necessary, but for future! */
 
 public:
-    t_object ob;
-    ulong mError;
-    ScopedPointer <UndoManager> mUndo;
-    ScopedPointer <Oizo> mOizo;
-    ScopedPointer <ValueTree> mTree;
+    t_object ob_;
+    ulong error_;
+    ScopedPointer <UndoManager> undo_;
+    ScopedPointer <Oizo> oizo_;
+    ScopedPointer <ValueTree> tree_;
                      
     } t_jojo;
 
@@ -110,7 +110,7 @@ public:
 
 void Oizo::timerCallback() 
 { 
-    owner->mUndo->beginNewTransaction(); 
+    owner_->undo_->beginNewTransaction(); 
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -179,10 +179,10 @@ JOJO_EXPORT int main (void)
     
     c = class_new ("jojoTree", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
     
-    class_addmethod (c, (method)jojo_bang,       "bang", 0);
-    class_addmethod (c, (method)jojo_undo,       "undo", 0);
-    class_addmethod (c, (method)jojo_redo,       "redo", 0);
-    class_addmethod (c, (method)jojo_anything,   "anything", A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang,      "bang",     0);
+    class_addmethod (c, (method)jojo_undo,      "undo",     0);
+    class_addmethod (c, (method)jojo_redo,      "redo",     0);
+    class_addmethod (c, (method)jojo_anything,  "anything", A_GIMME, 0);
     
     class_register (CLASS_BOX, c);
     jojo_class = c;
@@ -202,14 +202,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
     
     if (err) {
@@ -224,7 +224,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -239,21 +239,21 @@ void jojo_free (t_jojo *x)
 void jojo_bang (t_jojo *x) 
 {
     if (systhread_ismainthread()) {        
-        post ("%s", x->mTree->toXmlString().toRawUTF8());
+        post ("%s", x->tree_->toXmlString().toRawUTF8());
     }
 }
 
 void jojo_undo (t_jojo *x) 
 {
     if (systhread_ismainthread()) {        
-        post ("Undo / %ld", x->mUndo->undo());
+        post ("Undo / %ld", x->undo_->undo());
     }
 }
 
 void jojo_redo (t_jojo *x) 
 {
     if (systhread_ismainthread()) {
-        post ("Redo / %ld", x->mUndo->redo());
+        post ("Redo / %ld", x->undo_->redo());
     }
 }
 
@@ -270,9 +270,9 @@ void jojo_anything (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     if (Identifier::isValidIdentifier (property)) {
     //
     if (atom_gettype (argv) == A_SYM) { 
-        x->mTree->setProperty (property, atom_getsym (argv)->s_name, x->mUndo);
+        x->tree_->setProperty (property, atom_getsym (argv)->s_name, x->undo_);
     } else {
-        x->mTree->setProperty (property, atom_getfloat (argv), x->mUndo);
+        x->tree_->setProperty (property, atom_getfloat (argv), x->undo_);
     }
     //
     }

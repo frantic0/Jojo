@@ -28,39 +28,9 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Short version. */
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
 struct Oizo {
-    Array <long, CriticalSection> mValues;
+    Array <long, CriticalSection> values_;
 };
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-/* Long version. */
-
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
-/*
-
-class Oizo {
-
-public:
-    Oizo() { }
-    ~Oizo() { }
-    
-public:
-    Array <long, CriticalSection> mValues;
-    
-private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oizo);
-};
-
-*/
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -69,12 +39,12 @@ private:
 typedef struct _jojo {
 
 public:
-    _jojo() : mShared() { }
+    _jojo() : shared_() { }
 
 public:
-    t_object ob;
-    ulong mError;
-    SharedResourcePointer <Oizo> mShared;
+    t_object ob_;
+    ulong error_;
+    SharedResourcePointer <Oizo> shared_;
     
     } t_jojo;
     
@@ -121,8 +91,8 @@ JOJO_EXPORT int main (void)
     
     c = class_new ("jojoShared", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
     
-    class_addmethod (c, (method)jojo_bang,   "bang", 0);
-    class_addmethod (c, (method)jojo_int,    "int",  A_LONG, 0);
+    class_addmethod (c, (method)jojo_bang,  "bang", 0);
+    class_addmethod (c, (method)jojo_int,   "int",  A_LONG, 0);
     
     class_register (CLASS_BOX, c);
     jojo_class = c;
@@ -140,14 +110,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
 
     if (err) {
@@ -162,7 +132,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -171,9 +141,9 @@ void jojo_free (t_jojo *x)
 
 void jojo_bang (t_jojo *x)
 {
-    const ScopedLock lock (x->mShared->mValues.getLock());
-    const int argc = x->mShared->mValues.size();
-    long * const argv = x->mShared->mValues.getRawDataPointer();
+    const ScopedLock lock (x->shared_->values_.getLock());
+    const int argc = x->shared_->values_.size();
+    long * const argv = x->shared_->values_.getRawDataPointer();
     for (int i = 0; i < argc; ++i) { post ("%ld / %ld", i, *(argv + i)); }
 }
 
@@ -182,11 +152,11 @@ void jojo_bang (t_jojo *x)
 
 void jojo_int (t_jojo *x, long n)
 {
-    x->mShared->mValues.add (n);
+    x->shared_->values_.add (n);
     
     /* On the stack also. */
     
-    // SharedResourcePointer <Oizo> mShared; mShared->mValues.add (n);
+    // SharedResourcePointer <Oizo> shared; shared->values_.add (n);
 }
 
 // ------------------------------------------------------------------------------------------------------------

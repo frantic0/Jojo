@@ -38,7 +38,8 @@
 class MainWindow : public DocumentWindow {
 
 public:
-    MainWindow (void *o) : DocumentWindow ("Jojo", Colours::lightgrey, DocumentWindow::allButtons) {
+    MainWindow (void *o) : DocumentWindow ("Jojo", Colours::lightgrey, DocumentWindow::allButtons) 
+    {
         setContentOwned (new MainComponent (o), true);
         setSize (250, 250);
         centreWithSize (getWidth(), getHeight());
@@ -59,13 +60,13 @@ private:
 typedef struct _jojo {
 
 public:
-    _jojo() : mWindow (new MainWindow (this)) { }
+    _jojo() : window_ (new MainWindow (this)) { }
 
 public:
-    t_object ob;
-    ulong mError;
-    ScopedPointer <MainWindow> mWindow;
-    void *mOutlet;
+    t_object ob_;
+    ulong error_;
+    ScopedPointer <MainWindow> window_;
+    void *outlet_;
     
     } t_jojo;
 

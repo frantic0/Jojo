@@ -43,13 +43,13 @@ struct _jojo;
 class JojoThread : public Thread {
 
 public:
-    explicit JojoThread (_jojo *x) : Thread ("Jojo"), owner (x) { }
+    explicit JojoThread (_jojo *x) : Thread ("Jojo"), owner_ (x) { }
     
 public:
     void run();  
 
 private:
-    _jojo *owner;   /* Needed to call t_jojo's functions. */
+    _jojo *owner_;   /* Needed to call t_jojo's functions. */
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -59,14 +59,14 @@ private:
 typedef struct _jojo {
 
 public:
-    _jojo() : mThread (new JojoThread (this)) { mThread->startThread(); }  
-    ~_jojo() { mThread->stopThread (-1); }  /* Must be stopped before deletion. */
+    _jojo() : thread_ (new JojoThread (this)) { thread_->startThread(); }  
+    ~_jojo() { thread_->stopThread (-1); }  /* Must be stopped before deletion. */
 
 public:
-    t_object ob;
-    ulong mError;
-    ScopedPointer <JojoThread> mThread;
-    void *mClock; 
+    t_object ob_;
+    ulong error_;
+    ScopedPointer <JojoThread> thread_;
+    void *clock_; 
     
     } t_jojo;
 
@@ -82,7 +82,7 @@ void JojoThread::run()
     //
     if (++counter % 100) { Thread::sleep (10); }
     else {
-        clock_fdelay (owner->mClock, 0.);            /* Always use a clock from a custom thread! */
+        clock_fdelay (owner_->clock_, 0.);            /* Always use a clock from a custom thread! */
     }
     //
     } 
@@ -147,16 +147,16 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
-    err |= !(x->mClock = clock_new (x, (method)jojo_task));
+    err |= !(x->clock_ = clock_new (x, (method)jojo_task));
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
     
     if (err) {
@@ -171,10 +171,10 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
     
-    if (x->mClock) {
-        object_free (x->mClock);
+    if (x->clock_) {
+        object_free (x->clock_);
     }
 }
 
@@ -193,7 +193,7 @@ void jojo_task (t_jojo *x)
 
 void jojo_bang (t_jojo *x)
 {
-    post ("I am the %s thread!", x->mThread->getThreadName().toRawUTF8());
+    post ("I am the %s thread!", x->thread_->getThreadName().toRawUTF8());
 }
 
 // ------------------------------------------------------------------------------------------------------------

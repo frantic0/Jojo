@@ -49,15 +49,15 @@ public:
 typedef struct _jojo {
 
 public:
-    _jojo() : mOizo (new Oizo()), mValue (var::undefined()) { mValue.addListener (mOizo); }
+    _jojo() : oizo_ (new Oizo()), value_ (var::undefined()) { value_.addListener (oizo_); }
     
-    ~_jojo() { mValue.removeListener (mOizo); }     /* Currently not necessary, but for future! */
+    ~_jojo() { value_.removeListener (oizo_); }     /* Currently not necessary, but for future! */
 
 public:
-    t_object ob;
-    ulong mError;
-    ScopedPointer <Oizo> mOizo;
-    Value mValue;     
+    t_object ob_;
+    ulong error_;
+    ScopedPointer <Oizo> oizo_;
+    Value value_;     
     
     } t_jojo;
     
@@ -125,8 +125,8 @@ JOJO_EXPORT int main (void)
     
     c = class_new ("jojoValue", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
     
-    class_addmethod (c, (method)jojo_bang,       "bang", 0);
-    class_addmethod (c, (method)jojo_anything,   "anything", A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang,      "bang",     0);
+    class_addmethod (c, (method)jojo_anything,  "anything", A_GIMME, 0);
     
     class_register (CLASS_BOX, c);
     jojo_class = c;
@@ -146,14 +146,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
     
     if (err) {
@@ -168,7 +168,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ void jojo_bang (t_jojo *x)
 {
     if (!systhread_ismainthread()) { error ("Always in the main thread!"); }        
     else {
-        post ("%s", x->mValue.toString().toRawUTF8());
+        post ("%s", x->value_.toString().toRawUTF8());
     }
 }
 
@@ -189,9 +189,9 @@ void jojo_anything (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     else if (argc) {
     //
     if (atom_gettype (argv) == A_SYM) { 
-        x->mValue.setValue (atom_getsym (argv)->s_name); 
+        x->value_.setValue (atom_getsym (argv)->s_name); 
     } else {
-        x->mValue.setValue (atom_getfloat (argv)); 
+        x->value_.setValue (atom_getfloat (argv)); 
     }
     //
     }

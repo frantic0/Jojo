@@ -37,13 +37,13 @@ struct _jojo;
 class JojoJob : public ThreadPoolJob {
 
 public:
-    explicit JojoJob (_jojo *x, const String& name = "Jojo") : ThreadPoolJob (name), owner (x) { }
+    explicit JojoJob (_jojo *x, const String& name = "Jojo") : ThreadPoolJob (name), owner_ (x) { }
 
 public:
     JobStatus runJob();
 
 private:
-    _jojo *owner;
+    _jojo *owner_;
 };
 
 // ------------------------------------------------------------------------------------------------------------
@@ -53,14 +53,14 @@ private:
 typedef struct _jojo {
 
 public:
-    _jojo() : mPool(), mLock() { }
+    _jojo() : pool_(), lock_() { }
 
 public:
-    t_object ob;
-    ulong mError;
-    ThreadPool mPool;
-    CriticalSection mLock;
-    void *mClock; 
+    t_object ob_;
+    ulong error_;
+    ThreadPool pool_;
+    CriticalSection lock_;
+    void *clock_; 
     
     } t_jojo;
 
@@ -80,8 +80,8 @@ ThreadPoolJob::JobStatus JojoJob::runJob()
     if (++counter < k) { Thread::sleep (10); }
     else {
     //
-    const ScopedLock myLock (owner->mLock);
-    clock_fdelay (owner->mClock, 0.);                /* Always use a clock from custom thread! */
+    const ScopedLock myLock (owner_->lock_);
+    clock_fdelay (owner_->clock_, 0.);                /* Always use a clock from custom thread! */
     break;
     //
     }
@@ -150,16 +150,16 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
-    err |= !(x->mClock = clock_new (x, (method)jojo_task));
+    err |= !(x->clock_ = clock_new (x, (method)jojo_task));
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
     
     if (err) {
@@ -174,10 +174,10 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
     
-    if (x->mClock) {
-        object_free (x->mClock);
+    if (x->clock_) {
+        object_free (x->clock_);
     }
 }
 
@@ -187,7 +187,7 @@ void jojo_free (t_jojo *x)
 
 void jojo_task (t_jojo *x)
 {
-    post ("%ld", x->mPool.getNumJobs());
+    post ("%ld", x->pool_.getNumJobs());
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -196,7 +196,7 @@ void jojo_task (t_jojo *x)
 
 void jojo_bang (t_jojo *x)
 {
-    x->mPool.addJob (new JojoJob (x), true);
+    x->pool_.addJob (new JojoJob (x), true);
     post ("New job!");
 }
 

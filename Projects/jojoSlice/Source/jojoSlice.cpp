@@ -37,13 +37,13 @@ struct _jojo;
 class JojoClient : public TimeSliceClient {
 
 public:
-    explicit JojoClient (_jojo *x) : owner (x) { }
+    explicit JojoClient (_jojo *x) : owner_ (x) { }
 
 public:
     int useTimeSlice();
 
 private:
-    _jojo *owner;
+    _jojo *owner_;
 
 private:
     JUCE_LEAK_DETECTOR (JojoClient)
@@ -56,15 +56,15 @@ private:
 typedef struct _jojo {
 
 public:
-    _jojo() : mClient (new JojoClient (this)), mThread ("Jojo"), mLock() { mThread.startThread(); }
-    ~_jojo() { mThread.stopThread (-1); } 
+    _jojo() : client_ (new JojoClient (this)), thread_ ("Jojo"), lock_() { thread_.startThread(); }
+    ~_jojo() { thread_.stopThread (-1); } 
 
 public:
-    t_object ob;
-    ulong mError;
-    ScopedPointer <JojoClient> mClient;     /* Before TimeSliceThread. */
-    TimeSliceThread mThread;                /* Use a ScopedPointer also? */
-    CriticalSection mLock;
+    t_object ob_;
+    ulong error_;
+    ScopedPointer <JojoClient> client_;     /* Before TimeSliceThread. */
+    TimeSliceThread thread_;                /* Use a ScopedPointer also? */
+    CriticalSection lock_;
     void *mClock; 
     
     } t_jojo;
@@ -79,7 +79,7 @@ int JojoClient::useTimeSlice()
     int k = rand.nextInt (10);
     
     if (k) {
-        clock_fdelay (owner->mClock, 0.);    /* Always use a clock from custom thread! */
+        clock_fdelay (owner_->mClock, 0.);    /* Always use a clock from custom thread! */
         return 100;
     }
     
@@ -145,7 +145,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     err |= !(x->mClock = clock_new (x, (method)jojo_task));
     
@@ -154,7 +154,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
     
     if (err) {
@@ -169,7 +169,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
     
     if (x->mClock) {
         object_free (x->mClock);
@@ -191,10 +191,10 @@ void jojo_task (t_jojo *x)
 
 void jojo_bang (t_jojo *x)
 {
-    const ScopedLock myLock (x->mLock);
+    const ScopedLock myLock (x->lock_);
     
-    if (!x->mThread.getNumClients()) {
-        x->mThread.addTimeSliceClient (x->mClient, 0.);
+    if (!x->thread_.getNumClients()) {
+        x->thread_.addTimeSliceClient (x->client_, 0.);
     } else {
         post ("I'm already working!");
     }

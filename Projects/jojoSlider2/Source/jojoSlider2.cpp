@@ -60,10 +60,10 @@ void jojo_quit (void)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-void *jojo_new  (t_symbol *s, long argc, t_atom *argv);
-void jojo_free  (t_jojo *x);
-void jojo_bang  (t_jojo *x);
-void jojo_float (t_jojo *x, double f);
+void *jojo_new      (t_symbol *s, long argc, t_atom *argv);
+void jojo_free      (t_jojo *x);
+void jojo_bang      (t_jojo *x);
+void jojo_float     (t_jojo *x, double f);
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -82,8 +82,10 @@ JOJO_EXPORT int main (void)
     t_class *c = NULL;
     
     c = class_new ("jojoSlider2", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
-    class_addmethod (c, (method)jojo_bang,   "bang",     0);
-    class_addmethod (c, (method)jojo_float,  "float",    A_FLOAT, 0);
+    
+    class_addmethod (c, (method)jojo_bang,  "bang",     0);
+    class_addmethod (c, (method)jojo_float, "float",    A_FLOAT, 0);
+    
     class_register (CLASS_BOX, c);
     jojo_class = c;
     
@@ -102,18 +104,18 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
     
     if (!err) {
-        err |= !(x->mOutlet = floatout ((t_object *)x));
+        err |= !(x->outlet_ = floatout ((t_object *)x));
     }
     
     if (err) {
@@ -128,7 +130,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -147,7 +149,7 @@ void jojo_float (t_jojo *x, double f)
     atom_setfloat (&a, f);
     defer_low (x, (method)jojo_doFloat, NULL, 1, &a);        /* Calls to JUCE always in the main thread. */
     
-    outlet_float (x->mOutlet, f);
+    outlet_float (x->outlet_, f);
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -156,7 +158,7 @@ void jojo_float (t_jojo *x, double f)
 
 void jojo_doBang (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
-    x->mWindow->setVisible (true);
+    x->window_->setVisible (true);
 }
 
 /* Fetch the slider in the component tree. */
@@ -164,7 +166,7 @@ void jojo_doBang (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 void jojo_doFloat (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
 {
     juce::Slider *q = nullptr;
-    juce::Component *p = x->mWindow->findChildWithID ("myComponent"); 
+    juce::Component *p = x->window_->findChildWithID ("myComponent"); 
     
     if ((p != nullptr) && ((q = dynamic_cast <juce::Slider *> (p->findChildWithID ("mySlider"))) != nullptr)) {
         if (argc && argv) { q->setValue (atom_getfloat (argv), dontSendNotification); }

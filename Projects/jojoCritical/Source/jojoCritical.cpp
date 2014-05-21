@@ -32,13 +32,13 @@
 typedef struct _jojo {
 
 public:
-    _jojo() : mArray() { }
+    _jojo() : array_() { }
 
 public:
-    t_object ob;
-    ulong mError;
-    Array <long, CriticalSection> mArray;
-    // Array <long, SpinLock> mArray;           /* Not reentrant. Use it with care! */
+    t_object ob_;
+    ulong error_;
+    Array <long, CriticalSection> array_;
+    // Array <long, SpinLock> array_;           /* Not reentrant. Use it with care! */
     
     } t_jojo;
     
@@ -106,14 +106,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
 
     if (err) {
@@ -128,7 +128,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -137,11 +137,11 @@ void jojo_free (t_jojo *x)
 
 void jojo_bang (t_jojo *x)
 {
-    const ScopedLock lock (x->mArray.getLock());
-    // const SpinLock::ScopedLockType lock (x->mArray.getLock());
+    const ScopedLock lock (x->array_.getLock());
+    // const SpinLock::ScopedLockType lock (x->array_.getLock());
     
-    const int argc = x->mArray.size();
-    long * const argv = x->mArray.getRawDataPointer();
+    const int argc = x->array_.size();
+    long * const argv = x->array_.getRawDataPointer();
     
     for (int i = 0; i < argc; ++i) { post ("%ld / %ld", i, *(argv + i)); }
 }
@@ -151,7 +151,7 @@ void jojo_bang (t_jojo *x)
 
 void jojo_int (t_jojo *x, long n)
 {
-    x->mArray.add (n);
+    x->array_.add (n);
 }
 
 // ------------------------------------------------------------------------------------------------------------

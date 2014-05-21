@@ -32,12 +32,12 @@
 typedef struct _jojo {
 
 public:
-    _jojo() : mLock() { }
+    _jojo() : lock_() { }
 
 public:
-    t_object ob;
-    ulong mError;
-    CriticalSection mLock;
+    t_object ob_;
+    ulong error_;
+    CriticalSection lock_;
     
     } t_jojo;
     
@@ -105,14 +105,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
 
     if (err) {
@@ -127,7 +127,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ void jojo_free (t_jojo *x)
 
 void jojo_bang (t_jojo *x)
 {
-    const ScopedLock myLock (x->mLock); 
+    const ScopedLock myLock (x->lock_); 
     
     File xmlFile ((File::getSpecialLocation (File::currentApplicationFile)).getSiblingFile ("jojoXML.txt"));
     

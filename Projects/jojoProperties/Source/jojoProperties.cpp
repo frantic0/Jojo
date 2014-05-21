@@ -58,24 +58,24 @@ private:
 typedef struct _jojo {
 
 public:
-    _jojo() : mOizo (new Oizo()), mProperties (nullptr) { 
+    _jojo() : oizo_ (new Oizo()), properties_ (nullptr) { 
     //
     /* File is next to the bundle for convenience only. */
     
     File folder (File::getSpecialLocation (File::currentApplicationFile));
     File settings (folder.getSiblingFile ("jojoProperties.txt"));
-    mProperties = new PropertiesFile (settings, PropertiesFile::Options());
-    mProperties->addChangeListener (mOizo);
+    properties_ = new PropertiesFile (settings, PropertiesFile::Options());
+    properties_->addChangeListener (oizo_);
     //
     }
     
-    ~_jojo() { mProperties->removeChangeListener (mOizo); mProperties->saveIfNeeded(); }
+    ~_jojo() { properties_->removeChangeListener (oizo_); properties_->saveIfNeeded(); }
     
 public:
-    t_object ob;
-    ulong mError;
-    ScopedPointer <Oizo> mOizo;
-    ScopedPointer <PropertiesFile> mProperties;    /* Consider to use ApplicationProperties in your code. */
+    t_object ob_;
+    ulong error_;
+    ScopedPointer <Oizo> oizo_;
+    ScopedPointer <PropertiesFile> properties_;    /* Consider to use ApplicationProperties in your code. */
     
     } t_jojo;
     
@@ -143,8 +143,8 @@ JOJO_EXPORT int main (void)
     
     c = class_new ("jojoProperties", (method)jojo_new, (method)jojo_free, sizeof (t_jojo), NULL, A_GIMME, 0);
     
-    class_addmethod (c, (method)jojo_bang,       "bang", 0);
-    class_addmethod (c, (method)jojo_anything,   "anything", A_GIMME, 0);
+    class_addmethod (c, (method)jojo_bang,      "bang",     0);
+    class_addmethod (c, (method)jojo_anything,  "anything", A_GIMME, 0);
     
     class_register (CLASS_BOX, c);
     jojo_class = c;
@@ -164,14 +164,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
 
     if (err) {
@@ -186,7 +186,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -200,9 +200,9 @@ void jojo_bang (t_jojo *x)
     if (!systhread_ismainthread()) { error ("Always in the main thread!"); } 
     else {
     //
-    // const ScopedLock lock (x->mProperties->getLock());
-    post ("Keys / %s", x->mProperties->getAllProperties().getAllKeys().joinIntoString (" / ").toRawUTF8());
-    post ("Values / %s", x->mProperties->getAllProperties().getAllValues().joinIntoString (" / ").toRawUTF8());
+    // const ScopedLock lock (x->properties_->getLock());
+    post ("Keys / %s", x->properties_->getAllProperties().getAllKeys().joinIntoString (" / ").toRawUTF8());
+    post ("Values / %s", x->properties_->getAllProperties().getAllValues().joinIntoString (" / ").toRawUTF8());
     //
     }
 }
@@ -214,9 +214,9 @@ void jojo_anything (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     //
     if (argc) {
         if (atom_gettype (argv) == A_SYM) { 
-            x->mProperties->setValue (s->s_name, atom_getsym (argv)->s_name); 
+            x->properties_->setValue (s->s_name, atom_getsym (argv)->s_name); 
         } else {
-            x->mProperties->setValue (s->s_name, atom_getfloat (argv)); 
+            x->properties_->setValue (s->s_name, atom_getfloat (argv)); 
         }
     } 
     //

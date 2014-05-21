@@ -92,8 +92,8 @@ void MainComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_slider] -- add your slider handling code here..
 
-        (static_cast<t_jojo *>(jojoPtr))->mValue.set (slider->getValue());
-        outlet_float ((static_cast<t_jojo *>(jojoPtr))->mOutlet, slider->getValue());
+        (static_cast<t_jojo *>(jojoPtr))->value_.set (slider->getValue());
+        outlet_float ((static_cast<t_jojo *>(jojoPtr))->outlet_, slider->getValue());
 
         //[/UserSliderCode_slider]
     }
@@ -110,7 +110,7 @@ void MainComponent::handleAsyncUpdate()
 {
     /* Fetch the t_jojo value. */
 
-    slider->setValue((static_cast<t_jojo *>(jojoPtr))->mValue.get(), dontSendNotification);
+    slider->setValue((static_cast<t_jojo *>(jojoPtr))->value_.get(), dontSendNotification);
 }
 
 //[/MiscUserCode]

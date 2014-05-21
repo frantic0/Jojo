@@ -32,7 +32,7 @@
 typedef struct _jojo {
 
 public:
-    _jojo() : mLogger (nullptr) { 
+    _jojo() : logger_ (nullptr) { 
     
         /* File::currentApplicationFile returns the ".mxo" package path. */
         
@@ -40,13 +40,13 @@ public:
         
         /* The log file is at the same level. */
         
-        mLogger = new FileLogger (folder.getSiblingFile ("jojoLogger.txt"), "Hello!");
+        logger_ = new FileLogger (folder.getSiblingFile ("jojoLogger.txt"), "Hello!");
     }
 
 public:
-    t_object ob;
-    ulong mError;
-    ScopedPointer <FileLogger> mLogger;
+    t_object ob_;
+    ulong error_;
+    ScopedPointer <FileLogger> logger_;
     
     } t_jojo;
     
@@ -108,14 +108,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
     
     if (err) {
@@ -130,7 +130,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -140,14 +140,14 @@ void jojo_free (t_jojo *x)
 void jojo_bang (t_jojo *x)
 {
     Array <File> files;
-    File folder (x->mLogger->getLogFile().getParentDirectory());
+    File folder (x->logger_->getLogFile().getParentDirectory());
     
     /* Find all the bundles in the directory. */
     
     folder.findChildFiles (files, File::findFilesAndDirectories, false, "*.mxo");
 
     for (int i = 0; i < files.size(); ++i) {
-        x->mLogger->logMessage (files[i].getFullPathName());
+        x->logger_->logMessage (files[i].getFullPathName());
     }
 }
 

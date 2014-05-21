@@ -34,14 +34,14 @@
 typedef struct _jojo {
 
 public:
-    _jojo() : mPublic(), mPrivate(), mLock() { RSAKey::createKeyPair (mPublic, mPrivate, 128); }
+    _jojo() : public_(), private_(), lock_() { RSAKey::createKeyPair (public_, private_, 128); }
  
 public:
-    t_object ob;
-    ulong mError;
-    RSAKey mPublic;
-    RSAKey mPrivate;
-    CriticalSection mLock;
+    t_object ob_;
+    ulong error_;
+    RSAKey public_;
+    RSAKey private_;
+    CriticalSection lock_;
     
     } t_jojo;
     
@@ -103,14 +103,14 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
     
     if ((x = (t_jojo *)object_alloc (jojo_class))) {
     //
-    ulong err = (x->mError = JOJO_GOOD);
+    ulong err = (x->error_ = JOJO_GOOD);
     
     try {
         new (x) t_jojo;
     }
     
     catch (...) {
-        err = (x->mError = JOJO_ERROR);
+        err = (x->error_ = JOJO_ERROR);
     }
 
     if (err) {
@@ -125,7 +125,7 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->mError) { x->~t_jojo(); }
+    if (!x->error_) { x->~t_jojo(); }
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -139,10 +139,10 @@ void jojo_free (t_jojo *x)
 
 void jojo_bang (t_jojo *x)
 {
-    const ScopedLock myLock (x->mLock); 
+    const ScopedLock myLock (x->lock_); 
     
-    post ("Public / %s", x->mPublic.toString().toRawUTF8());
-    post ("Private / %s", x->mPrivate.toString().toRawUTF8());
+    post ("Public / %s", x->public_.toString().toRawUTF8());
+    post ("Private / %s", x->private_.toString().toRawUTF8());
     
     String myText (CharPointer_UTF8 ("P\xc3\xa9p\xc3\xa9 p\xc3\xa8te en ao\xc3\xbbt!"));
     
@@ -152,11 +152,11 @@ void jojo_bang (t_jojo *x)
 
     BigInteger bitArray;
     bitArray.loadFromMemoryBlock (blockBegin);
-    x->mPublic.applyToValue (bitArray);             /* Encrypt with the public key. */
+    x->public_.applyToValue (bitArray);             /* Encrypt with the public key. */
 
     post ("%s", bitArray.toString (16).toRawUTF8());
     
-    x->mPrivate.applyToValue (bitArray);            /* Then decrypt with the private key. */
+    x->private_.applyToValue (bitArray);            /* Then decrypt with the private key. */
     
     const juce::MemoryBlock blockEnd (bitArray.toMemoryBlock());
     post ("%s", blockEnd.toString().toRawUTF8());
