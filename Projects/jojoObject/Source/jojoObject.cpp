@@ -78,6 +78,7 @@ private:
     Oizo (const Oizo& o) : DynamicObject (o), eggs_ (12) { cloneAllProperties(); post ("Oizo copy"); } 
     Oizo& operator = (const Oizo&);
 
+private:
     Atomic <int> eggs_;
     
 private:

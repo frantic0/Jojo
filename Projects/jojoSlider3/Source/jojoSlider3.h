@@ -46,9 +46,9 @@ class MainWindow : public DocumentWindow {
 
 public:
     MainWindow (void *o) : DocumentWindow ("Jojo", Colours::lightgrey, DocumentWindow::allButtons),
-                           mainComponent (new MainComponent (o)) 
+                           mainComponent_ (new MainComponent (o)) 
     {
-        setContentNonOwned (mainComponent, true);
+        setContentNonOwned (mainComponent_, true);
         setSize (400, 400);
         centreWithSize (getWidth(), getHeight());
         setResizable (true, true);
@@ -58,7 +58,7 @@ public:
     void closeButtonPressed() { setVisible (false); }
 
 public:
-    ScopedPointer <MainComponent> mainComponent;        /* Private (or delete policy) should be better! */
+    ScopedPointer <MainComponent> mainComponent_;        /* Private (or delete policy) should be better! */
     
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)

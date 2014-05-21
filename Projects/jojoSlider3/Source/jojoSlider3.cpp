@@ -144,7 +144,7 @@ void jojo_float (t_jojo *x, double f)
     /* Set the value and trigger the MainComponent's update. */
     
     x->value_.set (f);
-    x->window_->mainComponent->triggerAsyncUpdate();
+    x->window_->mainComponent_->triggerAsyncUpdate();
     
     outlet_float (x->outlet_, f);
 }
