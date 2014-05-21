@@ -216,7 +216,7 @@ void jojo_bang (t_jojo *x)
 {
     /* Avoid to accidentally delete a raw pointer owned by a ScopedPointer. */
     
-    // delete x->oizo_.get();       /* 'Oizo::~Oizo()' is private! */
+    // delete x->oizo_.get();       /* Oizo::~Oizo() is private! */
     
     KittyPtr ptrA (new Kitty());
     KittyPtr ptrB (ptrA);  

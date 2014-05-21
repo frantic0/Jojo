@@ -53,7 +53,7 @@ public:
 class Oizo : public Expression::Scope
 {
 
-public:    
+public:
     Expression getSymbolValue (const String& symbol) const {
         if (symbol == "two")        { return Expression (2); }
         else if (symbol == "five")  { return Expression (5); }
