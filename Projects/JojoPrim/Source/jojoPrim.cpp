@@ -142,6 +142,8 @@ void jojo_free (t_jojo *x)
 
 void jojo_bang (t_jojo *x)
 {
+    ScopedLock sl (x->lock_);
+    
     prim::c >> "Hello, world!";
     prim::c.Finish();
 }
