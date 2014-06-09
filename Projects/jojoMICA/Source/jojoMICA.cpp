@@ -168,7 +168,7 @@ void jojo_bang (t_jojo *x)
     
     cout << c << " / " << mica::name (c) << endl;
     cout << c.high << " / " << c.low << endl;
-    cout << mica::named ("en:F") << endl;   // --
+    cout << mica::named ("en:F") << endl;               // --
     
     // C / C
     // 6790648215879694701 / 10123514385212891730
