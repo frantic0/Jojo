@@ -56,7 +56,7 @@ public:
 public:
     t_object ob_;
     ulong error_;
-    ScopedPointer <Oizo> oizo_;
+    ScopedPointer < Oizo > oizo_;
     Value value_;     
     
     } t_jojo;

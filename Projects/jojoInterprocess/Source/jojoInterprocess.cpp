@@ -63,7 +63,7 @@ public:
 public:
     t_object ob_;
     ulong error_;
-    ScopedPointer <Master> master_;
+    ScopedPointer < Master > master_;
 
     } t_jojo;
     

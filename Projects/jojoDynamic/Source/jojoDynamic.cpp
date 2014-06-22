@@ -142,7 +142,7 @@ void jojo_bang (t_jojo *x)
     
     DynamicLibrary myDLL (folder.getChildFile ("Contents/Resources/libjojo.dylib").getFullPathName());
     
-    jojoFunction f = reinterpret_cast <jojoFunction> (myDLL.getFunction ("jojoHello"));
+    jojoFunction f = reinterpret_cast < jojoFunction > (myDLL.getFunction ("jojoHello"));
     
     if (f) { (*f)(); }
 }

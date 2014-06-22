@@ -118,7 +118,7 @@ public:
 public:
     t_object ob_;
     ulong error_;
-    ScopedPointer <MainWindow> window_;
+    ScopedPointer < MainWindow > window_;
     
     } t_jojo;
 

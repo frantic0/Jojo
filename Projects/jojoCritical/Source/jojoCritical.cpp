@@ -160,9 +160,9 @@ void jojo_int (t_jojo *x, long n)
 void jojo_foo (t_jojo *x)
 {
     const long k[] = { 4, 1, 3, 5, 2 };
-    Array <long> foo (k, numElementsInArray (k));
+    Array < long > foo (k, numElementsInArray (k));
     
-    DefaultElementComparator <long> sorter;
+    DefaultElementComparator < long > sorter;
     foo.sort (sorter);
     
     for (int i = 0; i < foo.size(); ++i) { post ("%ld", foo[i]); }

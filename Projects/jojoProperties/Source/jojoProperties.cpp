@@ -74,8 +74,8 @@ public:
 public:
     t_object ob_;
     ulong error_;
-    ScopedPointer <Oizo> oizo_;
-    ScopedPointer <PropertiesFile> properties_;    /* Consider to use ApplicationProperties in your code. */
+    ScopedPointer < Oizo > oizo_;
+    ScopedPointer < PropertiesFile > properties_;   /* Consider to use ApplicationProperties in your code. */
     
     } t_jojo;
     

@@ -62,7 +62,7 @@ public:
 public:
     t_object ob_;
     ulong error_;
-    ScopedPointer <JojoClient> client_;     /* Before TimeSliceThread. */
+    ScopedPointer < JojoClient > client_;   /* Before TimeSliceThread. */
     TimeSliceThread thread_;                /* Use a ScopedPointer also? */
     CriticalSection lock_;
     void *mClock; 

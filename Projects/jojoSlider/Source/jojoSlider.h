@@ -75,7 +75,7 @@ public:
     t_object ob_;
     ulong error_;
     Value slider_;
-    ScopedPointer <MainWindow> window_;
+    ScopedPointer < MainWindow > window_;
     void *outlet_;
     
     } t_jojo;

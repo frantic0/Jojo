@@ -65,7 +65,7 @@ public:
 public:
     t_object ob_;
     ulong error_;
-    ScopedPointer <JojoThread> thread_;
+    ScopedPointer < JojoThread > thread_;
     void *clock_; 
     
     } t_jojo;

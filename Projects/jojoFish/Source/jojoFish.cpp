@@ -174,33 +174,33 @@ void jojo_write (t_jojo *x, const File& aFile)
 
     /* Pad with zeros (handy for a null terminated string). */
     
-    juce::MemoryBlock myBlock (blockSize, true);
-    myBlock.copyFrom (myText.toRawUTF8(), 0, textSize);         
+    juce::MemoryBlock block (blockSize, true);
+    block.copyFrom (myText.toRawUTF8(), 0, textSize);         
     
     for (size_t i = 0; i < blockSize; i += 8) {
     //
-    x->fish_.encrypt (reinterpret_cast <uint32&> (myBlock[i]), reinterpret_cast <uint32&> (myBlock[i + 4]));
+    x->fish_.encrypt (reinterpret_cast < uint32& > (block[i]), reinterpret_cast < uint32& > (block[i + 4]));
     //
     }
     
-    aFile.replaceWithData (myBlock.getData(), blockSize);
+    aFile.replaceWithData (block.getData(), blockSize);
 }
     
 void jojo_read (t_jojo *x, const File& aFile)
 {
-    juce::MemoryBlock myBlock;
+    juce::MemoryBlock block;
     
-    if (aFile.loadFileAsData (myBlock)) {
+    if (aFile.loadFileAsData (block)) {
     //
-    const size_t blockSize = myBlock.getSize();
+    const size_t blockSize = block.getSize();
     
     for (size_t i = 0; i < blockSize; i += 8) {
     //
-    x->fish_.decrypt (reinterpret_cast <uint32&> (myBlock[i]), reinterpret_cast <uint32&> (myBlock[i + 4]));
+    x->fish_.decrypt (reinterpret_cast < uint32& > (block[i]), reinterpret_cast < uint32& > (block[i + 4]));
     //
     }
     
-    StringArray myText (StringArray::fromLines (myBlock.toString().toRawUTF8()));
+    StringArray myText (StringArray::fromLines (block.toString().toRawUTF8()));
     
     for (int i = 0; i < myText.size(); ++i) {
         post ("%s", myText.getReference (i).toRawUTF8());

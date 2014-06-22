@@ -44,7 +44,7 @@ public:
 public:
     t_object ob_;
     ulong error_;
-    SharedResourcePointer <Oizo> shared_;
+    SharedResourcePointer < Oizo > shared_;
     
     } t_jojo;
     
@@ -156,7 +156,7 @@ void jojo_int (t_jojo *x, long n)
     
     /* On the stack also. */
     
-    // SharedResourcePointer <Oizo> shared; shared->values_.add (n);
+    // SharedResourcePointer < Oizo > shared; shared->values_.add (n);
 }
 
 // ------------------------------------------------------------------------------------------------------------

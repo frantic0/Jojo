@@ -51,7 +51,7 @@ int main (int argc, char* argv[])
 {
     signal (SIGINT, intHandler);
     
-    ScopedPointer <MasterIPC> myIPC (new MasterIPC());
+    ScopedPointer < MasterIPC > myIPC (new MasterIPC());
     
     String myText ("- How are you?");
     const MemoryBlock msg (myText.toRawUTF8(), myText.getNumBytesAsUTF8() + 1);

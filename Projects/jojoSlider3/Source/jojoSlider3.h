@@ -58,7 +58,7 @@ public:
     void closeButtonPressed() { setVisible (false); }
 
 public:
-    ScopedPointer <MainComponent> mainComponent_;        /* Private (or delete policy) should be better! */
+    ScopedPointer < MainComponent > mainComponent_;     /* Private (or delete policy) should be better! */
     
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
@@ -76,8 +76,8 @@ public:
 public:
     t_object ob_;
     ulong error_;
-    Atomic <double> value_;                         /* Atomic for thread safety. */
-    ScopedPointer <MainWindow> window_;
+    Atomic < double > value_;                           /* Atomic for thread safety. */
+    ScopedPointer < MainWindow > window_;
     void *outlet_;
     
     } t_jojo;

@@ -37,8 +37,8 @@ public:
 public:
     t_object ob_;
     ulong error_;
-    Array <IPAddress> IP_;
-    Array <MACAddress> MAC_;
+    Array < IPAddress > IP_;
+    Array < MACAddress > MAC_;
     
     } t_jojo;
     

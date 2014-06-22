@@ -138,7 +138,7 @@ void jojo_doBang (t_jojo *x, t_symbol *s, long argc, t_atom *argv)
     ChildProcess process;
     process.start ("ls /tmp");   /* All the job (fork, execv) is done there. */
     
-    /* A pipe is used for IPC. */ 
+    /* IPC implemented with a pipe. */ 
     
     StringArray processResult (StringArray::fromLines (process.readAllProcessOutput()));
     

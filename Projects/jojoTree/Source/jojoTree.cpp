@@ -98,9 +98,9 @@ public:
 public:
     t_object ob_;
     ulong error_;
-    ScopedPointer <UndoManager> undo_;
-    ScopedPointer <Oizo> oizo_;
-    ScopedPointer <ValueTree> tree_;
+    ScopedPointer < UndoManager > undo_;
+    ScopedPointer < Oizo > oizo_;
+    ScopedPointer < ValueTree > tree_;
                      
     } t_jojo;
 
