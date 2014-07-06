@@ -82,7 +82,7 @@ void JojoThread::run()
     //
     if (++counter % 100) { Thread::sleep (10); }
     else {
-        clock_fdelay (owner_->clock_, 0.);            /* Always use a clock from a custom thread! */
+        clock_fdelay (owner_->clock_, 0.0);             /* Always use a clock from a custom thread! */
     }
     //
     } 

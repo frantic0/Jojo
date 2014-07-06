@@ -63,7 +63,7 @@ public:
     }
     
     double evaluateFunction (const String& functionName, const double* parameters, int numParams) const {
-        if ((numParams > 0) && (functionName == "half")) { return (parameters[0] / 2.); }
+        if ((numParams > 0) && (functionName == "half")) { return (parameters[0] / 2.0); }
         return Expression::Scope::evaluateFunction (functionName, parameters, numParams);
     }
     

@@ -81,7 +81,7 @@ ThreadPoolJob::JobStatus JojoJob::runJob()
     else {
     //
     const ScopedLock myLock (owner_->lock_);
-    clock_fdelay (owner_->clock_, 0.);                /* Always use a clock from custom thread! */
+    clock_fdelay (owner_->clock_, 0.0);             /* Always use a clock from custom thread! */
     break;
     //
     }

@@ -79,7 +79,7 @@ int JojoClient::useTimeSlice()
     int k = rand.nextInt (10);
     
     if (k) {
-        clock_fdelay (owner_->mClock, 0.);    /* Always use a clock from custom thread! */
+        clock_fdelay (owner_->mClock, 0.0);    /* Always use a clock from custom thread! */
         return 100;
     }
     
@@ -194,7 +194,7 @@ void jojo_bang (t_jojo *x)
     const ScopedLock myLock (x->lock_);
     
     if (!x->thread_.getNumClients()) {
-        x->thread_.addTimeSliceClient (x->client_, 0.);
+        x->thread_.addTimeSliceClient (x->client_, 0.0);
     } else {
         post ("I'm already working!");
     }
