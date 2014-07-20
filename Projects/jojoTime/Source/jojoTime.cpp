@@ -72,7 +72,7 @@ void waste_constructor  (void);
 
 #if defined ( __clang__ ) || defined ( __GNUC__ )
 
-void waste_ctor (void)  __attribute__((constructor));
+void waste_ctor (void)  __attribute__ ((constructor));
 void waste_ctor (void)  { waste_constructor(); }
 
 #endif
