@@ -36,8 +36,8 @@
 class Master : public ChildProcessMaster {
 
 public:
-    explicit Master()  { DBG ("Master ctor"); }
-    ~Master()          { DBG ("Master dtor"); }
+     Master() { DBG ("Master ctor"); }
+    ~Master() { DBG ("Master dtor"); }
     
 public:
     /* Those methods are called by custom threads (consider to use a t_clock). */

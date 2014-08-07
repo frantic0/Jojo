@@ -46,8 +46,8 @@ namespace JojoIdentifier
 class Oizo : public DynamicObject {
 
 public:
-    explicit Oizo()    { post ("Oizo ctor"); }
-    ~Oizo()            { post ("Oizo dtor"); }
+    Oizo()  { post ("Oizo ctor"); }
+    ~Oizo() { post ("Oizo dtor"); }
 
 public:
     void writeAsJSON (OutputStream& stream, int indentLevel, bool allOnOneLine) {

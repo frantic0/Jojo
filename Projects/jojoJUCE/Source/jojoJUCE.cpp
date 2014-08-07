@@ -32,8 +32,8 @@
 class Oizo {
 
 public:
-    explicit Oizo()    { cpost ("Oizo ctor\n"); }
-    ~Oizo()            { cpost ("Oizo dtor\n"); }
+    Oizo()  { cpost ("Oizo ctor\n"); }
+    ~Oizo() { cpost ("Oizo dtor\n"); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Oizo)

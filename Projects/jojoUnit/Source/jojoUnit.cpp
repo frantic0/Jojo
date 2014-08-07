@@ -45,7 +45,7 @@
 class JojoTest : public UnitTest {
 
 public:
-    explicit JojoTest() : UnitTest ("Testing Jojo!") { }
+    JojoTest() : UnitTest ("Testing Jojo!") { }
     
     void runTest() { beginTest ("Math"); expect (0 + 0 == 0); }
 };

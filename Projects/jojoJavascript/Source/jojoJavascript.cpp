@@ -32,8 +32,8 @@
 class Oizo : public DynamicObject {
 
 public:
-    explicit Oizo()    { setMethod ("hello", Oizo::hello); post ("Oizo ctor"); }
-    ~Oizo()            { post ("Oizo dtor"); }
+    Oizo()  { setMethod ("hello", Oizo::hello); post ("Oizo ctor"); }
+    ~Oizo() { post ("Oizo dtor"); }
 
     static Identifier getClassName() { static const Identifier i ("Oizo"); return i; }
     

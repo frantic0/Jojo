@@ -19,8 +19,13 @@
 class Slave : public ChildProcessSlave, private DeletedAtShutdown {
 
 public:
-    explicit Slave()    { }
-    ~Slave()            { }
+    Slave() 
+    { 
+    }
+    
+    ~Slave() 
+    { 
+    }
 
 public:
     void handleMessageFromMaster (const MemoryBlock& mb) {

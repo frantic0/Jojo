@@ -40,8 +40,8 @@
 class Oizo {
 
 public:
-    explicit Oizo()    { post ("Oizo ctor"); }
-    ~Oizo()            { post ("Oizo dtor"); cpost ("Oizo dtor"); clearSingletonInstance(); }
+    Oizo()  { post ("Oizo ctor"); }
+    ~Oizo() { post ("Oizo dtor"); cpost ("Oizo dtor"); clearSingletonInstance(); }
     
     void doSomething() const { post ("Cuicui"); }
     

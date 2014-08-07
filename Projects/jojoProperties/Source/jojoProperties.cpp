@@ -41,8 +41,8 @@
 class Oizo : public ChangeListener {
 
 public:
-    explicit Oizo()    { cpost ("Oizo ctor\n"); }
-    ~Oizo()            { cpost ("Oizo dtor\n"); }
+    Oizo()  { cpost ("Oizo ctor\n"); }
+    ~Oizo() { cpost ("Oizo dtor\n"); }
     
 public:
     void changeListenerCallback (ChangeBroadcaster*) { post ("Something have changed!"); }

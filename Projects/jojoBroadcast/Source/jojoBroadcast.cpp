@@ -31,8 +31,8 @@
 class Oizo : public ActionListener {
 
 public:
-    explicit Oizo()    { cpost ("Oizo ctor\n"); }
-    ~Oizo()            { cpost ("Oizo dtor\n"); }
+    Oizo()  { cpost ("Oizo ctor\n"); }
+    ~Oizo() { cpost ("Oizo dtor\n"); }
 
 public:
     void actionListenerCallback (const String& message)  { post ("%s", message.toRawUTF8()); } 

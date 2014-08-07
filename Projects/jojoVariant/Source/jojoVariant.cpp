@@ -32,8 +32,8 @@
 class Oizo : public ReferenceCountedObject {
 
 public:
-    explicit Oizo()    { post ("Oizo ctor"); }
-    ~Oizo()            { post ("Oizo dtor"); }
+    Oizo()  { post ("Oizo ctor"); }
+    ~Oizo() { post ("Oizo dtor"); }
     
     Oizo (const Oizo& o)                { post ("Oizo copy"); }
     Oizo& operator = (const Oizo& o)    { post ("Oizo = "); return *this; }

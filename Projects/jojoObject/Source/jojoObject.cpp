@@ -57,8 +57,8 @@ typedef ReferenceCountedObjectPtr < Oizo > OizoPtr;
 class Oizo : public DynamicObject {
 
 public:
-    explicit Oizo() : eggs_()   { post ("Oizo ctor"); }
-    ~Oizo()                     { post ("Oizo dtor"); }
+    Oizo() : eggs_() { post ("Oizo ctor"); }
+    ~Oizo() { post ("Oizo dtor"); }
     
 public:
     DynamicObject::Ptr clone() const { return new Oizo (*this); }

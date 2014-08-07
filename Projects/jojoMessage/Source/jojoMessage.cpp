@@ -31,8 +31,8 @@
 class Momo : public DeletedAtShutdown {
 
 public:
-    explicit Momo()    { cpost ("Momo ctor\n"); }
-    ~Momo()            { cpost ("Momo dtor\n"); }
+    Momo()  { cpost ("Momo ctor\n"); }
+    ~Momo() { cpost ("Momo dtor\n"); }
     
     void doSomething() { cpost ("I am momo!\n"); }
 

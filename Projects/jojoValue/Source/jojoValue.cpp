@@ -36,8 +36,8 @@
 class Oizo : public Value::Listener {
 
 public:
-    explicit Oizo()    { cpost ("Oizo ctor\n"); }
-    ~Oizo()            { cpost ("Oizo dtor\n"); }
+    Oizo()  { cpost ("Oizo ctor\n"); }
+    ~Oizo() { cpost ("Oizo dtor\n"); }
 
     void valueChanged (Value &value) { post ("Changed / %s", value.toString().toRawUTF8()); }
 };
