@@ -64,7 +64,7 @@ public:
     //
     post ("Hello World!");
     
-    if (dynamic_cast < Oizo* > (args.thisObject.getObject())) {           /* Class call. */
+    if (dynamic_cast < Oizo* > (args.thisObject.getObject())) {         /* Class call. */
     //
     post ("Class / %s", args.thisObject.toString().toRawUTF8());
     //
