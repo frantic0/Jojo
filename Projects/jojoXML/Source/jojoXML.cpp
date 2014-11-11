@@ -160,7 +160,7 @@ void jojo_bang (t_jojo *x)
     File xmlFile ((File::getSpecialLocation (File::currentApplicationFile)).getSiblingFile ("jojoXML.txt"));
     
     jojo_write (x, xmlFile);
-    jojo_read (x, xmlFile);          /* Caution : fetch the attributes is rather inefficient. */
+    jojo_read (x, xmlFile);
 }
 
 // ------------------------------------------------------------------------------------------------------------
@@ -183,24 +183,16 @@ void jojo_write (t_jojo *x, const File& aFile)
 void jojo_read (t_jojo *x, const File& aFile)
 {
     XmlDocument myDocument (aFile);
-    XmlElement* myElement = myDocument.getDocumentElement();
+    ScopedPointer < XmlElement > myElement (myDocument.getDocumentElement());
     
     if (myElement == nullptr) { post ("%s", myDocument.getLastParseError().toRawUTF8()); }
     else if (myElement->hasTagName ("Jojo")) {
     //
-    forEachXmlChildElement (*myElement, child)
-    {
-    //
-    /* Iterate through the linked list once. */
-    
-    const int count = child->getNumAttributes();   
-    
-    /* Iterate through the linked list twice at each iteration! */
-    
-    for (int i = 0; i < count; ++i) {
-        post ("%s %s", child->getAttributeName (i).toRawUTF8(), child->getAttributeValue (i).toRawUTF8());
-    }
-    //
+    forEachXmlChildElement (*myElement, child) {
+        const int count = child->getNumAttributes();   
+        for (int i = 0; i < count; ++i) {
+            post ("%s %s", child->getAttributeName (i).toRawUTF8(), child->getAttributeValue (i).toRawUTF8());
+        }
     }
     //
     }
