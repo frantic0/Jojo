@@ -24,7 +24,7 @@
 
 #include "JuceHeader.h"
 
-class JojoComponent : public juce::Component 
+class JojoComponent : public juce::Component
 {
 protected:
     JojoComponent (void *o) : ptr_ (o) { }

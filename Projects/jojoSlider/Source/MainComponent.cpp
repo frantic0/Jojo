@@ -50,7 +50,7 @@ MainComponent::MainComponent (void *o)
 
     /* Bind that slider to the Value in t_jojo. */
 
-    slider->getValueObject().referTo ((*(static_cast<t_jojo *>(ptr_))).slider_);
+    slider->getValueObject().referTo ((*(static_cast < t_jojo* >(ptr_))).slider_);
 
     LookAndFeel::setDefaultLookAndFeel (&mainLookAndFeel);
 
@@ -63,7 +63,6 @@ MainComponent::~MainComponent()
     //[/Destructor_pre]
 
     slider = nullptr;
-
 
     //[Destructor]. You can add your own custom destruction code here..
     //[/Destructor]
@@ -96,8 +95,9 @@ void MainComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == slider)
     {
         //[UserSliderCode_slider] -- add your slider handling code here..
-
-        outlet_int ((static_cast<t_jojo *>(ptr_))->outlet_, static_cast<long>(slider->getValue()));
+    
+        /* Called from the main thread. Is that really correct? */ 
+        outlet_int ((static_cast < t_jojo* >(ptr_))->outlet_, static_cast < long >(slider->getValue()));
 
         //[/UserSliderCode_slider]
     }

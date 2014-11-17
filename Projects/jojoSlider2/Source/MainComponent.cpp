@@ -97,7 +97,7 @@ void MainComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_slider] -- add your slider handling code here..
 
-        outlet_float ((static_cast<t_jojo *>(ptr_))->outlet_, slider->getValue());
+        outlet_float ((static_cast < t_jojo* >(ptr_))->outlet_, slider->getValue());
 
         //[/UserSliderCode_slider]
     }
