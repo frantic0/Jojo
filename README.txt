@@ -11,3 +11,7 @@ Caution:
 - To open the "Foo.jucer" files you need "The Introjucer".
 - Compiled against MaxSDK-5.1.7 (untested with later versions).
 - Examples for Max 5 and for Mac OS X (10.6 or later).
+
+License:
+
+< http://opensource.org/licenses/MIT >
