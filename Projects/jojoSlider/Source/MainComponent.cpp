@@ -65,6 +65,9 @@ MainComponent::~MainComponent()
     slider = nullptr;
 
     //[Destructor]. You can add your own custom destruction code here..
+    
+    LookAndFeel::setDefaultLookAndFeel (nullptr);
+    
     //[/Destructor]
 }
 
