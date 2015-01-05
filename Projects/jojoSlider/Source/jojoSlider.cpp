@@ -143,7 +143,10 @@ void *jojo_new (t_symbol *s, long argc, t_atom *argv)
 
 void jojo_free (t_jojo *x)
 {
-    if (!x->error_) { x->~t_jojo(); }
+    if (!x->error_) { 
+        x->window_->setVisible (false);
+        x->~t_jojo(); 
+    }
 }
 
 // ------------------------------------------------------------------------------------------------------------
