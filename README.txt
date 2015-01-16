@@ -7,11 +7,12 @@ Jojo is a set of experiments to make externals for Max with JUCE.
 
 Caution:
 
-- JUCE is released under the GNU Public Licence.
 - To open the "Foo.jucer" files you need "The Introjucer".
 - Compiled against MaxSDK-5.1.7 (untested with later versions).
 - Examples for Max 5 and for Mac OS X (10.6 or later).
 
 License:
 
-< http://opensource.org/licenses/MIT >
+Requires JUCE released under GPL.
+
+< http://opensource.org/licenses/gpl-license >
