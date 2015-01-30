@@ -165,7 +165,7 @@ void jojo_int (t_jojo *x, long n)
     if (!systhread_ismainthread()) { error ("Always in the main thread!"); }
     else {
         x->slider_.setValue (static_cast < double > (n));       /* JUCE::Value machinery. */
-        outlet_int (x->outlet_, n);    
+        outlet_int (x->outlet_, n);
     }
 }
 

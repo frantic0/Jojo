@@ -110,7 +110,7 @@ void MainComponent::handleAsyncUpdate()
 {
     /* Fetch the t_jojo value. */
 
-    slider->setValue((static_cast < t_jojo* >(ptr_))->value_.get(), dontSendNotification);
+    slider->setValue ((static_cast < t_jojo* >(ptr_))->value_.get(), dontSendNotification);
 }
 
 //[/MiscUserCode]
