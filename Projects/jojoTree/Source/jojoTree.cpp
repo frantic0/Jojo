@@ -85,11 +85,11 @@ public:
     //
     }
     
-    void valueTreeChildAdded (ValueTree&, ValueTree&)   { }
-    void valueTreeChildRemoved (ValueTree&, ValueTree&) { }
-    void valueTreeChildOrderChanged (ValueTree&)        { }
-    void valueTreeParentChanged (ValueTree&)            { }
-    void valueTreeRedirected (ValueTree&)               { }
+    void valueTreeChildAdded (ValueTree&, ValueTree&)        { }
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) { }
+    void valueTreeChildOrderChanged (ValueTree&, int, int)   { }
+    void valueTreeParentChanged (ValueTree&)                 { }
+    void valueTreeRedirected (ValueTree&)                    { }
 
 private:
     struct _jojo* owner_; 
