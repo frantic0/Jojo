@@ -8,10 +8,12 @@ Jojo is a set of experiments to make externals for Max with JUCE.
 Caution:
 
 - To open the "Foo.jucer" files you need "The Introjucer".
-- Tested against MaxSDK-5.1.7 on Mac OS X 10.6 only.
+- Tested against MaxSDK-5.1.7 only.
 - Examples for Max 5 and for Mac OS X.
 
 Build:
+
+Note that for now only Mac OS X 10.6 is supported.
 
 < https://cycling74.com/download/MaxSDK-5.1.7.zip >
 
