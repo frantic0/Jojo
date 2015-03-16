@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="hSGFsC" name="jojoSlave" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.jojoSlave" includeBinaryInAppConfig="1"
-              jucerVersion="3.1.0">
+              jucerVersion="3.1.1">
   <MAINGROUP id="WVg0XC" name="jojoSlave">
     <GROUP id="{98CC915B-DD2F-B083-7E23-3424790B8717}" name="Source">
       <FILE id="Enw6RX" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>

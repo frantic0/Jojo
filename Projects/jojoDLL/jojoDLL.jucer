@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="sBVAFV" name="jojoDLL" projectType="dll" version="1.0.0"
               bundleIdentifier="com.yourcompany.jojoDLL" includeBinaryInAppConfig="1"
-              jucerVersion="3.1.0">
+              jucerVersion="3.1.1">
   <MAINGROUP id="krwvLX" name="jojoDLL">
     <GROUP id="{38CC8704-E0B6-6F50-A88D-455FD98D68A9}" name="Source">
       <FILE id="KdThpP" name="jojoDLL.cpp" compile="1" resource="0" file="Source/jojoDLL.cpp"/>
