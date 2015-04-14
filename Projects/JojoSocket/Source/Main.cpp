@@ -25,7 +25,65 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
+/* To get raw binary in Max/MSP the [sadam.udpReceiver] object is needed. */
+
+/* < http://www.sadam.hu/software > */
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+
 #include "../JuceLibraryCode/JuceHeader.h"
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+class SocketThread : public Thread {
+
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+public:
+    SocketThread() : Thread ("Socket")
+    {
+    }
+    
+    ~SocketThread()
+    {
+        DBG ("Shutdown");
+    }
+
+public:
+    void run() override
+    {
+        const String localhost ("127.0.0.1");
+        const int port = 7400;
+        
+        String txt ("Le sentier longeait la falaise.");
+        const MemoryBlock mb (txt.toRawUTF8(), txt.getNumBytesAsUTF8() + 1);
+    
+        while (!threadShouldExit()) {
+        //
+        int err = udp_.waitUntilReady (false, 20);
+        
+        switch (err) {
+            case 0  : DBG ("Timeout"); break;
+            case 1  : udp_.write (localhost, port, mb.getData(), mb.getSize()); break;
+            default : DBG ("Error"); break;
+        }
+
+        sleep (100);
+        //
+        }
+    }
+
+private:
+    DatagramSocket udp_;
+    
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SocketThread)
+};
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -68,10 +126,15 @@ public:
 public:
     void initialise (const String& commandLine) override
     {
+        socket_ = new SocketThread();
+        jassert (socket_ != nullptr);
+        socket_->startThread();
     }
 
     void shutdown() override
     {
+        socket_->stopThread (-1);
+        socket_ = nullptr;
     }
 
     void systemRequestedQuit() override
@@ -82,6 +145,9 @@ public:
     void anotherInstanceStarted (const String& commandLine) override
     {
     }
+
+private:
+    ScopedPointer < SocketThread > socket_;
 };
 
 // ------------------------------------------------------------------------------------------------------------
