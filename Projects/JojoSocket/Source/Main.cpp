@@ -51,7 +51,7 @@ public:
     
     ~SocketThread()
     {
-        DBG ("Shutdown");
+        Logger::writeToLog ("Shutdown");
     }
 
 public:
@@ -68,9 +68,9 @@ public:
         int err = udp_.waitUntilReady (false, 20);
         
         switch (err) {
-            case 0  : DBG ("Timeout"); break;
+            case 0  : Logger::writeToLog ("Timeout"); break;
             case 1  : udp_.write (localhost, port, mb.getData(), mb.getSize()); break;
-            default : DBG ("Error"); break;
+            default : Logger::writeToLog ("Error"); break;
         }
 
         sleep (100);
