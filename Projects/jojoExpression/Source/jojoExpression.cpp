@@ -59,6 +59,10 @@ public:
     String getScopeUID() const { return String ("A scope!"); }
 };
 
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 class aVisitor : public Expression::Scope::Visitor {
     
 public:
@@ -69,8 +73,7 @@ public:
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-class Oizo : public Expression::Scope
-{
+class Oizo : public Expression::Scope {
 
 public:
     Expression getSymbolValue (const String& symbol) const {

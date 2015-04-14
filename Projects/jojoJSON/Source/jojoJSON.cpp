@@ -64,13 +64,21 @@ namespace JojoIdentifier
 
 class Oizo : public DynamicObject {
 
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 public:
     Oizo()  { post ("Oizo ctor"); }
     ~Oizo() { post ("Oizo dtor"); }
 
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 public:
-    void writeAsJSON (OutputStream& stream, int indentLevel, bool allOnOneLine) {
-        
+    void writeAsJSON (OutputStream& stream, int indentLevel, bool allOnOneLine) 
+    {
         /* Placeholder for future JSON fun! */
         
         DynamicObject::writeAsJSON (stream, indentLevel, allOnOneLine);  /* Call base class function. */
@@ -82,6 +90,7 @@ private:
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
+#pragma mark -
 
 typedef ReferenceCountedObjectPtr < Oizo > OizoPtr;
 

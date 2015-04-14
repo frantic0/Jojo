@@ -50,16 +50,25 @@
 
 class Oizo : public DynamicObject {
 
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 public:
     Oizo()  { setMethod ("hello", Oizo::hello); post ("Oizo ctor"); }
     ~Oizo() { post ("Oizo dtor"); }
 
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+public:
     static Identifier getClassName() { static const Identifier i ("Oizo"); return i; }
     
 public:
 
     /* Custom method to be added to the DynamicObject. */
-    
+
     static var hello (const var::NativeFunctionArgs& args) {
     //
     post ("Hello World!");

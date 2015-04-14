@@ -153,6 +153,10 @@ void jojo_free (t_jojo *x)
 
 typedef void (*jojoFunction)    (void);
 
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 void jojo_bang (t_jojo *x)
 {
     File folder (File::getSpecialLocation (File::currentApplicationFile));

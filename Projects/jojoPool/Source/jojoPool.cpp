@@ -55,6 +55,10 @@ struct _jojo;
 
 class JojoJob : public ThreadPoolJob {
 
+// ------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 public:
     explicit JojoJob (_jojo *x, const String& name = "Jojo") : ThreadPoolJob (name), owner_ (x) { }
 
