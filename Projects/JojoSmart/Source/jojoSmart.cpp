@@ -47,7 +47,7 @@
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* Custom deleter for ScopedPointer (shared_ptr like workaround). */
+/* Custom deleter for ScopedPointer (std::shared_ptr like workaround). */
  
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ typedef ReferenceCountedObjectPtr < Kitty > KittyPtr;
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
 
-/* WeakReference (it doesn't retain the object like weak_ptr). */
+/* WeakReference (it doesn't retain the object unlike std::weak_ptr). */
 
 // ------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------
@@ -250,9 +250,11 @@ void jojo_test (const KittyPtr& temporary)
 
 void jojo_bang (t_jojo *x)
 {
-    /* Avoid to accidentally delete a raw pointer owned by a ScopedPointer. */
+    /* Avoid misguided deletion. */
     
     // delete x->oizo_.get();       /* Oizo::~Oizo() is private! */
+    
+    /* Basic. */
     
     KittyPtr ptrA (new Kitty());
     KittyPtr ptrB (ptrA);  
@@ -270,19 +272,33 @@ void jojo_bang (t_jojo *x)
     
     post ("?"); RCArray.clear(); post ("!");
     
-    //
+    /* Basic. */
     
     Felix* n = new Felix();
-    WeakReference < Felix > myObjectRef = n;
+    WeakReference < Felix > weak = n;
 
-    Felix* p = myObjectRef; post ("%ld", p == nullptr);
-    delete n;
+    Felix* p = weak;
+    post ("%ld", p == nullptr);
+    delete n;                       /* Object released. */
     post ("%ld", p == nullptr);     /* Pointer is no more valid! */
     
-    Felix* q = myObjectRef; post ("%ld", q == nullptr);
+    Felix* q = weak; post ("%ld", q == nullptr);
     
-    post ("Temporary");
-    jojo_test (new Kitty());    /* Properly freed? */
+    /* Fun. */
+    
+    post ("Fun");
+    
+    jojo_test (new Kitty());        /* Properly freed? */
+    
+    post ("Don't do that.");        /* Is that implicit conversion dangerous? */
+    
+    KittyPtr ptr (new Kitty());     
+    Kitty *raw = ptr;
+    post ("%ld", raw->getReferenceCount());
+    KittyPtr twice (raw);
+    post ("%ld", raw->getReferenceCount());
+    ptr   = nullptr;
+    twice = nullptr;
 }
 
 // ------------------------------------------------------------------------------------------------------------
