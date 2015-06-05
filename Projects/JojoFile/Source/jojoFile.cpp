@@ -152,6 +152,8 @@ void jojo_free (t_jojo *x)
 // ------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
+/* Probably best to call that always in the the main thread. */
+
 void jojo_bang (t_jojo *x)
 {
     File folder (File::getSpecialLocation (File::currentApplicationFile).getParentDirectory());
@@ -162,6 +164,8 @@ void jojo_bang (t_jojo *x)
     
     jojo_write (testFile);
     jojo_read (testFile);
+    
+    testFile.startAsProcess();
 }
 
 // ------------------------------------------------------------------------------------------------------------
